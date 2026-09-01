@@ -1,0 +1,58 @@
+"menu.title" = "iUnus";
+"menu.subtitle" = "The classic card game";
+"menu.play" = "Play";
+"menu.settings" = "Settings";
+"menu.about" = "About";
+"menu.rules" = "Rules";
+"menu.players" = "Opponents";
+"menu.startGame" = "Start Game";
+
+"settings.title" = "Settings";
+"settings.language" = "Language";
+"settings.language.system" = "System";
+"settings.theme" = "Appearance";
+"settings.theme.light" = "Light";
+"settings.theme.dark" = "Dark";
+"settings.theme.system" = "System";
+"settings.done" = "Done";
+
+"about.title" = "About";
+"about.developedBy" = "Developed by";
+"about.author" = "David Arsénio Martins";
+"about.website" = "Website";
+"about.github" = "GitHub";
+
+"rules.title" = "Rules";
+"rules.summary" = "Match the top card of the discard pile by color, number or symbol. Special cards change the flow of the game: Skip passes the turn, Reverse changes direction, Draw Two forces the next player to draw two cards. Wild cards let you choose the color, and Wild Draw Four also forces the next player to draw four cards.\n\nWhen you are down to one card, tap the UNO button before your turn ends — if another player catches you first, you must draw two penalty cards.\n\nThe first player to play all their cards wins the round and scores points based on the cards left in opponents' hands. The first player to reach 500 points wins the game.";
+
+"game.uno" = "UNO!";
+"game.draw" = "Draw";
+"game.yourTurn" = "Your turn";
+"game.aiTurn" = "%@'s turn";
+"game.thinking" = "Thinking…";
+"game.invalidMove" = "You can't play that card";
+"game.unoPenalty" = "Caught! +2 cards";
+"game.deckEmpty" = "Reshuffling deck…";
+
+"colorPicker.title" = "Choose a color";
+"color.red" = "Red";
+"color.yellow" = "Yellow";
+"color.green" = "Green";
+"color.blue" = "Blue";
+
+"player.you" = "You";
+"player.opponent" = "Opponent %d";
+
+"roundEnd.title" = "Round Over";
+"roundEnd.winner" = "%@ wins the round!";
+"roundEnd.pointsEarned" = "+%d points";
+"roundEnd.continue" = "Continue";
+"roundEnd.scores" = "Scores";
+
+"gameEnd.title" = "Game Over";
+"gameEnd.winner" = "%@ wins the game!";
+"gameEnd.newGame" = "New Game";
+"gameEnd.backToMenu" = "Back to Menu";
+
+"common.cancel" = "Cancel";
+"common.back" = "Back";

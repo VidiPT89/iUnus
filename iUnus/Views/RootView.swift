@@ -1,0 +1,35 @@
+import SwiftUI
+
+struct RootView: View {
+    @StateObject private var viewModel = GameViewModel()
+    @EnvironmentObject private var settings: SettingsViewModel
+
+    var body: some View {
+        Group {
+            switch viewModel.phase {
+            case .menu:
+                MenuView(viewModel: viewModel)
+            case .dealing, .playing, .choosingColor:
+                GameView(viewModel: viewModel)
+            case .roundEnd:
+                RoundEndView(viewModel: viewModel)
+            case .gameEnd:
+                GameEndView(viewModel: viewModel)
+            }
+        }
+        .animation(.easeInOut(duration: 0.35), value: phaseIdentifier)
+        .transition(.opacity)
+        .preferredColorScheme(settings.theme.colorScheme)
+    }
+
+    private var phaseIdentifier: Int {
+        switch viewModel.phase {
+        case .menu: return 0
+        case .dealing: return 1
+        case .playing: return 2
+        case .choosingColor: return 3
+        case .roundEnd: return 4
+        case .gameEnd: return 5
+        }
+    }
+}

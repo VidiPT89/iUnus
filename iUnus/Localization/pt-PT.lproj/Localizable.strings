@@ -1,0 +1,58 @@
+"menu.title" = "iUnus";
+"menu.subtitle" = "O clássico jogo de cartas";
+"menu.play" = "Jogar";
+"menu.settings" = "Definições";
+"menu.about" = "Sobre";
+"menu.rules" = "Regras";
+"menu.players" = "Adversários";
+"menu.startGame" = "Iniciar Jogo";
+
+"settings.title" = "Definições";
+"settings.language" = "Idioma";
+"settings.language.system" = "Sistema";
+"settings.theme" = "Aparência";
+"settings.theme.light" = "Claro";
+"settings.theme.dark" = "Escuro";
+"settings.theme.system" = "Sistema";
+"settings.done" = "Concluído";
+
+"about.title" = "Sobre";
+"about.developedBy" = "Desenvolvido por";
+"about.author" = "David Arsénio Martins";
+"about.website" = "Website";
+"about.github" = "GitHub";
+
+"rules.title" = "Regras";
+"rules.summary" = "Junta a carta do topo da pilha de descarte por cor, número ou símbolo. As cartas especiais alteram o ritmo do jogo: Saltar passa a vez, Inverter muda o sentido, Compra Duas obriga o jogador seguinte a comprar duas cartas. As cartas Curinga permitem escolher a cor, e o Curinga Compra Quatro também obriga o jogador seguinte a comprar quatro cartas.\n\nQuando ficares com apenas uma carta, toca no botão UNO antes de terminares a tua jogada — se outro jogador te apanhar primeiro, tens de comprar duas cartas de penalização.\n\nO primeiro jogador a jogar todas as suas cartas ganha a ronda e soma pontos com base nas cartas que restam aos adversários. O primeiro a atingir 500 pontos vence o jogo.";
+
+"game.uno" = "UNO!";
+"game.draw" = "Comprar";
+"game.yourTurn" = "A tua vez";
+"game.aiTurn" = "Vez de %@";
+"game.thinking" = "A pensar…";
+"game.invalidMove" = "Não podes jogar essa carta";
+"game.unoPenalty" = "Apanhado! +2 cartas";
+"game.deckEmpty" = "A baralhar novamente…";
+
+"colorPicker.title" = "Escolhe uma cor";
+"color.red" = "Vermelho";
+"color.yellow" = "Amarelo";
+"color.green" = "Verde";
+"color.blue" = "Azul";
+
+"player.you" = "Tu";
+"player.opponent" = "Adversário %d";
+
+"roundEnd.title" = "Fim da Ronda";
+"roundEnd.winner" = "%@ venceu a ronda!";
+"roundEnd.pointsEarned" = "+%d pontos";
+"roundEnd.continue" = "Continuar";
+"roundEnd.scores" = "Pontuações";
+
+"gameEnd.title" = "Fim do Jogo";
+"gameEnd.winner" = "%@ venceu o jogo!";
+"gameEnd.newGame" = "Novo Jogo";
+"gameEnd.backToMenu" = "Voltar ao Menu";
+
+"common.cancel" = "Cancelar";
+"common.back" = "Voltar";

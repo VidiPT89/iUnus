@@ -1,0 +1,463 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		17E513BA62226C8B780B1D36 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CD456F2C8CA0CE555BB4077B /* Localizable.strings */; };
+		1ACB2CCA2F8E99500066464D /* RulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F790FAE04832BDE854B55999 /* RulesView.swift */; };
+		1BB179402C037EE0B017D4E8 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD4E5E8B921666FEE21BBE7 /* GameState.swift */; };
+		203D7338A9FAFCB1E5BF9A76 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39285A30F17E8EAE7D153171 /* AboutView.swift */; };
+		2E5190C48861F4BE21927FC2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20547FF1F8884B260588EA13 /* Assets.xcassets */; };
+		3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0193F30523B7321B5114CF /* GameViewModel.swift */; };
+		4BA144563A8C1F9378E0CA71 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA540E914C42FA24702B9C5 /* Card.swift */; };
+		5B71DE45EDDE14894B73BC1D /* RoundEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC21D147D18B72314B1679FE /* RoundEndView.swift */; };
+		663A3EBC06FC606F59A2A553 /* iUnusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */; };
+		80DDBDD54413590A40DB19ED /* AIStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8E709F2690E809319DD3265 /* AIStrategy.swift */; };
+		95B882A04A29C2467DBF0AD4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FF8594FBE8F599BD297C1A /* RootView.swift */; };
+		972F57DFD778E17D689C1996 /* GameEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E56535D5820C0981E3371 /* GameEndView.swift */; };
+		9B842F8FB73FB414AC89A4D9 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01FA6B380C2CBD18A87BACB /* MenuView.swift */; };
+		A85E7FF77AD1A620F3550E19 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60304FE57396CC1941F3F3B /* Deck.swift */; };
+		AB564C9D6B11A981B52555B8 /* ColorPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124BF4F5FDD839BD2C91FF22 /* ColorPickerSheet.swift */; };
+		ACAD61E0A5141D6B048C1634 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A332488DF01AFDE54BAAEA2B /* GameView.swift */; };
+		AD1D7EBB6A0C63D846FCB8A5 /* CardColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89396BE918B9470E9F89E0E /* CardColor.swift */; };
+		B005B696E92EA36F79C22AFE /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489482094E88AB51F5991FF /* SettingsViewModel.swift */; };
+		B39C4BFB5F0925394D914B3E /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */; };
+		BEFF5254172C0C9945234A12 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C514FFD77208F5B7906BA53 /* CardView.swift */; };
+		D1AF301F019BDFCDC1186071 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */; };
+		DB9DD20515D95E3A8ACF07C1 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422D15401FEAB52457FB1FEF /* Color+Theme.swift */; };
+		DF9186FE584A702863CB977E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7D0A92474F37BD36528E26 /* SettingsView.swift */; };
+		E8A8C3969AD2300A254781EB /* CardValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5516383F4560711BD6964BEC /* CardValue.swift */; };
+		ECC28BD8D0EE265CCC6B3D44 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65E8F4199A9101DAAF2E9CA /* Player.swift */; };
+		FD3DFE6A4C03777663C110E1 /* PlayerHandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00487C333D0CE926F9AB5310 /* PlayerHandView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00487C333D0CE926F9AB5310 /* PlayerHandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHandView.swift; sourceTree = "<group>"; };
+		124BF4F5FDD839BD2C91FF22 /* ColorPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerSheet.swift; sourceTree = "<group>"; };
+		1EA540E914C42FA24702B9C5 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		20547FF1F8884B260588EA13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		252905FC5F51FCE851211A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		39285A30F17E8EAE7D153171 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		422D15401FEAB52457FB1FEF /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
+		4BEC26F6986B4B45AA0D1639 /* iUnus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = iUnus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5516383F4560711BD6964BEC /* CardValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValue.swift; sourceTree = "<group>"; };
+		594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
+		5B7D0A92474F37BD36528E26 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7C514FFD77208F5B7906BA53 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		9489482094E88AB51F5991FF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		98FF8594FBE8F599BD297C1A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		9F0193F30523B7321B5114CF /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		A332488DF01AFDE54BAAEA2B /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		ABD4E5E8B921666FEE21BBE7 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		B07E99A1CABF336849743796 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B89396BE918B9470E9F89E0E /* CardColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardColor.swift; sourceTree = "<group>"; };
+		B8E709F2690E809319DD3265 /* AIStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStrategy.swift; sourceTree = "<group>"; };
+		C86280F871DEF0462D125A72 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		D60304FE57396CC1941F3F3B /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
+		D65E8F4199A9101DAAF2E9CA /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		D87E56535D5820C0981E3371 /* GameEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEndView.swift; sourceTree = "<group>"; };
+		D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iUnusApp.swift; sourceTree = "<group>"; };
+		E01FA6B380C2CBD18A87BACB /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
+		EC21D147D18B72314B1679FE /* RoundEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundEndView.swift; sourceTree = "<group>"; };
+		F790FAE04832BDE854B55999 /* RulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		3BEBDCD59108AC6591EEE499 /* iUnus */ = {
+			isa = PBXGroup;
+			children = (
+				252905FC5F51FCE851211A53 /* Info.plist */,
+				D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */,
+				4E6B23F64946C3AE5AD893DA /* Localization */,
+				B04F94D688811A123E4B8B16 /* Models */,
+				ED8B99FCF1D4F4F01580C6A7 /* Resources */,
+				7808E5A936C2EE0E38760B35 /* ViewModels */,
+				D5CA5BF141DAC3BAA67062A1 /* Views */,
+			);
+			path = iUnus;
+			sourceTree = "<group>";
+		};
+		4E6B23F64946C3AE5AD893DA /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */,
+				CD456F2C8CA0CE555BB4077B /* Localizable.strings */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		7808E5A936C2EE0E38760B35 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B8E709F2690E809319DD3265 /* AIStrategy.swift */,
+				9F0193F30523B7321B5114CF /* GameViewModel.swift */,
+				9489482094E88AB51F5991FF /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A679FDEA01C1B6BC115ED04A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4BEC26F6986B4B45AA0D1639 /* iUnus.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B04F94D688811A123E4B8B16 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1EA540E914C42FA24702B9C5 /* Card.swift */,
+				B89396BE918B9470E9F89E0E /* CardColor.swift */,
+				5516383F4560711BD6964BEC /* CardValue.swift */,
+				D60304FE57396CC1941F3F3B /* Deck.swift */,
+				ABD4E5E8B921666FEE21BBE7 /* GameState.swift */,
+				D65E8F4199A9101DAAF2E9CA /* Player.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D5CA5BF141DAC3BAA67062A1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				39285A30F17E8EAE7D153171 /* AboutView.swift */,
+				7C514FFD77208F5B7906BA53 /* CardView.swift */,
+				124BF4F5FDD839BD2C91FF22 /* ColorPickerSheet.swift */,
+				D87E56535D5820C0981E3371 /* GameEndView.swift */,
+				A332488DF01AFDE54BAAEA2B /* GameView.swift */,
+				E01FA6B380C2CBD18A87BACB /* MenuView.swift */,
+				00487C333D0CE926F9AB5310 /* PlayerHandView.swift */,
+				98FF8594FBE8F599BD297C1A /* RootView.swift */,
+				EC21D147D18B72314B1679FE /* RoundEndView.swift */,
+				F790FAE04832BDE854B55999 /* RulesView.swift */,
+				5B7D0A92474F37BD36528E26 /* SettingsView.swift */,
+				594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		ED8B99FCF1D4F4F01580C6A7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				20547FF1F8884B260588EA13 /* Assets.xcassets */,
+				422D15401FEAB52457FB1FEF /* Color+Theme.swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F585A94D1C8AE391BB013CF1 = {
+			isa = PBXGroup;
+			children = (
+				3BEBDCD59108AC6591EEE499 /* iUnus */,
+				A679FDEA01C1B6BC115ED04A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		47E9E5B18D5D228B0360484B /* iUnus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 34EDFEA720FD20A20662A3EC /* Build configuration list for PBXNativeTarget "iUnus" */;
+			buildPhases = (
+				81024ACB72AE0987233D5865 /* Sources */,
+				365847DD9688D5693B345EAA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iUnus;
+			packageProductDependencies = (
+			);
+			productName = iUnus;
+			productReference = 4BEC26F6986B4B45AA0D1639 /* iUnus.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7AFD1E790902CF087C101222 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = D1AE67B71DD71A973E846EBC /* Build configuration list for PBXProject "iUnus" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				"pt-PT",
+			);
+			mainGroup = F585A94D1C8AE391BB013CF1;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A679FDEA01C1B6BC115ED04A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				47E9E5B18D5D228B0360484B /* iUnus */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		365847DD9688D5693B345EAA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E5190C48861F4BE21927FC2 /* Assets.xcassets in Resources */,
+				17E513BA62226C8B780B1D36 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		81024ACB72AE0987233D5865 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80DDBDD54413590A40DB19ED /* AIStrategy.swift in Sources */,
+				203D7338A9FAFCB1E5BF9A76 /* AboutView.swift in Sources */,
+				4BA144563A8C1F9378E0CA71 /* Card.swift in Sources */,
+				AD1D7EBB6A0C63D846FCB8A5 /* CardColor.swift in Sources */,
+				E8A8C3969AD2300A254781EB /* CardValue.swift in Sources */,
+				BEFF5254172C0C9945234A12 /* CardView.swift in Sources */,
+				DB9DD20515D95E3A8ACF07C1 /* Color+Theme.swift in Sources */,
+				AB564C9D6B11A981B52555B8 /* ColorPickerSheet.swift in Sources */,
+				A85E7FF77AD1A620F3550E19 /* Deck.swift in Sources */,
+				972F57DFD778E17D689C1996 /* GameEndView.swift in Sources */,
+				1BB179402C037EE0B017D4E8 /* GameState.swift in Sources */,
+				ACAD61E0A5141D6B048C1634 /* GameView.swift in Sources */,
+				3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */,
+				B39C4BFB5F0925394D914B3E /* LocalizationManager.swift in Sources */,
+				9B842F8FB73FB414AC89A4D9 /* MenuView.swift in Sources */,
+				ECC28BD8D0EE265CCC6B3D44 /* Player.swift in Sources */,
+				FD3DFE6A4C03777663C110E1 /* PlayerHandView.swift in Sources */,
+				95B882A04A29C2467DBF0AD4 /* RootView.swift in Sources */,
+				5B71DE45EDDE14894B73BC1D /* RoundEndView.swift in Sources */,
+				1ACB2CCA2F8E99500066464D /* RulesView.swift in Sources */,
+				DF9186FE584A702863CB977E /* SettingsView.swift in Sources */,
+				B005B696E92EA36F79C22AFE /* SettingsViewModel.swift in Sources */,
+				D1AF301F019BDFCDC1186071 /* TopBarView.swift in Sources */,
+				663A3EBC06FC606F59A2A553 /* iUnusApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CD456F2C8CA0CE555BB4077B /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B07E99A1CABF336849743796 /* en */,
+				C86280F871DEF0462D125A72 /* pt-PT */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		593112CDCAA3B4B0E09A9CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = iUnus/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iUnus;
+				PRODUCT_NAME = iUnus;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8B3B7B22C15069859E818081 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = iUnus/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iUnus;
+				PRODUCT_NAME = iUnus;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CAA2768FA564CA6DD788E775 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_LANGUAGE = en;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		EE35DF533E5A0E1AA85CC13B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_LANGUAGE = en;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		34EDFEA720FD20A20662A3EC /* Build configuration list for PBXNativeTarget "iUnus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8B3B7B22C15069859E818081 /* Debug */,
+				593112CDCAA3B4B0E09A9CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D1AE67B71DD71A973E846EBC /* Build configuration list for PBXProject "iUnus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE35DF533E5A0E1AA85CC13B /* Debug */,
+				CAA2768FA564CA6DD788E775 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7AFD1E790902CF087C101222 /* Project object */;
+}
