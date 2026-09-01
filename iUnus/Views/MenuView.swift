@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuView: View {
     @ObservedObject var viewModel: GameViewModel
+    @ObservedObject private var statsStore = MatchStatsStore.shared
     @State private var opponentCount = 2
     @State private var showSettings = false
     @State private var showAbout = false
@@ -23,6 +24,13 @@ struct MenuView: View {
                     Text(L.t("menu.subtitle"))
                         .font(.subheadline)
                         .foregroundColor(.brandTextSecondary)
+
+                    if statsStore.stats.gamesPlayed > 0 {
+                        Text("\(String(format: L.t("stats.wins"), statsStore.stats.gamesWon)) · \(String(format: L.t("stats.streak"), statsStore.stats.currentStreak))")
+                            .font(.footnote.weight(.medium))
+                            .foregroundColor(.brandTextSecondary)
+                            .padding(.top, 4)
+                    }
                 }
 
                 Spacer()

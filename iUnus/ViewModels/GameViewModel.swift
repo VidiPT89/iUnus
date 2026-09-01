@@ -10,7 +10,6 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var currentPlayerIndex: Int = 0
     @Published private(set) var direction: TurnDirection = .clockwise
     @Published var phase: GamePhase = .menu
-    @Published private(set) var lastMove: LastMove?
     @Published private(set) var pendingUnoCatch: PendingUnoCatch?
     @Published var toastMessage: String?
     @Published private(set) var roundWinnerID: UUID?
@@ -48,7 +47,6 @@ final class GameViewModel: ObservableObject {
     func startNewRound() {
         deck = Deck()
         direction = .clockwise
-        lastMove = nil
         pendingUnoCatch = nil
         roundWinnerID = nil
         for i in players.indices {
@@ -119,7 +117,6 @@ final class GameViewModel: ObservableObject {
         var playedCard = players[playerIndex].hand.remove(at: handIndex)
         hapticPlay()
         playCardSound()
-        lastMove = LastMove(card: playedCard, playerID: players[playerIndex].id)
 
         if playedCard.value.isWild {
             if players[playerIndex].isAI {
@@ -319,7 +316,14 @@ final class GameViewModel: ObservableObject {
         if players[winnerIndex].totalScore >= Self.targetScore {
             gameWinnerID = players[winnerIndex].id
             playWinSound()
+            recordMatchStats(winnerIndex: winnerIndex)
         }
+    }
+
+    private func recordMatchStats(winnerIndex: Int) {
+        guard let human = humanPlayer else { return }
+        let humanWon = players[winnerIndex].id == human.id
+        MatchStatsStore.shared.recordGameEnd(humanWon: humanWon, humanScore: human.totalScore)
     }
 
     func continueAfterRound() {

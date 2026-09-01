@@ -15,13 +15,6 @@ enum CardValue: Equatable, Codable, Hashable {
         }
     }
 
-    var isAction: Bool {
-        switch self {
-        case .skip, .reverse, .drawTwo, .wild, .wildDrawFour: return true
-        default: return false
-        }
-    }
-
     var scoreValue: Int {
         switch self {
         case .number(let n): return n

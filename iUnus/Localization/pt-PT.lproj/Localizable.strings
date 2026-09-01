@@ -42,7 +42,6 @@
 "game.thinking" = "A pensar…";
 "game.invalidMove" = "Não podes jogar essa carta";
 "game.unoPenalty" = "Apanhado! +2 cartas";
-"game.deckEmpty" = "A baralhar novamente…";
 "game.deckExhausted" = "Sem cartas para comprar — vez passada";
 "game.catchUno" = "Apanhar!";
 "game.quit" = "Sair do jogo";
@@ -50,7 +49,6 @@
 "game.unoHint" = "Diz UNO quando tiveres apenas uma carta";
 "game.drawPile" = "Baralho para comprar";
 "game.drawPileHint" = "Compra uma carta do baralho";
-"game.discardPile" = "Pilha de descarte";
 "game.cardPlayableHint" = "Toca duas vezes para jogar esta carta";
 "game.cardUnplayableHint" = "Esta carta não pode ser jogada agora";
 
@@ -61,7 +59,6 @@
 "color.blue" = "Azul";
 "color.wild" = "Curinga";
 
-"card.value.number" = "%d";
 "card.value.skip" = "Saltar";
 "card.value.reverse" = "Inverter";
 "card.value.drawTwo" = "Compra Duas";
@@ -84,5 +81,7 @@
 "gameEnd.newGame" = "Novo Jogo";
 "gameEnd.backToMenu" = "Voltar ao Menu";
 
-"common.cancel" = "Cancelar";
+"stats.wins" = "Vitórias: %d";
+"stats.streak" = "Sequência: %d";
+
 "common.back" = "Voltar";

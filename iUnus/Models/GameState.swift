@@ -22,9 +22,3 @@ struct PendingUnoCatch: Equatable {
     let playerID: UUID
     let deadline: Date
 }
-
-/// Snapshot of the last play, used to drive fly-out animation in the view layer.
-struct LastMove: Equatable {
-    let card: Card
-    let playerID: UUID
-}

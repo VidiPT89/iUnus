@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0596690BA35EFCB5906F65DB /* MatchStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */; };
 		17E513BA62226C8B780B1D36 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CD456F2C8CA0CE555BB4077B /* Localizable.strings */; };
 		1ACB2CCA2F8E99500066464D /* RulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F790FAE04832BDE854B55999 /* RulesView.swift */; };
 		1BB179402C037EE0B017D4E8 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD4E5E8B921666FEE21BBE7 /* GameState.swift */; };
@@ -63,6 +64,7 @@
 		D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iUnusApp.swift; sourceTree = "<group>"; };
 		E01FA6B380C2CBD18A87BACB /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
+		E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStats.swift; sourceTree = "<group>"; };
 		EC21D147D18B72314B1679FE /* RoundEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundEndView.swift; sourceTree = "<group>"; };
 		F790FAE04832BDE854B55999 /* RulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,6 +119,7 @@
 				5516383F4560711BD6964BEC /* CardValue.swift */,
 				D60304FE57396CC1941F3F3B /* Deck.swift */,
 				ABD4E5E8B921666FEE21BBE7 /* GameState.swift */,
+				E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */,
 				D65E8F4199A9101DAAF2E9CA /* Player.swift */,
 			);
 			path = Models;
@@ -241,6 +244,7 @@
 				ACAD61E0A5141D6B048C1634 /* GameView.swift in Sources */,
 				3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */,
 				B39C4BFB5F0925394D914B3E /* LocalizationManager.swift in Sources */,
+				0596690BA35EFCB5906F65DB /* MatchStats.swift in Sources */,
 				9B842F8FB73FB414AC89A4D9 /* MenuView.swift in Sources */,
 				ECC28BD8D0EE265CCC6B3D44 /* Player.swift in Sources */,
 				FD3DFE6A4C03777663C110E1 /* PlayerHandView.swift in Sources */,

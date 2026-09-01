@@ -45,10 +45,6 @@ final class LocalizationManager: ObservableObject {
         updateBundle()
     }
 
-    func setLanguage(_ language: AppLanguage) {
-        self.language = language
-    }
-
     private nonisolated func updateBundle() {
         guard cachedLanguage != currentLanguage else { return }
         cachedLanguage = currentLanguage

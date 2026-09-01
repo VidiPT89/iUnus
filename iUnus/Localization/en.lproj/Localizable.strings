@@ -42,7 +42,6 @@
 "game.thinking" = "Thinking…";
 "game.invalidMove" = "You can't play that card";
 "game.unoPenalty" = "Caught! +2 cards";
-"game.deckEmpty" = "Reshuffling deck…";
 "game.deckExhausted" = "No cards left to draw — turn passed";
 "game.catchUno" = "Catch!";
 "game.quit" = "Quit game";
@@ -50,7 +49,6 @@
 "game.unoHint" = "Call UNO when you have one card left";
 "game.drawPile" = "Draw pile";
 "game.drawPileHint" = "Draw a card from the pile";
-"game.discardPile" = "Discard pile";
 "game.cardPlayableHint" = "Double tap to play this card";
 "game.cardUnplayableHint" = "This card can't be played right now";
 
@@ -61,7 +59,6 @@
 "color.blue" = "Blue";
 "color.wild" = "Wild";
 
-"card.value.number" = "%d";
 "card.value.skip" = "Skip";
 "card.value.reverse" = "Reverse";
 "card.value.drawTwo" = "Draw Two";
@@ -84,5 +81,7 @@
 "gameEnd.newGame" = "New Game";
 "gameEnd.backToMenu" = "Back to Menu";
 
-"common.cancel" = "Cancel";
+"stats.wins" = "Wins: %d";
+"stats.streak" = "Streak: %d";
+
 "common.back" = "Back";

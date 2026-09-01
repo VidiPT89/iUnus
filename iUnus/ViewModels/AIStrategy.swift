@@ -18,16 +18,22 @@ enum AIStrategy {
         }
     }
 
-    private static func chooseCardNormal(playable: [Card], opponentLowestCardCount: Int) -> Card? {
-        let nonWild = playable.filter { !$0.value.isWild }
-        let wild = playable.filter { $0.value.isWild }
-
+    /// Shared attack-priority logic used by both the normal and hard tiers: dump a Draw Two
+    /// or Wild Draw Four when an opponent is at one card, then fall back to any disruptive
+    /// action card (Skip, Reverse, Draw Two) before either tier applies its own tie-breaking.
+    private static func attackCard(nonWild: [Card], wild: [Card], opponentLowestCardCount: Int) -> Card? {
         if opponentLowestCardCount == 1 {
             if let attack = nonWild.first(where: { $0.value == .drawTwo }) { return attack }
             if let attack = wild.first(where: { $0.value == .wildDrawFour }) { return attack }
         }
+        return nonWild.first(where: { $0.value == .skip || $0.value == .reverse || $0.value == .drawTwo })
+    }
 
-        if let attack = nonWild.first(where: { $0.value == .skip || $0.value == .reverse || $0.value == .drawTwo }) {
+    private static func chooseCardNormal(playable: [Card], opponentLowestCardCount: Int) -> Card? {
+        let nonWild = playable.filter { !$0.value.isWild }
+        let wild = playable.filter { $0.value.isWild }
+
+        if let attack = attackCard(nonWild: nonWild, wild: wild, opponentLowestCardCount: opponentLowestCardCount) {
             return attack
         }
 
@@ -45,12 +51,7 @@ enum AIStrategy {
         let nonWild = playable.filter { !$0.value.isWild }
         let wild = playable.filter { $0.value.isWild }
 
-        if opponentLowestCardCount == 1 {
-            if let attack = nonWild.first(where: { $0.value == .drawTwo }) { return attack }
-            if let attack = wild.first(where: { $0.value == .wildDrawFour }) { return attack }
-        }
-
-        if let attack = nonWild.first(where: { $0.value == .skip || $0.value == .reverse || $0.value == .drawTwo }) {
+        if let attack = attackCard(nonWild: nonWild, wild: wild, opponentLowestCardCount: opponentLowestCardCount) {
             return attack
         }
 

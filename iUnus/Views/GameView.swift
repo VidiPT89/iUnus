@@ -58,6 +58,7 @@ struct GameView: View {
         .sheet(isPresented: colorSheetBinding) {
             ColorPickerSheet { color in viewModel.chooseWildColor(color) }
                 .presentationDetents([.height(280)])
+                .interactiveDismissDisabled(true)
         }
         .overlay {
             if viewModel.phase == .dealing {
