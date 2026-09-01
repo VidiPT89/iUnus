@@ -31,6 +31,8 @@ struct TopBarView: View {
                 Text(turnText)
                     .font(.subheadline.weight(.semibold))
                     .foregroundColor(isHumanTurn ? .brandPrimary : .brandTextPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 6)

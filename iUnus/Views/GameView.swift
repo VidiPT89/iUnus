@@ -11,7 +11,7 @@ struct GameView: View {
         ZStack {
             Color.brandBackground.ignoresSafeArea()
 
-            VStack(spacing: 12) {
+            VStack(spacing: 16) {
                 TopBarView(
                     turnText: turnText,
                     isHumanTurn: isHumanTurn,
@@ -24,11 +24,11 @@ struct GameView: View {
 
                 opponentsRow
 
-                Spacer(minLength: 4)
+                Spacer(minLength: 12)
 
                 pileArea
 
-                Spacer(minLength: 4)
+                Spacer(minLength: 12)
 
                 if let human = viewModel.humanPlayer {
                     PlayerHandView(
@@ -148,50 +148,55 @@ struct GameView: View {
     }
 
     private var pileArea: some View {
-        HStack(spacing: 36) {
-            Button {
-                viewModel.humanDraw()
-            } label: {
-                CardBackView(width: 78)
-                    .overlay(
-                        Text(L.t("game.draw"))
-                            .font(.caption2.weight(.bold))
-                            .foregroundColor(.white)
-                            .padding(4)
-                            .background(Capsule().fill(Color.black.opacity(0.5)))
-                            .offset(y: 50)
-                    )
-            }
-            .disabled(!(isHumanTurn && viewModel.phase == .playing))
-            .accessibilityLabel(L.t("game.drawPile"))
-            .accessibilityHint(L.t("game.drawPileHint"))
-            .overlay {
-                if let drawn = viewModel.justDrawnCard, viewModel.humanPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
-                    CardView(card: drawn, width: 78)
-                        .matchedGeometryEffect(id: drawn.id, in: cardSpace, isSource: true)
-                        .allowsHitTesting(false)
-                        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: viewModel.justDrawnCard?.id)
+        HStack(alignment: .top, spacing: 40) {
+            VStack(spacing: 8) {
+                Button {
+                    viewModel.humanDraw()
+                } label: {
+                    CardBackView(width: 78)
                 }
+                .disabled(!(isHumanTurn && viewModel.phase == .playing))
+                .opacity(isHumanTurn && viewModel.phase == .playing ? 1 : 0.6)
+                .accessibilityLabel(L.t("game.drawPile"))
+                .accessibilityHint(L.t("game.drawPileHint"))
+                .overlay {
+                    if let drawn = viewModel.justDrawnCard, viewModel.humanPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
+                        CardView(card: drawn, width: 78)
+                            .matchedGeometryEffect(id: drawn.id, in: cardSpace, isSource: true)
+                            .allowsHitTesting(false)
+                            .animation(.spring(response: 0.45, dampingFraction: 0.75), value: viewModel.justDrawnCard?.id)
+                    }
+                }
+
+                Text(L.t("game.draw"))
+                    .font(.caption2.weight(.bold))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .padding(.horizontal, 10).padding(.vertical, 3)
+                    .background(Capsule().fill(Color.black.opacity(0.5)))
             }
 
             if let top = viewModel.topCard {
-                CardView(card: top, width: 84)
-                    .id(top.id)
-                    .matchedGeometryEffect(id: top.id, in: cardSpace)
-                    .rotationEffect(.degrees(Double.random(in: -6...6)))
-                    .scaleEffect(wildFlourishScale)
-                    .shadow(color: top.effectiveColor.displayColor.opacity(wildFlourishScale > 1.0 ? 0.7 : 0), radius: 12)
-                    .transition(.asymmetric(
-                        insertion: .scale(scale: 0.4).combined(with: .opacity),
-                        removal: .opacity
-                    ))
-                    .animation(.spring(response: 0.45, dampingFraction: 0.75), value: top.id)
-                    .onChange(of: top.chosenColor) { _ in
-                        wildFlourishScale = 1.25
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.55)) {
-                            wildFlourishScale = 1.0
+                VStack(spacing: 8) {
+                    CardView(card: top, width: 84)
+                        .id(top.id)
+                        .matchedGeometryEffect(id: top.id, in: cardSpace)
+                        .rotationEffect(.degrees(Double.random(in: -6...6)))
+                        .scaleEffect(wildFlourishScale)
+                        .shadow(color: top.effectiveColor.displayColor.opacity(wildFlourishScale > 1.0 ? 0.7 : 0), radius: 12)
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.4).combined(with: .opacity),
+                            removal: .opacity
+                        ))
+                        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: top.id)
+                        .onChange(of: top.chosenColor) { _ in
+                            wildFlourishScale = 1.25
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.55)) {
+                                wildFlourishScale = 1.0
+                            }
                         }
-                    }
+                }
             }
         }
     }

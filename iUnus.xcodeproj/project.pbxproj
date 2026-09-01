@@ -12,6 +12,7 @@
 		1ACB2CCA2F8E99500066464D /* RulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F790FAE04832BDE854B55999 /* RulesView.swift */; };
 		1BB179402C037EE0B017D4E8 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD4E5E8B921666FEE21BBE7 /* GameState.swift */; };
 		203D7338A9FAFCB1E5BF9A76 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39285A30F17E8EAE7D153171 /* AboutView.swift */; };
+		230DF22F8A11E1277B4B22C0 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E5A5921122617505A8B885 /* SplashView.swift */; };
 		2E5190C48861F4BE21927FC2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20547FF1F8884B260588EA13 /* Assets.xcassets */; };
 		3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0193F30523B7321B5114CF /* GameViewModel.swift */; };
 		4BA144563A8C1F9378E0CA71 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA540E914C42FA24702B9C5 /* Card.swift */; };
@@ -65,6 +66,7 @@
 		E01FA6B380C2CBD18A87BACB /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStats.swift; sourceTree = "<group>"; };
+		E7E5A5921122617505A8B885 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		EC21D147D18B72314B1679FE /* RoundEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundEndView.swift; sourceTree = "<group>"; };
 		F790FAE04832BDE854B55999 /* RulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -139,6 +141,7 @@
 				EC21D147D18B72314B1679FE /* RoundEndView.swift */,
 				F790FAE04832BDE854B55999 /* RulesView.swift */,
 				5B7D0A92474F37BD36528E26 /* SettingsView.swift */,
+				E7E5A5921122617505A8B885 /* SplashView.swift */,
 				594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */,
 			);
 			path = Views;
@@ -253,6 +256,7 @@
 				1ACB2CCA2F8E99500066464D /* RulesView.swift in Sources */,
 				DF9186FE584A702863CB977E /* SettingsView.swift in Sources */,
 				B005B696E92EA36F79C22AFE /* SettingsViewModel.swift in Sources */,
+				230DF22F8A11E1277B4B22C0 /* SplashView.swift in Sources */,
 				D1AF301F019BDFCDC1186071 /* TopBarView.swift in Sources */,
 				663A3EBC06FC606F59A2A553 /* iUnusApp.swift in Sources */,
 			);

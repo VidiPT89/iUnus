@@ -24,12 +24,18 @@ struct MenuView: View {
                     Text(L.t("menu.subtitle"))
                         .font(.subheadline)
                         .foregroundColor(.brandTextSecondary)
+                        .multilineTextAlignment(.center)
 
                     if statsStore.stats.gamesPlayed > 0 {
                         Text("\(String(format: L.t("stats.wins"), statsStore.stats.gamesWon)) · \(String(format: L.t("stats.streak"), statsStore.stats.currentStreak))")
-                            .font(.footnote.weight(.medium))
+                            .font(.footnote.weight(.semibold))
                             .foregroundColor(.brandTextSecondary)
-                            .padding(.top, 4)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.85)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Capsule().fill(Color.brandSurface))
+                            .padding(.top, 10)
                     }
                 }
 
@@ -80,7 +86,10 @@ struct MenuView: View {
         Button(action: action) {
             HStack {
                 Image(systemName: icon)
+                    .frame(width: 20)
                 Text(title)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                 Spacer()
             }
             .font(.subheadline.weight(.medium))

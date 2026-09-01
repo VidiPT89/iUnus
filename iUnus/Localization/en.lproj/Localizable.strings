@@ -85,3 +85,7 @@
 "stats.streak" = "Streak: %d";
 
 "common.back" = "Back";
+
+"splash.developedBy" = "Developed by";
+"splash.website" = "ividi.dev";
+"splash.github" = "@VidiPT89";

@@ -9,31 +9,41 @@ struct CardView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: width * 0.14)
-                .fill(faceDown ? Color.black : card.effectiveColor.displayColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: width * 0.14)
-                        .stroke(Color.white.opacity(0.85), lineWidth: 2.5)
-                        .padding(3)
+            RoundedRectangle(cornerRadius: width * 0.16)
+                .fill(
+                    faceDown
+                        ? AnyShapeStyle(LinearGradient(colors: [Color.black, Color.black.opacity(0.85)], startPoint: .top, endPoint: .bottom))
+                        : AnyShapeStyle(LinearGradient(colors: [card.effectiveColor.displayColor, card.effectiveColor.displayColor.opacity(0.82)], startPoint: .topLeading, endPoint: .bottomTrailing))
                 )
-                .shadow(color: .black.opacity(0.35), radius: 3, x: 0, y: 2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: width * 0.16)
+                        .stroke(Color.white.opacity(0.9), lineWidth: width * 0.035)
+                        .padding(width * 0.045)
+                )
+                .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
+                .shadow(color: .black.opacity(0.18), radius: 1, x: 0, y: 1)
 
             if faceDown {
                 Circle()
                     .fill(Color.brandPrimary)
                     .frame(width: width * 0.5)
+                    .overlay(
+                        Circle().stroke(Color.white.opacity(0.4), lineWidth: 1.5)
+                    )
                     .overlay(Text("iU").font(.system(size: width * 0.22, weight: .heavy, design: .rounded)).foregroundColor(.white))
             } else {
                 Ellipse()
-                    .fill(Color.white.opacity(0.92))
-                    .frame(width: width * 0.62, height: height * 0.42)
-                    .rotationEffect(.degrees(-25))
+                    .fill(Color.white.opacity(0.94))
+                    .frame(width: width * 0.64, height: height * 0.44)
+                    .rotationEffect(.degrees(-22))
+                    .shadow(color: .black.opacity(0.12), radius: 2, x: 0, y: 1)
 
                 Text(card.value.symbol)
                     .font(.system(size: width * 0.34, weight: .heavy, design: .rounded))
                     .foregroundColor(card.effectiveColor.displayColor)
-                    .rotationEffect(.degrees(-25))
+                    .rotationEffect(.degrees(-22))
                     .minimumScaleFactor(0.5)
+                    .lineLimit(1)
 
                 cornerLabel(alignment: .topLeading)
                 cornerLabel(alignment: .bottomTrailing)

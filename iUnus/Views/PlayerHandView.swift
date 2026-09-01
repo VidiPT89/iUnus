@@ -58,6 +58,8 @@ struct OpponentHandView: View {
                 Text(player.name)
                     .font(.caption.weight(.semibold))
                     .foregroundColor(.brandTextPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                 if isThinking && isCurrentTurn {
                     Text(L.t("game.thinking"))
                         .font(.caption2)
