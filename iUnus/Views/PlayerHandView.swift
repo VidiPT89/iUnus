@@ -23,18 +23,13 @@ struct PlayerHandView: View {
                         .opacity(isMyTurn ? (playable ? 1 : 0.55) : 0.85)
                         .animation(.spring(response: 0.35, dampingFraction: 0.7), value: playable)
                         .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
-                        .simultaneousGesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
-                                    guard isMyTurn else { return }
-                                    pressedCardID = card.id
-                                }
-                                .onEnded { _ in pressedCardID = nil }
-                        )
-                        .onTapGesture {
+                        .onLongPressGesture(minimumDuration: 0, maximumDistance: 20, pressing: { pressing in
+                            guard isMyTurn else { return }
+                            pressedCardID = pressing ? card.id : nil
+                        }, perform: {
                             guard isMyTurn else { return }
                             onPlay(card)
-                        }
+                        })
                         .accessibilityAddTraits(.isButton)
                         .accessibilityHint(playable ? L.t("game.cardPlayableHint") : L.t("game.cardUnplayableHint"))
                 }
