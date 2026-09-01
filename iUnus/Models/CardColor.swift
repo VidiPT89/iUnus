@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum CardColor: String, Codable, CaseIterable, Identifiable {
+enum CardColor: String, Codable, CaseIterable, Identifiable, Equatable {
     case red, yellow, green, blue
     case wild
 

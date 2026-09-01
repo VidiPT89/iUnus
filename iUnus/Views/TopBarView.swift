@@ -32,7 +32,7 @@ struct TopBarView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
-                    .background(Capsule().fill(canCallUno ? Color.brandSecondary : Color.gray.opacity(0.4)))
+                    .background(Capsule().fill(canCallUno ? Color.brandSecondary : Color.brandTextSecondary.opacity(0.35)))
             }
             .disabled(!canCallUno)
             .scaleEffect(canCallUno ? 1.0 : 0.94)

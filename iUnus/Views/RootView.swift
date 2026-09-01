@@ -20,6 +20,7 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.35), value: phaseIdentifier)
         .transition(.opacity)
         .preferredColorScheme(settings.theme.colorScheme)
+        .onAppear { viewModel.configure(settings: settings) }
     }
 
     private var phaseIdentifier: Int {

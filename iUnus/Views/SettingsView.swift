@@ -25,6 +25,15 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                 }
+
+                Section(L.t("settings.difficulty")) {
+                    Picker(L.t("settings.difficulty"), selection: $settings.aiDifficulty) {
+                        ForEach(AIDifficulty.allCases) { difficulty in
+                            Text(L.t(difficulty.titleKey)).tag(difficulty)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
             }
             .navigationTitle(L.t("settings.title"))
             .toolbar {

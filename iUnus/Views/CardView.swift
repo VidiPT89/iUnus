@@ -35,23 +35,25 @@ struct CardView: View {
                     .rotationEffect(.degrees(-25))
                     .minimumScaleFactor(0.5)
 
-                cornerLabel
+                cornerLabel(alignment: .topLeading)
+                cornerLabel(alignment: .bottomTrailing)
             }
         }
         .frame(width: width, height: height)
     }
 
-    private var cornerLabel: some View {
-        VStack {
-            HStack {
-                Text(card.value.symbol)
-                    .font(.system(size: width * 0.16, weight: .bold))
-                    .foregroundColor(.white)
-                Spacer()
-            }
-            Spacer()
-        }
-        .padding(width * 0.1)
+    /// Yellow cards need dark corner text to stay readable; every other face color reads fine on white/black text.
+    private var cornerTextColor: Color {
+        card.effectiveColor == .yellow ? .black : .white
+    }
+
+    private func cornerLabel(alignment: Alignment) -> some View {
+        Text(card.value.symbol)
+            .font(.system(size: width * 0.16, weight: .bold))
+            .foregroundColor(cornerTextColor)
+            .rotationEffect(alignment == .bottomTrailing ? .degrees(180) : .degrees(0))
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
+            .padding(width * 0.1)
     }
 }
 

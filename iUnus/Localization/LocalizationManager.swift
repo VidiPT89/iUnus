@@ -26,6 +26,7 @@ final class LocalizationManager: ObservableObject {
 
     private static let storageKey = "app.language.override"
     private var bundle: Bundle = .main
+    private var cachedLanguage: AppLanguage?
 
     private init() {
         let stored = UserDefaults.standard.string(forKey: Self.storageKey)
@@ -39,6 +40,8 @@ final class LocalizationManager: ObservableObject {
     }
 
     private func updateBundle() {
+        guard cachedLanguage != language else { return }
+        cachedLanguage = language
         let code: String
         switch language {
         case .system:

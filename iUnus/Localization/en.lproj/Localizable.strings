@@ -1,6 +1,5 @@
 "menu.title" = "iUnus";
 "menu.subtitle" = "The classic card game";
-"menu.play" = "Play";
 "menu.settings" = "Settings";
 "menu.about" = "About";
 "menu.rules" = "Rules";
@@ -15,6 +14,10 @@
 "settings.theme.dark" = "Dark";
 "settings.theme.system" = "System";
 "settings.done" = "Done";
+"settings.difficulty" = "AI Difficulty";
+"settings.difficulty.easy" = "Easy";
+"settings.difficulty.normal" = "Normal";
+"settings.difficulty.hard" = "Hard";
 
 "about.title" = "About";
 "about.developedBy" = "Developed by";
@@ -23,7 +26,14 @@
 "about.github" = "GitHub";
 
 "rules.title" = "Rules";
-"rules.summary" = "Match the top card of the discard pile by color, number or symbol. Special cards change the flow of the game: Skip passes the turn, Reverse changes direction, Draw Two forces the next player to draw two cards. Wild cards let you choose the color, and Wild Draw Four also forces the next player to draw four cards.\n\nWhen you are down to one card, tap the UNO button before your turn ends — if another player catches you first, you must draw two penalty cards.\n\nThe first player to play all their cards wins the round and scores points based on the cards left in opponents' hands. The first player to reach 500 points wins the game.";
+"rules.turnOrder.title" = "Turn Order";
+"rules.turnOrder.body" = "Play passes around the table. On your turn, match the top card of the discard pile by color, number or symbol, or draw a card if you can't play.";
+"rules.specialCards.title" = "Special Cards";
+"rules.specialCards.body" = "Skip passes the turn. Reverse changes the direction of play. Draw Two forces the next player to draw two cards. Wild lets you choose the color. Wild Draw Four also forces the next player to draw four cards.";
+"rules.unoCall.title" = "Calling UNO";
+"rules.unoCall.body" = "When you are down to one card, tap the UNO button before your turn ends. If another player catches you first, you must draw two penalty cards.";
+"rules.scoring.title" = "Scoring";
+"rules.scoring.body" = "The first player to play all their cards wins the round and scores points based on the cards left in opponents' hands. The first player to reach 500 points wins the game.";
 
 "game.uno" = "UNO!";
 "game.draw" = "Draw";
@@ -33,6 +43,7 @@
 "game.invalidMove" = "You can't play that card";
 "game.unoPenalty" = "Caught! +2 cards";
 "game.deckEmpty" = "Reshuffling deck…";
+"game.catchUno" = "Catch!";
 
 "colorPicker.title" = "Choose a color";
 "color.red" = "Red";

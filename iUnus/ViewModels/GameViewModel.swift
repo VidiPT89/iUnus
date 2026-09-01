@@ -24,6 +24,13 @@ final class GameViewModel: ObservableObject {
     var currentPlayer: Player? { players.indices.contains(currentPlayerIndex) ? players[currentPlayerIndex] : nil }
     var humanPlayer: Player? { players.first(where: { !$0.isAI }) }
 
+    private weak var settings: SettingsViewModel?
+    private var aiDifficulty: AIDifficulty { settings?.aiDifficulty ?? .normal }
+
+    func configure(settings: SettingsViewModel) {
+        self.settings = settings
+    }
+
     func startNewGame(opponentCount: Int) {
         let clamped = max(1, min(3, opponentCount))
         var newPlayers = [Player(name: L.t("player.you"), kind: .human)]
@@ -64,7 +71,25 @@ final class GameViewModel: ObservableObject {
         deck = mutableDeck
         currentPlayerIndex = 0
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { [weak self] in
+        if let starter {
+            switch starter.value {
+            case .skip:
+                currentPlayerIndex = nextIndex(from: 0)
+            case .reverse:
+                direction.toggle()
+                // House rule: with a Reverse starter, the deal "passes back" to the
+                // player before the dealer in the new direction, so the dealer (player 0)
+                // effectively goes first in reversed order.
+                currentPlayerIndex = 0
+            case .drawTwo:
+                forceDraw(count: 2, onPlayerIndex: 0)
+                currentPlayerIndex = nextIndex(from: 0)
+            default:
+                break
+            }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { [weak self] in
             guard let self else { return }
             self.phase = .playing
             self.advanceIfAITurn()
@@ -92,7 +117,7 @@ final class GameViewModel: ObservableObject {
 
         if playedCard.value.isWild {
             if players[playerIndex].isAI {
-                let color = AIStrategy.chooseColor(hand: players[playerIndex].hand, excluding: playedCard)
+                let color = AIStrategy.chooseColor(hand: players[playerIndex].hand, excluding: playedCard, difficulty: aiDifficulty)
                 playedCard.chosenColor = color
                 finalizePlay(playedCard, playerIndex: playerIndex)
             } else {
@@ -116,11 +141,12 @@ final class GameViewModel: ObservableObject {
     }
 
     private func finalizePlay(_ card: Card, playerIndex: Int) {
+        guard players.indices.contains(playerIndex) else { return }
         deck.discard(card)
 
         if players[playerIndex].hand.count == 1 {
             if players[playerIndex].isAI {
-                players[playerIndex].hasCalledUno = AIStrategy.shouldCallUnoImmediately()
+                players[playerIndex].hasCalledUno = AIStrategy.shouldCallUnoImmediately(difficulty: aiDifficulty)
                 if !players[playerIndex].hasCalledUno {
                     pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, deadline: Date().addingTimeInterval(unoCatchWindow))
                 }
@@ -138,6 +164,7 @@ final class GameViewModel: ObservableObject {
     }
 
     private func applyEffectAndAdvance(of card: Card, from playerIndex: Int) {
+        guard players.indices.contains(playerIndex) else { return }
         switch card.value {
         case .skip:
             advanceTurn(steps: 2, from: playerIndex)
@@ -159,12 +186,18 @@ final class GameViewModel: ObservableObject {
     }
 
     private func forceDraw(count: Int, onPlayerIndex: Int) {
+        guard players.indices.contains(onPlayerIndex) else { return }
         for _ in 0..<count {
-            if let c = deck.draw() { players[onPlayerIndex].hand.append(c) }
+            guard let c = deck.draw() else {
+                showToast(L.t("game.deckEmpty"))
+                break
+            }
+            players[onPlayerIndex].hand.append(c)
         }
     }
 
     private func advanceTurn(steps: Int, from index: Int) {
+        guard !players.isEmpty else { return }
         var newIndex = index
         for _ in 0..<steps {
             newIndex = nextIndex(from: newIndex)
@@ -174,6 +207,7 @@ final class GameViewModel: ObservableObject {
 
     private func nextIndex(from index: Int) -> Int {
         let count = players.count
+        guard count > 0 else { return 0 }
         return (index + direction.rawValue + count) % count
     }
 
@@ -185,7 +219,11 @@ final class GameViewModel: ObservableObject {
     }
 
     private func drawForCurrentPlayer() {
-        guard let card = deck.draw() else { return }
+        guard let card = deck.draw() else {
+            showToast(L.t("game.deckEmpty"))
+            return
+        }
+        guard players.indices.contains(currentPlayerIndex) else { return }
         players[currentPlayerIndex].hand.append(card)
         hapticPlay()
         if let top = topCard, card.canPlay(on: top), players[currentPlayerIndex].isAI {
@@ -234,14 +272,14 @@ final class GameViewModel: ObservableObject {
     }
 
     private func performAITurn(index: Int) {
-        guard let top = topCard else { return }
+        guard let top = topCard, players.indices.contains(index) else { return }
         let hand = players[index].hand
         let opponentMin = players.enumerated()
             .filter { $0.offset != index }
             .map { $0.element.hand.count }
             .min() ?? 99
 
-        if let chosen = AIStrategy.chooseCard(hand: hand, topCard: top, opponentLowestCardCount: opponentMin) {
+        if let chosen = AIStrategy.chooseCard(hand: hand, topCard: top, opponentLowestCardCount: opponentMin, difficulty: aiDifficulty) {
             attemptPlay(chosen, playerIndex: index)
         } else {
             drawForCurrentPlayer()
@@ -251,6 +289,7 @@ final class GameViewModel: ObservableObject {
     // MARK: - Round / game end
 
     private func endRound(winnerIndex: Int) {
+        guard players.indices.contains(winnerIndex) else { return }
         roundWinnerID = players[winnerIndex].id
         var points = 0
         for (i, p) in players.enumerated() where i != winnerIndex {

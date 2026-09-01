@@ -3,7 +3,8 @@ import SwiftUI
 struct GameView: View {
     @ObservedObject var viewModel: GameViewModel
     @Namespace private var cardSpace
-    @State private var dealt = false
+    @State private var dealtCardCount = 0
+    @State private var wildFlourishScale: CGFloat = 1.0
     private let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -56,20 +57,91 @@ struct GameView: View {
             ColorPickerSheet { color in viewModel.chooseWildColor(color) }
                 .presentationDetents([.height(280)])
         }
+        .overlay {
+            if viewModel.phase == .dealing {
+                dealingOverlay
+            }
+        }
+        .onChange(of: viewModel.phase) { phase in
+            guard phase == .dealing else { return }
+            runDealingAnimation()
+        }
+        .onAppear {
+            if viewModel.phase == .dealing { runDealingAnimation() }
+        }
+    }
+
+    private var dealingOverlay: some View {
+        GeometryReader { proxy in
+            let center = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
+            let playerCount = max(viewModel.players.count, 1)
+            let totalCards = playerCount * 7
+            let targets = dealTargets(in: proxy.size, playerCount: playerCount)
+
+            ZStack {
+                ForEach(0..<totalCards, id: \.self) { index in
+                    let target = targets[index % playerCount]
+                    let revealed = index < dealtCardCount
+                    CardBackView(width: 34)
+                        .position(revealed ? target : center)
+                        .opacity(revealed ? 1 : 0.001)
+                        .animation(.easeOut(duration: 0.18), value: dealtCardCount)
+                }
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
+    private func dealTargets(in size: CGSize, playerCount: Int) -> [CGPoint] {
+        var points: [CGPoint] = [CGPoint(x: size.width / 2, y: size.height - 90)]
+        let opponentCount = playerCount - 1
+        if opponentCount > 0 {
+            for i in 0..<opponentCount {
+                let fraction = (CGFloat(i) + 1) / CGFloat(opponentCount + 1)
+                points.append(CGPoint(x: size.width * fraction, y: 130))
+            }
+        }
+        return points
+    }
+
+    private func runDealingAnimation() {
+        dealtCardCount = 0
+        let totalCards = max(viewModel.players.count, 1) * 7
+        let stepDelay = totalCards > 0 ? min(1.2 / Double(totalCards), 0.09) : 0.05
+        for i in 0...totalCards {
+            DispatchQueue.main.asyncAfter(deadline: .now() + stepDelay * Double(i)) {
+                dealtCardCount = i
+            }
+        }
     }
 
     private var opponentsRow: some View {
-        HStack(spacing: 8) {
-            ForEach(viewModel.players.filter { $0.isAI }) { player in
-                OpponentHandView(
-                    player: player,
-                    namespace: cardSpace,
-                    isCurrentTurn: viewModel.currentPlayer?.id == player.id,
-                    isThinking: viewModel.isAIThinking
-                )
+        let opponents = viewModel.players.filter { $0.isAI }
+        return GeometryReader { proxy in
+            let baseCardWidth: CGFloat = 40
+            let minSpacing: CGFloat = 8
+            let availableWidth = proxy.size.width - 32
+            let neededWidth = CGFloat(opponents.count) * baseCardWidth + CGFloat(max(opponents.count - 1, 0)) * minSpacing
+            let scale = neededWidth > availableWidth && neededWidth > 0 ? max(availableWidth / neededWidth, 0.55) : 1.0
+
+            HStack(spacing: minSpacing * scale) {
+                ForEach(opponents) { player in
+                    OpponentHandView(
+                        player: player,
+                        namespace: cardSpace,
+                        isCurrentTurn: viewModel.currentPlayer?.id == player.id,
+                        isThinking: viewModel.isAIThinking,
+                        cardWidth: baseCardWidth * scale,
+                        onCatchUno: viewModel.pendingUnoCatch?.playerID == player.id
+                            ? { viewModel.catchFailureToCallUno() }
+                            : nil
+                    )
+                }
             }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
+        .frame(height: 100)
     }
 
     private var pileArea: some View {
@@ -94,11 +166,19 @@ struct GameView: View {
                     .id(top.id)
                     .matchedGeometryEffect(id: top.id, in: cardSpace)
                     .rotationEffect(.degrees(Double.random(in: -6...6)))
+                    .scaleEffect(wildFlourishScale)
+                    .shadow(color: top.effectiveColor.displayColor.opacity(wildFlourishScale > 1.0 ? 0.7 : 0), radius: 12)
                     .transition(.asymmetric(
                         insertion: .scale(scale: 0.4).combined(with: .opacity),
                         removal: .opacity
                     ))
                     .animation(.spring(response: 0.45, dampingFraction: 0.75), value: top.id)
+                    .onChange(of: top.chosenColor) { _ in
+                        wildFlourishScale = 1.25
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.55)) {
+                            wildFlourishScale = 1.0
+                        }
+                    }
             }
         }
     }

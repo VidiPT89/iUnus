@@ -35,6 +35,8 @@ struct Deck {
         return drawPile.removeFirst()
     }
 
+    var canDraw: Bool { !drawPile.isEmpty || discardPile.count > 1 }
+
     mutating func discard(_ card: Card) {
         discardPile.append(card)
     }

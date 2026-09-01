@@ -34,6 +34,12 @@ struct OpponentHandView: View {
     let namespace: Namespace.ID
     let isCurrentTurn: Bool
     let isThinking: Bool
+    var cardWidth: CGFloat = 40
+    var onCatchUno: (() -> Void)? = nil
+
+    private var showsUnoCatch: Bool {
+        onCatchUno != nil && player.hand.count == 1 && !player.hasCalledUno
+    }
 
     var body: some View {
         VStack(spacing: 6) {
@@ -52,16 +58,26 @@ struct OpponentHandView: View {
                         .foregroundColor(.brandSecondary)
                 }
             }
-            HStack(spacing: -34) {
+            HStack(spacing: -cardWidth * 0.85) {
                 ForEach(player.hand) { card in
-                    CardBackView(width: 40)
+                    CardBackView(width: cardWidth)
                         .matchedGeometryEffect(id: card.id, in: namespace)
                 }
             }
-            .frame(height: 60)
+            .frame(height: cardWidth * 1.5)
             Text("\(player.hand.count)")
                 .font(.caption2)
                 .foregroundColor(.brandTextSecondary)
+
+            if showsUnoCatch {
+                Button(action: { onCatchUno?() }) {
+                    Text(L.t("game.catchUno"))
+                        .font(.caption2.weight(.bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 8).padding(.vertical, 4)
+                        .background(Capsule().fill(Color.red))
+                }
+            }
         }
         .padding(8)
         .background(

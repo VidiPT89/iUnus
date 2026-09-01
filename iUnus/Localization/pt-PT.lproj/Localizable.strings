@@ -1,6 +1,5 @@
 "menu.title" = "iUnus";
 "menu.subtitle" = "O clássico jogo de cartas";
-"menu.play" = "Jogar";
 "menu.settings" = "Definições";
 "menu.about" = "Sobre";
 "menu.rules" = "Regras";
@@ -15,6 +14,10 @@
 "settings.theme.dark" = "Escuro";
 "settings.theme.system" = "Sistema";
 "settings.done" = "Concluído";
+"settings.difficulty" = "Dificuldade da IA";
+"settings.difficulty.easy" = "Fácil";
+"settings.difficulty.normal" = "Normal";
+"settings.difficulty.hard" = "Difícil";
 
 "about.title" = "Sobre";
 "about.developedBy" = "Desenvolvido por";
@@ -23,7 +26,14 @@
 "about.github" = "GitHub";
 
 "rules.title" = "Regras";
-"rules.summary" = "Junta a carta do topo da pilha de descarte por cor, número ou símbolo. As cartas especiais alteram o ritmo do jogo: Saltar passa a vez, Inverter muda o sentido, Compra Duas obriga o jogador seguinte a comprar duas cartas. As cartas Curinga permitem escolher a cor, e o Curinga Compra Quatro também obriga o jogador seguinte a comprar quatro cartas.\n\nQuando ficares com apenas uma carta, toca no botão UNO antes de terminares a tua jogada — se outro jogador te apanhar primeiro, tens de comprar duas cartas de penalização.\n\nO primeiro jogador a jogar todas as suas cartas ganha a ronda e soma pontos com base nas cartas que restam aos adversários. O primeiro a atingir 500 pontos vence o jogo.";
+"rules.turnOrder.title" = "Ordem de Jogo";
+"rules.turnOrder.body" = "A vez passa à volta da mesa. Na tua vez, junta a carta do topo da pilha de descarte por cor, número ou símbolo, ou compra uma carta se não puderes jogar.";
+"rules.specialCards.title" = "Cartas Especiais";
+"rules.specialCards.body" = "Saltar passa a vez. Inverter muda o sentido do jogo. Compra Duas obriga o jogador seguinte a comprar duas cartas. Curinga permite escolher a cor. Curinga Compra Quatro também obriga o jogador seguinte a comprar quatro cartas.";
+"rules.unoCall.title" = "Dizer UNO";
+"rules.unoCall.body" = "Quando ficares com apenas uma carta, toca no botão UNO antes de terminares a tua jogada. Se outro jogador te apanhar primeiro, tens de comprar duas cartas de penalização.";
+"rules.scoring.title" = "Pontuação";
+"rules.scoring.body" = "O primeiro jogador a jogar todas as suas cartas ganha a ronda e soma pontos com base nas cartas que restam aos adversários. O primeiro a atingir 500 pontos vence o jogo.";
 
 "game.uno" = "UNO!";
 "game.draw" = "Comprar";
@@ -33,6 +43,7 @@
 "game.invalidMove" = "Não podes jogar essa carta";
 "game.unoPenalty" = "Apanhado! +2 cartas";
 "game.deckEmpty" = "A baralhar novamente…";
+"game.catchUno" = "Apanhar!";
 
 "colorPicker.title" = "Escolhe uma cor";
 "color.red" = "Vermelho";

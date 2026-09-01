@@ -20,11 +20,15 @@ struct AboutView: View {
                     .foregroundColor(.brandTextPrimary)
 
                 VStack(spacing: 14) {
-                    Link(destination: URL(string: "https://ividi.dev/")!) {
-                        linkRow(icon: "globe", title: L.t("about.website"), value: "ividi.dev")
+                    if let websiteURL = URL(string: "https://ividi.dev/") {
+                        Link(destination: websiteURL) {
+                            linkRow(icon: "globe", title: L.t("about.website"), value: "ividi.dev")
+                        }
                     }
-                    Link(destination: URL(string: "https://github.com/VidiPT89/")!) {
-                        linkRow(icon: "chevron.left.slash.chevron.right", title: L.t("about.github"), value: "VidiPT89")
+                    if let githubURL = URL(string: "https://github.com/VidiPT89/") {
+                        Link(destination: githubURL) {
+                            linkRow(icon: "chevron.left.slash.chevron.right", title: L.t("about.github"), value: "VidiPT89")
+                        }
                     }
                 }
                 .padding(.top, 8)

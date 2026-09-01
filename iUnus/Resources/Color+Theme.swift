@@ -31,3 +31,17 @@ enum AppTheme: String, CaseIterable, Identifiable {
         }
     }
 }
+
+enum AIDifficulty: String, CaseIterable, Identifiable {
+    case easy, normal, hard
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .easy: return "settings.difficulty.easy"
+        case .normal: return "settings.difficulty.normal"
+        case .hard: return "settings.difficulty.hard"
+        }
+    }
+}
