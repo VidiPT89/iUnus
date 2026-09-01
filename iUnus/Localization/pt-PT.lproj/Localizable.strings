@@ -43,13 +43,32 @@
 "game.invalidMove" = "Não podes jogar essa carta";
 "game.unoPenalty" = "Apanhado! +2 cartas";
 "game.deckEmpty" = "A baralhar novamente…";
+"game.deckExhausted" = "Sem cartas para comprar — vez passada";
 "game.catchUno" = "Apanhar!";
+"game.quit" = "Sair do jogo";
+"game.quitHint" = "Volta ao menu principal";
+"game.unoHint" = "Diz UNO quando tiveres apenas uma carta";
+"game.drawPile" = "Baralho para comprar";
+"game.drawPileHint" = "Compra uma carta do baralho";
+"game.discardPile" = "Pilha de descarte";
+"game.cardPlayableHint" = "Toca duas vezes para jogar esta carta";
+"game.cardUnplayableHint" = "Esta carta não pode ser jogada agora";
 
 "colorPicker.title" = "Escolhe uma cor";
 "color.red" = "Vermelho";
 "color.yellow" = "Amarelo";
 "color.green" = "Verde";
 "color.blue" = "Azul";
+"color.wild" = "Curinga";
+
+"card.value.number" = "%d";
+"card.value.skip" = "Saltar";
+"card.value.reverse" = "Inverter";
+"card.value.drawTwo" = "Compra Duas";
+"card.value.wild" = "Curinga";
+"card.value.wildDrawFour" = "Curinga Compra Quatro";
+"card.label" = "%@ %@";
+"card.faceDown" = "Carta virada para baixo";
 
 "player.you" = "Tu";
 "player.opponent" = "Adversário %d";

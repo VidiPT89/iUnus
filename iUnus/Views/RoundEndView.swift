@@ -22,7 +22,7 @@ struct RoundEndView: View {
                     .font(.title3.weight(.semibold))
                     .foregroundColor(.brandTextPrimary)
 
-                Text(String(format: L.t("roundEnd.pointsEarned"), viewModel.lastRoundPoints))
+                CountUpText(format: L.t("roundEnd.pointsEarned"), value: viewModel.lastRoundPoints)
                     .font(.headline)
                     .foregroundColor(.brandSecondary)
 
@@ -34,7 +34,7 @@ struct RoundEndView: View {
                         HStack {
                             Text(player.name)
                             Spacer()
-                            Text("\(player.totalScore)")
+                            CountUpText(value: player.totalScore)
                                 .fontWeight(.semibold)
                         }
                         .font(.subheadline)
@@ -61,5 +61,26 @@ struct RoundEndView: View {
                 .padding(.bottom, 40)
             }
         }
+    }
+}
+
+/// Animates a displayed integer counting up from 0 to `value` over a fixed duration.
+struct CountUpText: View {
+    var format: String? = nil
+    let value: Int
+    var duration: TimeInterval = 1.0
+
+    @State private var startDate = Date()
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            let elapsed = timeline.date.timeIntervalSince(startDate)
+            let progress = min(max(elapsed / duration, 0), 1)
+            let eased = 1 - pow(1 - progress, 3)
+            let displayed = Int((Double(value) * eased).rounded())
+            Text(format.map { String(format: $0, displayed) } ?? "\(displayed)")
+                .monospacedDigit()
+        }
+        .onAppear { startDate = Date() }
     }
 }

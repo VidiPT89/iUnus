@@ -1,7 +1,9 @@
 import Foundation
 import Combine
 import UIKit
+import AudioToolbox
 
+@MainActor
 final class GameViewModel: ObservableObject {
     @Published private(set) var players: [Player] = []
     @Published private(set) var deck = Deck()
@@ -15,6 +17,7 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var gameWinnerID: UUID?
     @Published private(set) var lastRoundPoints: Int = 0
     @Published private(set) var isAIThinking: Bool = false
+    @Published private(set) var justDrawnCard: Card?
 
     static let targetScore = 500
     private let unoCatchWindow: TimeInterval = 3.0
@@ -69,6 +72,7 @@ final class GameViewModel: ObservableObject {
         }
         if let starter { mutableDeck.startDiscard(with: starter) }
         deck = mutableDeck
+        for i in players.indices { players[i].hand.sortForDisplay() }
         currentPlayerIndex = 0
 
         if let starter {
@@ -77,10 +81,10 @@ final class GameViewModel: ObservableObject {
                 currentPlayerIndex = nextIndex(from: 0)
             case .reverse:
                 direction.toggle()
-                // House rule: with a Reverse starter, the deal "passes back" to the
-                // player before the dealer in the new direction, so the dealer (player 0)
-                // effectively goes first in reversed order.
-                currentPlayerIndex = 0
+                // House rule: same as a Reverse played mid-round — with only 2 players
+                // this acts as a Skip, and with 3+ the dealer (player 0) is skipped so
+                // the next player in the new (counter-clockwise) direction goes first.
+                currentPlayerIndex = nextIndex(from: 0)
             case .drawTwo:
                 forceDraw(count: 2, onPlayerIndex: 0)
                 currentPlayerIndex = nextIndex(from: 0)
@@ -104,6 +108,7 @@ final class GameViewModel: ObservableObject {
     }
 
     private func attemptPlay(_ card: Card, playerIndex: Int) {
+        guard players.indices.contains(playerIndex) else { return }
         guard let top = topCard else { return }
         guard let handIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
         guard card.canPlay(on: top) else {
@@ -113,6 +118,7 @@ final class GameViewModel: ObservableObject {
 
         var playedCard = players[playerIndex].hand.remove(at: handIndex)
         hapticPlay()
+        playCardSound()
         lastMove = LastMove(card: playedCard, playerID: players[playerIndex].id)
 
         if playedCard.value.isWild {
@@ -188,12 +194,13 @@ final class GameViewModel: ObservableObject {
     private func forceDraw(count: Int, onPlayerIndex: Int) {
         guard players.indices.contains(onPlayerIndex) else { return }
         for _ in 0..<count {
-            guard let c = deck.draw() else {
-                showToast(L.t("game.deckEmpty"))
+            guard deck.canDraw, let c = deck.draw() else {
+                showToast(L.t("game.deckExhausted"))
                 break
             }
             players[onPlayerIndex].hand.append(c)
         }
+        players[onPlayerIndex].hand.sortForDisplay()
     }
 
     private func advanceTurn(steps: Int, from index: Int) {
@@ -219,13 +226,22 @@ final class GameViewModel: ObservableObject {
     }
 
     private func drawForCurrentPlayer() {
-        guard let card = deck.draw() else {
-            showToast(L.t("game.deckEmpty"))
+        guard players.indices.contains(currentPlayerIndex) else { return }
+        guard deck.canDraw, let card = deck.draw() else {
+            showToast(L.t("game.deckExhausted"))
+            advanceTurn(steps: 1, from: currentPlayerIndex)
+            advanceIfAITurn()
             return
         }
-        guard players.indices.contains(currentPlayerIndex) else { return }
         players[currentPlayerIndex].hand.append(card)
+        players[currentPlayerIndex].hand.sortForDisplay()
         hapticPlay()
+        playDrawSound()
+        justDrawnCard = card
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+            guard let self, self.justDrawnCard?.id == card.id else { return }
+            self.justDrawnCard = nil
+        }
         if let top = topCard, card.canPlay(on: top), players[currentPlayerIndex].isAI {
             attemptPlay(card, playerIndex: currentPlayerIndex)
         } else {
@@ -302,6 +318,7 @@ final class GameViewModel: ObservableObject {
 
         if players[winnerIndex].totalScore >= Self.targetScore {
             gameWinnerID = players[winnerIndex].id
+            playWinSound()
         }
     }
 
@@ -340,4 +357,14 @@ final class GameViewModel: ObservableObject {
     private func hapticSuccess() {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
+
+    /// Short, non-intrusive feedback using built-in iOS system sound IDs — no bundled
+    /// audio assets required, keeping the project free of binary sound files.
+    private func playSystemSound(_ id: UInt32) {
+        AudioServicesPlaySystemSound(SystemSoundID(id))
+    }
+
+    private func playCardSound() { playSystemSound(1104) }
+    private func playDrawSound() { playSystemSound(1103) }
+    private func playWinSound() { playSystemSound(1025) }
 }

@@ -17,33 +17,43 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 }
 
+@MainActor
 final class LocalizationManager: ObservableObject {
-    static let shared = LocalizationManager()
+    nonisolated(unsafe) static let shared = MainActor.assumeIsolated { LocalizationManager() }
 
     @Published var language: AppLanguage {
-        didSet { UserDefaults.standard.set(language.rawValue, forKey: Self.storageKey) }
+        didSet {
+            UserDefaults.standard.set(language.rawValue, forKey: Self.storageKey)
+            currentLanguage = language
+            updateBundle()
+        }
     }
 
     private static let storageKey = "app.language.override"
-    private var bundle: Bundle = .main
-    private var cachedLanguage: AppLanguage?
+    // Mirrors `language` outside main-actor isolation so `string(_:)` can stay nonisolated,
+    // letting plain model types (e.g. `Card.accessibilityLabel`) look up localized strings
+    // synchronously without hopping to the main actor; this app is effectively single-threaded.
+    private nonisolated(unsafe) var currentLanguage: AppLanguage = .system
+    private nonisolated(unsafe) var bundle: Bundle = .main
+    private nonisolated(unsafe) var cachedLanguage: AppLanguage?
 
     private init() {
         let stored = UserDefaults.standard.string(forKey: Self.storageKey)
-        language = AppLanguage(rawValue: stored ?? "system") ?? .system
+        let initial = AppLanguage(rawValue: stored ?? "system") ?? .system
+        language = initial
+        currentLanguage = initial
         updateBundle()
     }
 
     func setLanguage(_ language: AppLanguage) {
         self.language = language
-        updateBundle()
     }
 
-    private func updateBundle() {
-        guard cachedLanguage != language else { return }
-        cachedLanguage = language
+    private nonisolated func updateBundle() {
+        guard cachedLanguage != currentLanguage else { return }
+        cachedLanguage = currentLanguage
         let code: String
-        switch language {
+        switch currentLanguage {
         case .system:
             bundle = .main
             return
@@ -60,7 +70,7 @@ final class LocalizationManager: ObservableObject {
         }
     }
 
-    func string(_ key: String) -> String {
+    nonisolated func string(_ key: String) -> String {
         updateBundle()
         return NSLocalizedString(key, bundle: bundle, comment: "")
     }

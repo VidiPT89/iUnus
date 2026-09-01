@@ -5,22 +5,38 @@ struct PlayerHandView: View {
     let topCard: Card?
     let isMyTurn: Bool
     let namespace: Namespace.ID
+    var justDrawnCardID: UUID? = nil
     let onPlay: (Card) -> Void
+
+    @State private var pressedCardID: UUID?
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: -18) {
                 ForEach(cards) { card in
                     let playable = isMyTurn && topCard.map { card.canPlay(on: $0) } ?? false
+                    let isPressed = pressedCardID == card.id
                     CardView(card: card, width: 78)
-                        .matchedGeometryEffect(id: card.id, in: namespace)
+                        .matchedGeometryEffect(id: card.id, in: namespace, isSource: card.id != justDrawnCardID)
                         .offset(y: playable ? -14 : 0)
+                        .scaleEffect(isPressed ? 0.92 : 1.0)
                         .opacity(isMyTurn ? (playable ? 1 : 0.55) : 0.85)
                         .animation(.spring(response: 0.35, dampingFraction: 0.7), value: playable)
+                        .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
+                        .simultaneousGesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { _ in
+                                    guard isMyTurn else { return }
+                                    pressedCardID = card.id
+                                }
+                                .onEnded { _ in pressedCardID = nil }
+                        )
                         .onTapGesture {
                             guard isMyTurn else { return }
                             onPlay(card)
                         }
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityHint(playable ? L.t("game.cardPlayableHint") : L.t("game.cardUnplayableHint"))
                 }
             }
             .padding(.horizontal, 24)

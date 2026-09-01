@@ -40,6 +40,8 @@ struct CardView: View {
             }
         }
         .frame(width: width, height: height)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(faceDown ? L.t("card.faceDown") : card.accessibilityLabel)
     }
 
     /// Yellow cards need dark corner text to stay readable; every other face color reads fine on white/black text.
@@ -50,6 +52,8 @@ struct CardView: View {
     private func cornerLabel(alignment: Alignment) -> some View {
         Text(card.value.symbol)
             .font(.system(size: width * 0.16, weight: .bold))
+            .minimumScaleFactor(0.5)
+            .lineLimit(1)
             .foregroundColor(cornerTextColor)
             .rotationEffect(alignment == .bottomTrailing ? .degrees(180) : .degrees(0))
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)

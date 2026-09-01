@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class SettingsViewModel: ObservableObject {
     @Published var theme: AppTheme {
         didSet { UserDefaults.standard.set(theme.rawValue, forKey: Self.themeKey) }

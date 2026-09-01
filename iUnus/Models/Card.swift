@@ -16,6 +16,27 @@ struct Card: Identifiable, Equatable, Codable, Hashable {
 
     var effectiveColor: CardColor { chosenColor ?? color }
 
+    var accessibilityLabel: String {
+        let colorKey: String
+        switch effectiveColor {
+        case .red: colorKey = "color.red"
+        case .yellow: colorKey = "color.yellow"
+        case .green: colorKey = "color.green"
+        case .blue: colorKey = "color.blue"
+        case .wild: colorKey = "color.wild"
+        }
+        let valueKey: String
+        switch value {
+        case .number(let n): return String(format: L.t("card.label"), L.t(colorKey), String(n))
+        case .skip: valueKey = "card.value.skip"
+        case .reverse: valueKey = "card.value.reverse"
+        case .drawTwo: valueKey = "card.value.drawTwo"
+        case .wild: return L.t("card.value.wild")
+        case .wildDrawFour: return L.t("card.value.wildDrawFour")
+        }
+        return String(format: L.t("card.label"), L.t(colorKey), L.t(valueKey))
+    }
+
     func canPlay(on topCard: Card) -> Bool {
         if value.isWild { return true }
         if effectiveColor == topCard.effectiveColor { return true }
@@ -24,4 +45,32 @@ struct Card: Identifiable, Equatable, Codable, Hashable {
     }
 
     static func == (lhs: Card, rhs: Card) -> Bool { lhs.id == rhs.id }
+
+    /// Stable sort key: color group first (wilds last), then value within color.
+    private var sortKey: (Int, Int) {
+        let colorOrder: [CardColor: Int] = [.red: 0, .yellow: 1, .green: 2, .blue: 3, .wild: 4]
+        let colorRank = colorOrder[color] ?? 4
+        let valueRank: Int
+        switch value {
+        case .number(let n): valueRank = n
+        case .skip: valueRank = 10
+        case .reverse: valueRank = 11
+        case .drawTwo: valueRank = 12
+        case .wild: valueRank = 13
+        case .wildDrawFour: valueRank = 14
+        }
+        return (colorRank, valueRank)
+    }
+
+    static func displayOrder(_ lhs: Card, _ rhs: Card) -> Bool {
+        let l = lhs.sortKey
+        let r = rhs.sortKey
+        return l.0 != r.0 ? l.0 < r.0 : l.1 < r.1
+    }
+}
+
+extension Array where Element == Card {
+    mutating func sortForDisplay() {
+        sort(by: Card.displayOrder)
+    }
 }

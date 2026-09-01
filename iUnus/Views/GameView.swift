@@ -16,6 +16,7 @@ struct GameView: View {
                     turnText: turnText,
                     isHumanTurn: isHumanTurn,
                     canCallUno: canCallUno,
+                    direction: viewModel.direction,
                     onUnoTapped: { if let id = viewModel.humanPlayer?.id { viewModel.callUno(playerID: id) } },
                     onQuit: { viewModel.returnToMenu() }
                 )
@@ -35,6 +36,7 @@ struct GameView: View {
                         topCard: viewModel.topCard,
                         isMyTurn: isHumanTurn && viewModel.phase == .playing,
                         namespace: cardSpace,
+                        justDrawnCardID: viewModel.justDrawnCard?.id,
                         onPlay: { viewModel.humanPlay($0) }
                     )
                 }
@@ -160,6 +162,16 @@ struct GameView: View {
                     )
             }
             .disabled(!(isHumanTurn && viewModel.phase == .playing))
+            .accessibilityLabel(L.t("game.drawPile"))
+            .accessibilityHint(L.t("game.drawPileHint"))
+            .overlay {
+                if let drawn = viewModel.justDrawnCard, viewModel.humanPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
+                    CardView(card: drawn, width: 78)
+                        .matchedGeometryEffect(id: drawn.id, in: cardSpace, isSource: true)
+                        .allowsHitTesting(false)
+                        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: viewModel.justDrawnCard?.id)
+                }
+            }
 
             if let top = viewModel.topCard {
                 CardView(card: top, width: 84)
