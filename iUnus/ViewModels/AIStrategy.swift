@@ -80,6 +80,19 @@ enum AIStrategy {
         return counts.max(by: { $0.value < $1.value })?.key ?? .red
     }
 
+    /// Picks a card to answer an active house-rule +2/+4 stack, or nil if the AI must draw the pile.
+    /// Easy AI takes any stackable card at random; normal/hard prefer the biggest penalty (Wild Draw
+    /// Four over Draw Two) to pass the largest possible pile on to the next player.
+    static func chooseStackCard(hand: [Card], difficulty: AIDifficulty = .normal) -> Card? {
+        let stackable = hand.filter { $0.value.drawPenaltyAmount != nil }
+        guard !stackable.isEmpty else { return nil }
+
+        if difficulty == .easy {
+            return stackable.randomElement()
+        }
+        return stackable.max(by: { ($0.value.drawPenaltyAmount ?? 0) < ($1.value.drawPenaltyAmount ?? 0) })
+    }
+
     static func shouldCallUnoImmediately(difficulty: AIDifficulty = .normal) -> Bool {
         switch difficulty {
         case .easy: return Double.random(in: 0...1) < 0.5

@@ -17,6 +17,7 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var lastRoundPoints: Int = 0
     @Published private(set) var isAIThinking: Bool = false
     @Published private(set) var justDrawnCard: Card?
+    @Published private(set) var pendingDrawStack: Int = 0
 
     static let targetScore = 500
     private let unoCatchWindow: TimeInterval = 3.0
@@ -28,6 +29,7 @@ final class GameViewModel: ObservableObject {
 
     private weak var settings: SettingsViewModel?
     private var aiDifficulty: AIDifficulty { settings?.aiDifficulty ?? .normal }
+    private var houseRulesActive: Bool { settings?.ruleSet == .houseRules }
 
     func configure(settings: SettingsViewModel) {
         self.settings = settings
@@ -48,6 +50,7 @@ final class GameViewModel: ObservableObject {
         deck = Deck()
         direction = .clockwise
         pendingUnoCatch = nil
+        pendingDrawStack = 0
         roundWinnerID = nil
         for i in players.indices {
             players[i].hand = []
@@ -109,7 +112,11 @@ final class GameViewModel: ObservableObject {
         guard players.indices.contains(playerIndex) else { return }
         guard let top = topCard else { return }
         guard let handIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
-        guard card.canPlay(on: top) else {
+
+        // Facing an active house-rule stack, only another +2/+4 may answer — its color
+        // doesn't need to match, it just needs to be a Draw Two or Wild Draw Four.
+        let isLegal = pendingDrawStack > 0 ? card.value.drawPenaltyAmount != nil : card.canPlay(on: top)
+        guard isLegal else {
             if !players[playerIndex].isAI { hapticError(); showToast(L.t("game.invalidMove")) }
             return
         }
@@ -174,14 +181,19 @@ final class GameViewModel: ObservableObject {
         case .reverse:
             direction.toggle()
             advanceTurn(steps: players.count == 2 ? 2 : 1, from: playerIndex)
-        case .drawTwo:
-            advanceTurn(steps: 1, from: playerIndex)
-            forceDraw(count: 2, onPlayerIndex: currentPlayerIndex)
-            advanceTurn(steps: 1, from: currentPlayerIndex)
-        case .wildDrawFour:
-            advanceTurn(steps: 1, from: playerIndex)
-            forceDraw(count: 4, onPlayerIndex: currentPlayerIndex)
-            advanceTurn(steps: 1, from: currentPlayerIndex)
+        case .drawTwo, .wildDrawFour:
+            let amount = card.value.drawPenaltyAmount ?? 0
+            if houseRulesActive {
+                // Accumulate onto any pending stack rather than resolving it immediately,
+                // so the next player gets the chance to answer with another +2/+4.
+                pendingDrawStack += amount
+                advanceTurn(steps: 1, from: playerIndex)
+                showToast(String(format: L.t("game.stackPending"), pendingDrawStack))
+            } else {
+                advanceTurn(steps: 1, from: playerIndex)
+                forceDraw(count: amount, onPlayerIndex: currentPlayerIndex)
+                advanceTurn(steps: 1, from: currentPlayerIndex)
+            }
         default:
             advanceTurn(steps: 1, from: playerIndex)
         }
@@ -224,6 +236,10 @@ final class GameViewModel: ObservableObject {
 
     private func drawForCurrentPlayer() {
         guard players.indices.contains(currentPlayerIndex) else { return }
+        if pendingDrawStack > 0 {
+            drawPendingStack()
+            return
+        }
         guard deck.canDraw, let card = deck.draw() else {
             showToast(L.t("game.deckExhausted"))
             advanceTurn(steps: 1, from: currentPlayerIndex)
@@ -245,6 +261,19 @@ final class GameViewModel: ObservableObject {
             advanceTurn(steps: 1, from: currentPlayerIndex)
             advanceIfAITurn()
         }
+    }
+
+    /// Resolves an active house-rule stack for the current player: they had no +2/+4 to
+    /// answer with, so they take the whole accumulated pile in one safe (reshuffle-aware) draw.
+    private func drawPendingStack() {
+        guard players.indices.contains(currentPlayerIndex) else { return }
+        let amount = pendingDrawStack
+        pendingDrawStack = 0
+        forceDraw(count: amount, onPlayerIndex: currentPlayerIndex)
+        if !players[currentPlayerIndex].isAI { hapticError() }
+        showToast(String(format: L.t("game.stackDrawn"), amount))
+        advanceTurn(steps: 1, from: currentPlayerIndex)
+        advanceIfAITurn()
     }
 
     // MARK: - UNO call
@@ -287,6 +316,16 @@ final class GameViewModel: ObservableObject {
     private func performAITurn(index: Int) {
         guard let top = topCard, players.indices.contains(index) else { return }
         let hand = players[index].hand
+
+        if pendingDrawStack > 0 {
+            if let stackCard = AIStrategy.chooseStackCard(hand: hand, difficulty: aiDifficulty) {
+                attemptPlay(stackCard, playerIndex: index)
+            } else {
+                drawForCurrentPlayer()
+            }
+            return
+        }
+
         let opponentMin = players.enumerated()
             .filter { $0.offset != index }
             .map { $0.element.hand.count }

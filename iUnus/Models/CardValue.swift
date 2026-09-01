@@ -15,6 +15,15 @@ enum CardValue: Equatable, Codable, Hashable {
         }
     }
 
+    /// The draw amount if this is a stackable penalty card (Draw Two / Wild Draw Four), else nil.
+    var drawPenaltyAmount: Int? {
+        switch self {
+        case .drawTwo: return 2
+        case .wildDrawFour: return 4
+        default: return nil
+        }
+    }
+
     var scoreValue: Int {
         switch self {
         case .number(let n): return n

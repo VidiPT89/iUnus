@@ -18,6 +18,11 @@
 "settings.difficulty.easy" = "Easy";
 "settings.difficulty.normal" = "Normal";
 "settings.difficulty.hard" = "Hard";
+"settings.ruleSet" = "Rule Set";
+"settings.ruleSet.official" = "Official";
+"settings.ruleSet.official.subtitle" = "Draw Two and Wild Draw Four can't be stacked — the hit player draws immediately and loses their turn.";
+"settings.ruleSet.houseRules" = "House Rules";
+"settings.ruleSet.houseRules.subtitle" = "Draw Two and Wild Draw Four can be stacked on each other, passing the penalty on. Whoever can't stack draws the whole pile.";
 
 "about.title" = "About";
 "about.developedBy" = "Developed by";
@@ -43,6 +48,9 @@
 "game.invalidMove" = "You can't play that card";
 "game.unoPenalty" = "Caught! +2 cards";
 "game.deckExhausted" = "No cards left to draw — turn passed";
+"game.stackPending" = "Draw %d pending — stack another +2/+4 or draw";
+"game.stackDrawn" = "No stack to play — drew %d cards";
+"game.stackBadge" = "+%d pending";
 "game.catchUno" = "Catch!";
 "game.quit" = "Quit game";
 "game.quitHint" = "Returns to the main menu";

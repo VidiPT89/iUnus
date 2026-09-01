@@ -34,6 +34,19 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                 }
+
+                Section(L.t("settings.ruleSet")) {
+                    Picker(L.t("settings.ruleSet"), selection: $settings.ruleSet) {
+                        ForEach(RuleSet.allCases) { ruleSet in
+                            Text(L.t(ruleSet.titleKey)).tag(ruleSet)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    Text(L.t(settings.ruleSet.subtitleKey))
+                        .font(.footnote)
+                        .foregroundColor(.brandTextSecondary)
+                }
             }
             .navigationTitle(L.t("settings.title"))
             .toolbar {

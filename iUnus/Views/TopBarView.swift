@@ -5,6 +5,7 @@ struct TopBarView: View {
     let isHumanTurn: Bool
     let canCallUno: Bool
     let direction: TurnDirection
+    let pendingDrawStack: Int
     let onUnoTapped: () -> Void
     let onQuit: () -> Void
 
@@ -38,6 +39,16 @@ struct TopBarView: View {
             .padding(.vertical, 6)
             .background(Capsule().fill(Color.brandSurface))
             .accessibilityElement(children: .combine)
+
+            if pendingDrawStack > 0 {
+                Text(String(format: L.t("game.stackBadge"), pendingDrawStack))
+                    .font(.caption.weight(.bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Capsule().fill(Color.red))
+                    .transition(.scale.combined(with: .opacity))
+            }
 
             Spacer()
 

@@ -17,10 +17,12 @@ struct GameView: View {
                     isHumanTurn: isHumanTurn,
                     canCallUno: canCallUno,
                     direction: viewModel.direction,
+                    pendingDrawStack: viewModel.pendingDrawStack,
                     onUnoTapped: { if let id = viewModel.humanPlayer?.id { viewModel.callUno(playerID: id) } },
                     onQuit: { viewModel.returnToMenu() }
                 )
                 .padding(.top, 8)
+                .animation(.spring(response: 0.35, dampingFraction: 0.7), value: viewModel.pendingDrawStack)
 
                 opponentsRow
 

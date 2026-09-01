@@ -18,6 +18,11 @@
 "settings.difficulty.easy" = "Fácil";
 "settings.difficulty.normal" = "Normal";
 "settings.difficulty.hard" = "Difícil";
+"settings.ruleSet" = "Conjunto de Regras";
+"settings.ruleSet.official" = "Regras Oficiais";
+"settings.ruleSet.official.subtitle" = "Compra Duas e Curinga Compra Quatro não podem ser acumuladas — quem é atingido compra logo as cartas e perde a vez.";
+"settings.ruleSet.houseRules" = "Regras de Casa";
+"settings.ruleSet.houseRules.subtitle" = "Compra Duas e Curinga Compra Quatro podem ser acumuladas entre si, passando a penalização adiante. Quem não conseguir acumular compra a pilha toda.";
 
 "about.title" = "Sobre";
 "about.developedBy" = "Desenvolvido por";
@@ -43,6 +48,9 @@
 "game.invalidMove" = "Não podes jogar essa carta";
 "game.unoPenalty" = "Apanhado! +2 cartas";
 "game.deckExhausted" = "Sem cartas para comprar — vez passada";
+"game.stackPending" = "%d cartas pendentes — acumula outra +2/+4 ou compra";
+"game.stackDrawn" = "Sem carta para acumular — comprou %d cartas";
+"game.stackBadge" = "+%d pendentes";
 "game.catchUno" = "Apanhar!";
 "game.quit" = "Sair do jogo";
 "game.quitHint" = "Volta ao menu principal";

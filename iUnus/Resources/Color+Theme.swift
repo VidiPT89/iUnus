@@ -45,3 +45,23 @@ enum AIDifficulty: String, CaseIterable, Identifiable {
         }
     }
 }
+
+enum RuleSet: String, CaseIterable, Identifiable {
+    case official, houseRules
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .official: return "settings.ruleSet.official"
+        case .houseRules: return "settings.ruleSet.houseRules"
+        }
+    }
+
+    var subtitleKey: String {
+        switch self {
+        case .official: return "settings.ruleSet.official.subtitle"
+        case .houseRules: return "settings.ruleSet.houseRules.subtitle"
+        }
+    }
+}
