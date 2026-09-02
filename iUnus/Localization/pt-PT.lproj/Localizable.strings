@@ -28,9 +28,9 @@
 "settings.aiSpeed.normal" = "Normal";
 "settings.aiSpeed.fast" = "Rápida";
 "settings.ruleSet" = "Conjunto de Regras";
-"settings.ruleSet.official" = "Regras Oficiais";
+"settings.ruleSet.official" = "Regras Atuais";
 "settings.ruleSet.official.subtitle" = "Compra Duas e Curinga Compra Quatro não podem ser acumuladas — quem é atingido compra logo as cartas e perde a vez.";
-"settings.ruleSet.houseRules" = "Regras de Casa";
+"settings.ruleSet.houseRules" = "Regras Clássicas (Anos 2000)";
 "settings.ruleSet.houseRules.subtitle" = "Compra Duas e Curinga Compra Quatro podem ser acumuladas entre si, passando a penalização adiante. Quem não conseguir acumular compra a pilha toda. Se não tiveres nenhuma carta jogável, continuas a comprar até saíres com uma. A ronda também continua depois de alguém ficar sem cartas, até restar apenas um jogador com cartas na mão.";
 
 "about.title" = "Sobre";

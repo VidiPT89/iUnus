@@ -28,9 +28,9 @@
 "settings.aiSpeed.normal" = "Normal";
 "settings.aiSpeed.fast" = "Fast";
 "settings.ruleSet" = "Rule Set";
-"settings.ruleSet.official" = "Official";
+"settings.ruleSet.official" = "Current Rules";
 "settings.ruleSet.official.subtitle" = "Draw Two and Wild Draw Four can't be stacked — the hit player draws immediately and loses their turn.";
-"settings.ruleSet.houseRules" = "House Rules";
+"settings.ruleSet.houseRules" = "Classic (2000s)";
 "settings.ruleSet.houseRules.subtitle" = "Draw Two and Wild Draw Four can be stacked on each other, passing the penalty on. Whoever can't stack draws the whole pile. If you have no playable card, you keep drawing until you get one. The round also keeps going after a hand empties, until only one player is left holding cards.";
 
 "about.title" = "About";
