@@ -6,6 +6,9 @@
 "menu.players" = "Adversários";
 "menu.startGame" = "Iniciar Jogo";
 "menu.continueGame" = "Continuar Jogo";
+"menu.multiplayer" = "Multijogador";
+"menu.multiplayer.signInTitle" = "Iniciar Sessão no Game Center";
+"menu.multiplayer.signInMessage" = "Inicia sessão no Game Center nas Definições para jogares online com amigos.";
 
 "settings.title" = "Definições";
 "settings.language" = "Idioma";

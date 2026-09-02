@@ -3,6 +3,8 @@ import SwiftUI
 struct RootView: View {
     @StateObject private var viewModel = GameViewModel()
     @EnvironmentObject private var settings: SettingsViewModel
+    @EnvironmentObject private var gameCenterManager: GameCenterManager
+    @EnvironmentObject private var onlineMatchCoordinator: OnlineMatchCoordinator
     @State private var showSplash = true
 
     var body: some View {
@@ -29,7 +31,22 @@ struct RootView: View {
             }
         }
         .preferredColorScheme(settings.theme.colorScheme)
-        .onAppear { viewModel.configure(settings: settings) }
+        .onAppear {
+            viewModel.configure(settings: settings)
+            onlineMatchCoordinator.attach(gameViewModel: viewModel)
+            gameCenterManager.authenticate()
+        }
+        .background {
+            if let authViewController = gameCenterManager.authViewController {
+                GameKitViewControllerPresenter(viewController: authViewController)
+            }
+        }
+        .fullScreenCover(isPresented: $onlineMatchCoordinator.isPresentingMatchmaker) {
+            TurnBasedMatchmakerView(minPlayers: 2, maxPlayers: 4) {
+                onlineMatchCoordinator.isPresentingMatchmaker = false
+            }
+            .ignoresSafeArea()
+        }
     }
 
     private var phaseIdentifier: Int {

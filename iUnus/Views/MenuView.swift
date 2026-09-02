@@ -3,10 +3,13 @@ import SwiftUI
 struct MenuView: View {
     @ObservedObject var viewModel: GameViewModel
     @ObservedObject private var statsStore = MatchStatsStore.shared
+    @EnvironmentObject private var gameCenterManager: GameCenterManager
+    @EnvironmentObject private var onlineMatchCoordinator: OnlineMatchCoordinator
     @State private var opponentCount = 2
     @State private var showSettings = false
     @State private var showAbout = false
     @State private var showRules = false
+    @State private var showSignInAlert = false
 
     var body: some View {
         ZStack {
@@ -31,6 +34,7 @@ struct MenuView: View {
                 }
 
                 VStack(spacing: 12) {
+                    menuButton(L.t("menu.multiplayer"), icon: "network") { openMultiplayer() }
                     menuButton(L.t("menu.rules"), icon: "book.closed.fill") { showRules = true }
                     menuButton(L.t("menu.settings"), icon: "gearshape.fill") { showSettings = true }
                     menuButton(L.t("menu.about"), icon: "info.circle.fill") { showAbout = true }
@@ -44,6 +48,20 @@ struct MenuView: View {
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showAbout) { AboutView() }
         .sheet(isPresented: $showRules) { RulesView() }
+        .alert(L.t("menu.multiplayer.signInTitle"), isPresented: $showSignInAlert) {
+            Button(L.t("settings.done"), role: .cancel) {}
+        } message: {
+            Text(L.t("menu.multiplayer.signInMessage"))
+        }
+    }
+
+    private func openMultiplayer() {
+        guard gameCenterManager.isAuthenticated else {
+            gameCenterManager.authenticate()
+            showSignInAlert = true
+            return
+        }
+        onlineMatchCoordinator.isPresentingMatchmaker = true
     }
 
     private var titleBlock: some View {

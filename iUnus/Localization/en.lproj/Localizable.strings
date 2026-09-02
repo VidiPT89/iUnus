@@ -6,6 +6,9 @@
 "menu.players" = "Opponents";
 "menu.startGame" = "Start Game";
 "menu.continueGame" = "Continue Game";
+"menu.multiplayer" = "Multiplayer";
+"menu.multiplayer.signInTitle" = "Sign in to Game Center";
+"menu.multiplayer.signInMessage" = "Sign in to Game Center in Settings to play online with friends.";
 
 "settings.title" = "Settings";
 "settings.language" = "Language";

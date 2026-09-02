@@ -18,7 +18,7 @@ struct GameView: View {
                     canCallUno: canCallUno,
                     direction: viewModel.direction,
                     pendingDrawStack: viewModel.pendingDrawStack,
-                    onUnoTapped: { if let id = viewModel.humanPlayer?.id { viewModel.callUno(playerID: id) } },
+                    onUnoTapped: { if let id = viewModel.localViewPlayer?.id { viewModel.callUno(playerID: id) } },
                     onQuit: { viewModel.quitToMenu() }
                 )
                 .padding(.top, 8)
@@ -32,7 +32,7 @@ struct GameView: View {
 
                 Spacer(minLength: 12)
 
-                if let human = viewModel.humanPlayer {
+                if let human = viewModel.localViewPlayer {
                     PlayerHandView(
                         cards: human.hand,
                         topCard: viewModel.topCard,
@@ -121,7 +121,7 @@ struct GameView: View {
     }
 
     private var opponentsRow: some View {
-        let opponents = viewModel.players.filter { $0.isAI }
+        let opponents = viewModel.opponentPlayers
         return GeometryReader { proxy in
             let baseCardWidth: CGFloat = 40
             let minSpacing: CGFloat = 8
@@ -162,7 +162,7 @@ struct GameView: View {
                 .accessibilityLabel(L.t("game.drawPile"))
                 .accessibilityHint(L.t("game.drawPileHint"))
                 .overlay {
-                    if let drawn = viewModel.justDrawnCard, viewModel.humanPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
+                    if let drawn = viewModel.justDrawnCard, viewModel.localViewPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
                         CardView(card: drawn, width: 78)
                             .matchedGeometryEffect(id: drawn.id, in: cardSpace, isSource: true)
                             .allowsHitTesting(false)
@@ -213,15 +213,15 @@ struct GameView: View {
         )
     }
 
-    private var isHumanTurn: Bool { viewModel.currentPlayer?.isAI == false }
+    private var isHumanTurn: Bool { viewModel.isLocalTurn }
 
     private var canCallUno: Bool {
-        guard let human = viewModel.humanPlayer else { return false }
+        guard let human = viewModel.localViewPlayer else { return false }
         return human.hand.count == 1 && !human.hasCalledUno
     }
 
     private var turnText: String {
         guard let current = viewModel.currentPlayer else { return "" }
-        return current.isAI ? String(format: L.t("game.aiTurn"), current.name) : L.t("game.yourTurn")
+        return viewModel.isLocalTurn ? L.t("game.yourTurn") : String(format: L.t("game.aiTurn"), current.name)
     }
 }
