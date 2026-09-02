@@ -53,7 +53,7 @@ final class GameViewModel: ObservableObject {
         mode == .online ? currentPlayer?.id == onlineLocalPlayerID : currentPlayer?.isAI == false
     }
 
-    private weak var settings: SettingsViewModel?
+    weak var settings: SettingsViewModel?
     var aiDifficulty: AIDifficulty { settings?.aiDifficulty ?? .normal }
     var aiSpeed: AISpeed { settings?.aiSpeed ?? .normal }
     /// Online matches are always Official Rules, regardless of what this device's local Settings

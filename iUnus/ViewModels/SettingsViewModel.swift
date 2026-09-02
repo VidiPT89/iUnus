@@ -19,10 +19,15 @@ final class SettingsViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(aiSpeed.rawValue, forKey: Self.aiSpeedKey) }
     }
 
+    @Published var soundEnabled: Bool {
+        didSet { UserDefaults.standard.set(soundEnabled, forKey: Self.soundEnabledKey) }
+    }
+
     private static let themeKey = "app.theme"
     private static let difficultyKey = "app.aiDifficulty"
     private static let ruleSetKey = "app.ruleSet"
     private static let aiSpeedKey = "app.aiSpeed"
+    private static let soundEnabledKey = "app.soundEnabled"
 
     init() {
         let storedTheme = UserDefaults.standard.string(forKey: Self.themeKey)
@@ -36,5 +41,7 @@ final class SettingsViewModel: ObservableObject {
 
         let storedAISpeed = UserDefaults.standard.string(forKey: Self.aiSpeedKey)
         aiSpeed = AISpeed(rawValue: storedAISpeed ?? "normal") ?? .normal
+
+        soundEnabled = (UserDefaults.standard.object(forKey: Self.soundEnabledKey) as? Bool) ?? true
     }
 }

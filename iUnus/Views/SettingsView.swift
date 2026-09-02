@@ -35,6 +35,10 @@ struct SettingsView: View {
                     .pickerStyle(.segmented)
                 }
 
+                Section(L.t("settings.sound")) {
+                    Toggle(L.t("settings.sound"), isOn: $settings.soundEnabled)
+                }
+
                 Section(L.t("settings.aiSpeed")) {
                     Picker(L.t("settings.aiSpeed"), selection: $settings.aiSpeed) {
                         ForEach(AISpeed.allCases) { speed in

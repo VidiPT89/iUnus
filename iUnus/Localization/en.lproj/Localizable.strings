@@ -22,6 +22,7 @@
 "settings.difficulty.easy" = "Easy";
 "settings.difficulty.normal" = "Normal";
 "settings.difficulty.hard" = "Hard";
+"settings.sound" = "Sound";
 "settings.aiSpeed" = "AI Speed";
 "settings.aiSpeed.slow" = "Slow";
 "settings.aiSpeed.normal" = "Normal";
