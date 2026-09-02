@@ -41,7 +41,7 @@ enum GameSaveStore {
 
 private extension SavedGame {
     var isValid: Bool {
-        guard players.count >= 2, players.count <= 4 else { return false }
+        guard players.count >= 2, players.count <= 10 else { return false }
         guard players.indices.contains(currentPlayerIndex) else { return false }
         guard players.contains(where: { !$0.isAI }) else { return false }
         // House Rules' "last player standing" round variant leaves finished players with an

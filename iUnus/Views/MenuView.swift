@@ -150,6 +150,16 @@ struct MenuView: View {
                 }
                 .disabled(opponentCount >= 9)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(L.t("menu.players"))
+            .accessibilityValue("\(opponentCount)")
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment: opponentCount = min(9, opponentCount + 1)
+                case .decrement: opponentCount = max(1, opponentCount - 1)
+                @unknown default: break
+                }
+            }
 
             Button {
                 viewModel.startNewGame(opponentCount: opponentCount)

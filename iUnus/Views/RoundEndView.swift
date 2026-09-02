@@ -33,9 +33,32 @@ struct RoundEndView: View {
         ZStack {
             Color.brandBackground.ignoresSafeArea()
 
-            VStack(spacing: 24) {
-                Spacer()
+            // A scrollable body with the button pinned outside it: with up to 10 players the
+            // score and finish-order lists can each run to 10 rows and no longer reliably fit a
+            // small screen — without this, "Continue" could be pushed off-screen entirely.
+            VStack(spacing: 0) {
+                ScrollView {
+                    unscrolledContent
+                        .padding(.vertical, 24)
+                }
 
+                Button {
+                    viewModel.continueAfterRound()
+                } label: {
+                    Text(L.t("roundEnd.continue"))
+                        .font(.headline.weight(.bold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: 260)
+                        .padding(.vertical, 16)
+                        .background(Capsule().fill(Color.brandPrimary))
+                }
+                .padding(.vertical, 16)
+            }
+        }
+    }
+
+    private var unscrolledContent: some View {
+        VStack(spacing: 24) {
                 Text(L.t("roundEnd.title"))
                     .font(.largeTitle.weight(.black))
                     .foregroundColor(.brandPrimary)
@@ -89,21 +112,6 @@ struct RoundEndView: View {
                     .background(RoundedRectangle(cornerRadius: 16).fill(Color.brandSurface))
                     .padding(.horizontal, 32)
                 }
-
-                Spacer()
-
-                Button {
-                    viewModel.continueAfterRound()
-                } label: {
-                    Text(L.t("roundEnd.continue"))
-                        .font(.headline.weight(.bold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: 260)
-                        .padding(.vertical, 16)
-                        .background(Capsule().fill(Color.brandPrimary))
-                }
-                .padding(.bottom, 40)
-            }
         }
     }
 }
