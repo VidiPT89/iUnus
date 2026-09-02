@@ -41,7 +41,7 @@
 "rules.scoring.body" = "The first player to play all their cards wins the round and scores points based on the cards left in opponents' hands. The first player to reach 500 points wins the game.";
 
 "game.uno" = "UNO!";
-"game.draw" = "Draw";
+"game.draw" = "Deck";
 "game.yourTurn" = "Your turn";
 "game.aiTurn" = "%@'s turn";
 "game.thinking" = "Thinking…";

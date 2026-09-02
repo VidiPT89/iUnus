@@ -240,13 +240,22 @@ final class GameViewModel: ObservableObject {
             drawPendingStack()
             return
         }
-        guard deck.canDraw, let card = deck.draw() else {
+        // House rules: keep drawing until a legally-playable card turns up (a Wild always
+        // counts). Official rules always draw exactly one card, unchanged.
+        let keepDrawingUntilPlayable = houseRulesActive
+        var lastDrawn: Card?
+        repeat {
+            guard deck.canDraw, let card = deck.draw() else { break }
+            players[currentPlayerIndex].hand.append(card)
+            lastDrawn = card
+        } while keepDrawingUntilPlayable && !(topCard.map { lastDrawn!.canPlay(on: $0) } ?? false)
+
+        guard let card = lastDrawn else {
             showToast(L.t("game.deckExhausted"))
             advanceTurn(steps: 1, from: currentPlayerIndex)
             advanceIfAITurn()
             return
         }
-        players[currentPlayerIndex].hand.append(card)
         players[currentPlayerIndex].hand.sortForDisplay()
         hapticPlay()
         playDrawSound()

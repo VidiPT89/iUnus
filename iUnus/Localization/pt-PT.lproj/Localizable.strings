@@ -41,7 +41,7 @@
 "rules.scoring.body" = "O primeiro jogador a jogar todas as suas cartas ganha a ronda e soma pontos com base nas cartas que restam aos adversários. O primeiro a atingir 500 pontos vence o jogo.";
 
 "game.uno" = "UNO!";
-"game.draw" = "Comprar";
+"game.draw" = "Baralho";
 "game.yourTurn" = "A tua vez";
 "game.aiTurn" = "Vez de %@";
 "game.thinking" = "A pensar…";
