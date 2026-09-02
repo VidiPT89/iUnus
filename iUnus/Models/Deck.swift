@@ -1,6 +1,6 @@
 import Foundation
 
-struct Deck {
+struct Deck: Codable {
     private(set) var drawPile: [Card] = []
     private(set) var discardPile: [Card] = []
 

@@ -19,7 +19,7 @@ struct GameView: View {
                     direction: viewModel.direction,
                     pendingDrawStack: viewModel.pendingDrawStack,
                     onUnoTapped: { if let id = viewModel.humanPlayer?.id { viewModel.callUno(playerID: id) } },
-                    onQuit: { viewModel.returnToMenu() }
+                    onQuit: { viewModel.quitToMenu() }
                 )
                 .padding(.top, 8)
                 .animation(.spring(response: 0.35, dampingFraction: 0.7), value: viewModel.pendingDrawStack)

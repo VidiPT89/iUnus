@@ -9,7 +9,7 @@ enum GamePhase: Equatable {
     case gameEnd
 }
 
-enum TurnDirection: Int {
+enum TurnDirection: Int, Codable {
     case clockwise = 1
     case counterClockwise = -1
 
@@ -18,7 +18,7 @@ enum TurnDirection: Int {
     }
 }
 
-struct PendingUnoCatch: Equatable {
+struct PendingUnoCatch: Equatable, Codable {
     let playerID: UUID
     let deadline: Date
 }

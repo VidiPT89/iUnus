@@ -5,6 +5,7 @@
 "menu.rules" = "Rules";
 "menu.players" = "Opponents";
 "menu.startGame" = "Start Game";
+"menu.continueGame" = "Continue Game";
 
 "settings.title" = "Settings";
 "settings.language" = "Language";

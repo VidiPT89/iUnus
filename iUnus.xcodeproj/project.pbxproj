@@ -28,6 +28,7 @@
 		AD1D7EBB6A0C63D846FCB8A5 /* CardColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89396BE918B9470E9F89E0E /* CardColor.swift */; };
 		B005B696E92EA36F79C22AFE /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489482094E88AB51F5991FF /* SettingsViewModel.swift */; };
 		B39C4BFB5F0925394D914B3E /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */; };
+		B69AF6C3A17F189B10FFD411 /* GameSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA1D75F5F8BDD9EE7FB1123 /* GameSave.swift */; };
 		BEFF5254172C0C9945234A12 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C514FFD77208F5B7906BA53 /* CardView.swift */; };
 		D1AF301F019BDFCDC1186071 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */; };
 		DB9DD20515D95E3A8ACF07C1 /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422D15401FEAB52457FB1FEF /* Color+Theme.swift */; };
@@ -50,6 +51,7 @@
 		594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		5B7D0A92474F37BD36528E26 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		7C514FFD77208F5B7906BA53 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		8BA1D75F5F8BDD9EE7FB1123 /* GameSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSave.swift; sourceTree = "<group>"; };
 		9489482094E88AB51F5991FF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		98FF8594FBE8F599BD297C1A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		9F0193F30523B7321B5114CF /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				B89396BE918B9470E9F89E0E /* CardColor.swift */,
 				5516383F4560711BD6964BEC /* CardValue.swift */,
 				D60304FE57396CC1941F3F3B /* Deck.swift */,
+				8BA1D75F5F8BDD9EE7FB1123 /* GameSave.swift */,
 				ABD4E5E8B921666FEE21BBE7 /* GameState.swift */,
 				E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */,
 				D65E8F4199A9101DAAF2E9CA /* Player.swift */,
@@ -243,6 +246,7 @@
 				AB564C9D6B11A981B52555B8 /* ColorPickerSheet.swift in Sources */,
 				A85E7FF77AD1A620F3550E19 /* Deck.swift in Sources */,
 				972F57DFD778E17D689C1996 /* GameEndView.swift in Sources */,
+				B69AF6C3A17F189B10FFD411 /* GameSave.swift in Sources */,
 				1BB179402C037EE0B017D4E8 /* GameState.swift in Sources */,
 				ACAD61E0A5141D6B048C1634 /* GameView.swift in Sources */,
 				3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */,

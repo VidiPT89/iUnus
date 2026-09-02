@@ -18,6 +18,7 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var isAIThinking: Bool = false
     @Published private(set) var justDrawnCard: Card?
     @Published private(set) var pendingDrawStack: Int = 0
+    @Published private(set) var hasSavedGame: Bool = GameSaveStore.hasSave
 
     static let targetScore = 500
     private let unoCatchWindow: TimeInterval = 3.0
@@ -36,6 +37,7 @@ final class GameViewModel: ObservableObject {
     }
 
     func startNewGame(opponentCount: Int) {
+        clearSavedGame()
         let clamped = max(1, min(3, opponentCount))
         var newPlayers = [Player(name: L.t("player.you"), kind: .human)]
         for i in 1...clamped {
@@ -44,6 +46,47 @@ final class GameViewModel: ObservableObject {
         players = newPlayers
         gameWinnerID = nil
         startNewRound()
+    }
+
+    func resumeSavedGame() {
+        guard let saved = GameSaveStore.load() else {
+            hasSavedGame = false
+            return
+        }
+        players = saved.players
+        deck = saved.deck
+        currentPlayerIndex = saved.currentPlayerIndex
+        direction = saved.direction
+        pendingDrawStack = saved.pendingDrawStack
+        pendingUnoCatch = nil
+        roundWinnerID = nil
+        gameWinnerID = nil
+        justDrawnCard = nil
+        phase = .playing
+        advanceIfAITurn()
+    }
+
+    func quitToMenu() {
+        saveProgressIfActive()
+        returnToMenu()
+    }
+
+    private func saveProgressIfActive() {
+        guard phase == .playing, !players.isEmpty else { return }
+        let save = SavedGame(
+            players: players,
+            deck: deck,
+            currentPlayerIndex: currentPlayerIndex,
+            direction: direction,
+            pendingDrawStack: pendingDrawStack
+        )
+        GameSaveStore.save(save)
+        hasSavedGame = true
+    }
+
+    private func clearSavedGame() {
+        GameSaveStore.clear()
+        hasSavedGame = false
     }
 
     func startNewRound() {
@@ -97,6 +140,7 @@ final class GameViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { [weak self] in
             guard let self else { return }
             self.phase = .playing
+            self.saveProgressIfActive()
             self.advanceIfAITurn()
         }
     }
@@ -197,6 +241,7 @@ final class GameViewModel: ObservableObject {
         default:
             advanceTurn(steps: 1, from: playerIndex)
         }
+        saveProgressIfActive()
         advanceIfAITurn()
     }
 
@@ -253,6 +298,7 @@ final class GameViewModel: ObservableObject {
         guard let card = lastDrawn else {
             showToast(L.t("game.deckExhausted"))
             advanceTurn(steps: 1, from: currentPlayerIndex)
+            saveProgressIfActive()
             advanceIfAITurn()
             return
         }
@@ -268,6 +314,7 @@ final class GameViewModel: ObservableObject {
             attemptPlay(card, playerIndex: currentPlayerIndex)
         } else {
             advanceTurn(steps: 1, from: currentPlayerIndex)
+            saveProgressIfActive()
             advanceIfAITurn()
         }
     }
@@ -282,6 +329,7 @@ final class GameViewModel: ObservableObject {
         if !players[currentPlayerIndex].isAI { hapticError() }
         showToast(String(format: L.t("game.stackDrawn"), amount))
         advanceTurn(steps: 1, from: currentPlayerIndex)
+        saveProgressIfActive()
         advanceIfAITurn()
     }
 
@@ -293,6 +341,7 @@ final class GameViewModel: ObservableObject {
         players[idx].hasCalledUno = true
         if pendingUnoCatch?.playerID == playerID { pendingUnoCatch = nil }
         hapticSuccess()
+        saveProgressIfActive()
     }
 
     func catchFailureToCallUno() {
@@ -301,6 +350,7 @@ final class GameViewModel: ObservableObject {
         pendingUnoCatch = nil
         hapticError()
         showToast(L.t("game.unoPenalty"))
+        saveProgressIfActive()
     }
 
     func checkUnoTimeout() {
@@ -365,6 +415,7 @@ final class GameViewModel: ObservableObject {
             gameWinnerID = players[winnerIndex].id
             playWinSound()
             recordMatchStats(winnerIndex: winnerIndex)
+            clearSavedGame()
         }
     }
 
