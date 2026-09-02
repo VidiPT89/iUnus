@@ -182,11 +182,13 @@ final class GameViewModel: ObservableObject {
                 }
             }
         }
+        var rejectedStarters: [Card] = []
         var starter = mutableDeck.draw()
         while let s = starter, s.value.isWild {
-            mutableDeck.discard(s)
+            rejectedStarters.append(s)
             starter = mutableDeck.draw()
         }
+        if !rejectedStarters.isEmpty { mutableDeck.returnToDrawPile(rejectedStarters) }
         if let starter { mutableDeck.startDiscard(with: starter) }
         deck = mutableDeck
         for i in players.indices { players[i].hand.sortForDisplay() }

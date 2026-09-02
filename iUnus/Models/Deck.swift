@@ -45,6 +45,14 @@ struct Deck: Codable {
         discardPile = [card]
     }
 
+    /// Returns cards rejected as a round's opening flip (e.g. a Wild redrawn per the starting-card
+    /// rule) back into circulation, so they aren't silently lost before `startDiscard` overwrites
+    /// `discardPile`.
+    mutating func returnToDrawPile(_ cards: [Card]) {
+        drawPile.append(contentsOf: cards)
+        drawPile.shuffle()
+    }
+
     var topCard: Card? { discardPile.last }
 
     mutating func reshuffleFromDiscard() {
