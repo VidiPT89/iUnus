@@ -61,6 +61,12 @@
 "game.stackDrawn" = "No stack to play — drew %d cards";
 "game.stackBadge" = "+%d pending";
 "game.catchUno" = "Catch!";
+"game.challengeCorrect" = "Challenge correct! They draw 4 instead";
+"game.challengeIncorrect" = "Challenge failed — you draw 6";
+"wildDraw4.title" = "Wild Draw Four";
+"wildDraw4.body" = "%@ played a Wild Draw Four. Do you believe they had a card matching the color in play?";
+"wildDraw4.challenge" = "Challenge";
+"wildDraw4.accept" = "Accept, draw 4";
 "game.quit" = "Quit game";
 "game.quitHint" = "Returns to the main menu";
 "game.unoHint" = "Call UNO when you have one card left";

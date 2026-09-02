@@ -20,6 +20,7 @@
 		3F8C9FC6C2527D0FE4B58FF0 /* GameViewModel+Online.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7286B43D19A2DF03665894 /* GameViewModel+Online.swift */; };
 		3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0193F30523B7321B5114CF /* GameViewModel.swift */; };
 		4BA144563A8C1F9378E0CA71 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA540E914C42FA24702B9C5 /* Card.swift */; };
+		544382FFB6D76BBDAD40BA07 /* WildDraw4ChallengeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD875D0C6D4A993B33FBD5C2 /* WildDraw4ChallengeSheet.swift */; };
 		5B71DE45EDDE14894B73BC1D /* RoundEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC21D147D18B72314B1679FE /* RoundEndView.swift */; };
 		663A3EBC06FC606F59A2A553 /* iUnusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */; };
 		80DDBDD54413590A40DB19ED /* AIStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8E709F2690E809319DD3265 /* AIStrategy.swift */; };
@@ -32,6 +33,8 @@
 		ACAD61E0A5141D6B048C1634 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A332488DF01AFDE54BAAEA2B /* GameView.swift */; };
 		AD1D7EBB6A0C63D846FCB8A5 /* CardColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89396BE918B9470E9F89E0E /* CardColor.swift */; };
 		B005B696E92EA36F79C22AFE /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489482094E88AB51F5991FF /* SettingsViewModel.swift */; };
+		B010F6BA35A789318451EE56 /* GameViewModel+WildDrawFourChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6C4218E0B1D248E81340F6 /* GameViewModel+WildDrawFourChallenge.swift */; };
+		B23FD133AE0DE659E59408A5 /* GameViewModel+UnoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4F95EBABAD81C03AA2ED7C9 /* GameViewModel+UnoCall.swift */; };
 		B39C4BFB5F0925394D914B3E /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */; };
 		B69AF6C3A17F189B10FFD411 /* GameSave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA1D75F5F8BDD9EE7FB1123 /* GameSave.swift */; };
 		BEFF5254172C0C9945234A12 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C514FFD77208F5B7906BA53 /* CardView.swift */; };
@@ -71,6 +74,7 @@
 		8BA1D75F5F8BDD9EE7FB1123 /* GameSave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSave.swift; sourceTree = "<group>"; };
 		9489482094E88AB51F5991FF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		98FF8594FBE8F599BD297C1A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		9D6C4218E0B1D248E81340F6 /* GameViewModel+WildDrawFourChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewModel+WildDrawFourChallenge.swift"; sourceTree = "<group>"; };
 		9F0193F30523B7321B5114CF /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		A2E967511E53759F6039289D /* OnlineMatchCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMatchCoordinator.swift; sourceTree = "<group>"; };
 		A332488DF01AFDE54BAAEA2B /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -81,10 +85,12 @@
 		BE7286B43D19A2DF03665894 /* GameViewModel+Online.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewModel+Online.swift"; sourceTree = "<group>"; };
 		C86280F871DEF0462D125A72 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CD39733426C455341925D611 /* GameKitViewControllerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameKitViewControllerPresenter.swift; sourceTree = "<group>"; };
+		D4F95EBABAD81C03AA2ED7C9 /* GameViewModel+UnoCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewModel+UnoCall.swift"; sourceTree = "<group>"; };
 		D60304FE57396CC1941F3F3B /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		D65E8F4199A9101DAAF2E9CA /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		D87E56535D5820C0981E3371 /* GameEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEndView.swift; sourceTree = "<group>"; };
 		D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iUnusApp.swift; sourceTree = "<group>"; };
+		DD875D0C6D4A993B33FBD5C2 /* WildDraw4ChallengeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WildDraw4ChallengeSheet.swift; sourceTree = "<group>"; };
 		E01FA6B380C2CBD18A87BACB /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStats.swift; sourceTree = "<group>"; };
@@ -148,6 +154,8 @@
 				889A4F94369B7AAF395052C7 /* GameViewModel+Feedback.swift */,
 				BE7286B43D19A2DF03665894 /* GameViewModel+Online.swift */,
 				86CF26BACBE3172B69CF80B6 /* GameViewModel+RoundEnd.swift */,
+				D4F95EBABAD81C03AA2ED7C9 /* GameViewModel+UnoCall.swift */,
+				9D6C4218E0B1D248E81340F6 /* GameViewModel+WildDrawFourChallenge.swift */,
 				9489482094E88AB51F5991FF /* SettingsViewModel.swift */,
 			);
 			path = ViewModels;
@@ -204,6 +212,7 @@
 				5B7D0A92474F37BD36528E26 /* SettingsView.swift */,
 				E7E5A5921122617505A8B885 /* SplashView.swift */,
 				594C65685E3AEDAC7BBC3E6B /* TopBarView.swift */,
+				DD875D0C6D4A993B33FBD5C2 /* WildDraw4ChallengeSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -315,6 +324,8 @@
 				8BE324C1F13AB6DCAD9A75CF /* GameViewModel+Feedback.swift in Sources */,
 				3F8C9FC6C2527D0FE4B58FF0 /* GameViewModel+Online.swift in Sources */,
 				C77A4BF3EE255F089C69D0F6 /* GameViewModel+RoundEnd.swift in Sources */,
+				B23FD133AE0DE659E59408A5 /* GameViewModel+UnoCall.swift in Sources */,
+				B010F6BA35A789318451EE56 /* GameViewModel+WildDrawFourChallenge.swift in Sources */,
 				3FA174C1F3A527A3CD1A4990 /* GameViewModel.swift in Sources */,
 				B39C4BFB5F0925394D914B3E /* LocalizationManager.swift in Sources */,
 				0596690BA35EFCB5906F65DB /* MatchStats.swift in Sources */,
@@ -331,6 +342,7 @@
 				230DF22F8A11E1277B4B22C0 /* SplashView.swift in Sources */,
 				D1AF301F019BDFCDC1186071 /* TopBarView.swift in Sources */,
 				26705DEE01DDB5465D24C780 /* TurnBasedMatchmakerView.swift in Sources */,
+				544382FFB6D76BBDAD40BA07 /* WildDraw4ChallengeSheet.swift in Sources */,
 				663A3EBC06FC606F59A2A553 /* iUnusApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

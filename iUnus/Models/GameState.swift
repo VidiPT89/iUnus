@@ -27,3 +27,13 @@ struct PendingUnoCatch: Equatable, Codable {
     let playerID: UUID
     var blockingPlayerIndex: Int
 }
+
+/// Opens when a Wild Draw Four is played in Official Rules (local mode only — see
+/// `GameViewModel.attemptPlay`): rather than blocking an illegal play outright, the victim gets
+/// to decide whether to accept the draw or challenge it. `hadMatchingColor` is the ground truth,
+/// captured at play time, of whether the play was actually illegal.
+struct PendingWildDraw4Challenge: Equatable {
+    let playerIndex: Int
+    let victimIndex: Int
+    let hadMatchingColor: Bool
+}

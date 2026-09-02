@@ -41,14 +41,20 @@ struct Card: Identifiable, Equatable, Codable, Hashable {
     /// Draw Four may only be played when the player holds no card matching the active color —
     /// house rules waive this, so callers there can omit both and get the old behavior.
     func canPlay(on topCard: Card, hand: [Card] = [], enforceWildDrawFourRestriction: Bool = false) -> Bool {
-        if value == .wildDrawFour && enforceWildDrawFourRestriction {
-            let hasMatchingColorCard = hand.contains { !$0.value.isWild && $0.color == topCard.effectiveColor }
-            if hasMatchingColorCard { return false }
+        if value == .wildDrawFour && enforceWildDrawFourRestriction && !Card.wildDrawFourWasLegal(hand: hand, activeColor: topCard.effectiveColor) {
+            return false
         }
         if value.isWild { return true }
         if effectiveColor == topCard.effectiveColor { return true }
         if value == topCard.value { return true }
         return false
+    }
+
+    /// The official Wild Draw Four restriction: legal only when the hand holds no card matching
+    /// `activeColor`. Exposed separately from `canPlay` so a challenge can re-check this after
+    /// the fact against the color that was active *before* the card was played.
+    static func wildDrawFourWasLegal(hand: [Card], activeColor: CardColor) -> Bool {
+        !hand.contains { !$0.value.isWild && $0.color == activeColor }
     }
 
     static func == (lhs: Card, rhs: Card) -> Bool { lhs.id == rhs.id }

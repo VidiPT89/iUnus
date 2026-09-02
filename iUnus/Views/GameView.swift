@@ -38,7 +38,7 @@ struct GameView: View {
                         isMyTurn: isHumanTurn && viewModel.phase == .playing,
                         namespace: cardSpace,
                         justDrawnCardID: viewModel.justDrawnCard?.id,
-                        enforceWildDrawFourRestriction: viewModel.enforceWildDrawFourRestriction,
+                        enforceWildDrawFourRestriction: viewModel.enforceWildDrawFourRestrictionForLocalHuman,
                         onPlay: { viewModel.humanPlay($0) }
                     )
                 }
@@ -60,6 +60,17 @@ struct GameView: View {
             ColorPickerSheet { color in viewModel.chooseWildColor(color) }
                 .presentationDetents([.height(280)])
                 .interactiveDismissDisabled(true)
+        }
+        .sheet(isPresented: wildDraw4ChallengeSheetBinding) {
+            if let pending = viewModel.wildDraw4ChallengeForLocalHuman {
+                WildDraw4ChallengeSheet(
+                    offenderName: viewModel.players.indices.contains(pending.playerIndex) ? viewModel.players[pending.playerIndex].name : "",
+                    onChallenge: { viewModel.resolveWildDraw4Challenge(challenge: true) },
+                    onAccept: { viewModel.resolveWildDraw4Challenge(challenge: false) }
+                )
+                .presentationDetents([.height(320)])
+                .interactiveDismissDisabled(true)
+            }
         }
         .overlay {
             if viewModel.phase == .dealing {
@@ -231,6 +242,10 @@ struct GameView: View {
             },
             set: { _ in }
         )
+    }
+
+    private var wildDraw4ChallengeSheetBinding: Binding<Bool> {
+        Binding(get: { viewModel.wildDraw4ChallengeForLocalHuman != nil }, set: { _ in })
     }
 
     private var isHumanTurn: Bool { viewModel.isLocalTurn }

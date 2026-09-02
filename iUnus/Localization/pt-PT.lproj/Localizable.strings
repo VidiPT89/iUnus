@@ -61,6 +61,12 @@
 "game.stackDrawn" = "Sem carta para acumular — comprou %d cartas";
 "game.stackBadge" = "+%d pendentes";
 "game.catchUno" = "Apanhar!";
+"game.challengeCorrect" = "Desafio correto! Compra 4 em vez de ti";
+"game.challengeIncorrect" = "Desafio falhado — compras 6";
+"wildDraw4.title" = "Curinga Compra Quatro";
+"wildDraw4.body" = "%@ jogou um Curinga Compra Quatro. Achas que tinha uma carta da cor em jogo?";
+"wildDraw4.challenge" = "Desafiar";
+"wildDraw4.accept" = "Aceitar, comprar 4";
 "game.quit" = "Sair do jogo";
 "game.quitHint" = "Volta ao menu principal";
 "game.unoHint" = "Diz UNO quando tiveres apenas uma carta";

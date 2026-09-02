@@ -93,6 +93,18 @@ enum AIStrategy {
         return stackable.max(by: { ($0.value.drawPenaltyAmount ?? 0) < ($1.value.drawPenaltyAmount ?? 0) })
     }
 
+    /// Whether an AI seat challenges a Wild Draw Four played against it. The AI engine can see
+    /// the true hand it's deciding about (unlike a real opponent), so a difficulty-scaled chance
+    /// to bother at all stands in for imperfect information — Hard almost always challenges,
+    /// Easy rarely does, and when a tier does challenge the outcome is exact either way.
+    static func shouldChallengeWildDraw4(difficulty: AIDifficulty = .normal) -> Bool {
+        switch difficulty {
+        case .easy: return Double.random(in: 0...1) < 0.2
+        case .normal: return Double.random(in: 0...1) < 0.5
+        case .hard: return Double.random(in: 0...1) < 0.85
+        }
+    }
+
     static func shouldCallUnoImmediately(difficulty: AIDifficulty = .normal) -> Bool {
         switch difficulty {
         case .easy: return Double.random(in: 0...1) < 0.5

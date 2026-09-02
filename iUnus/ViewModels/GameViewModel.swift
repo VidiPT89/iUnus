@@ -5,10 +5,12 @@ import AudioToolbox
 
 /// Core game state and the local play/draw flow. Online-match wiring lives in
 /// `GameViewModel+Online.swift`, the AI turn loop in `GameViewModel+AI.swift`, round/game
-/// conclusion in `GameViewModel+RoundEnd.swift`, and haptics/sound/toast feedback in
-/// `GameViewModel+Feedback.swift`. Members those extensions touch are `internal` rather than
-/// `private` — Swift has no cross-file "type-private" level, so this is the usual cost of
-/// splitting one type's implementation across files while keeping it out of other modules.
+/// conclusion in `GameViewModel+RoundEnd.swift`, haptics/sound/toast feedback in
+/// `GameViewModel+Feedback.swift`, the UNO call/catch window in `GameViewModel+UnoCall.swift`,
+/// and Wild Draw Four challenge resolution in `GameViewModel+WildDrawFourChallenge.swift`.
+/// Members those extensions touch are `internal`
+/// rather than `private` — Swift has no cross-file "type-private" level, so this is the usual
+/// cost of splitting one type's implementation across files while keeping it out of other modules.
 @MainActor
 final class GameViewModel: ObservableObject {
     @Published var players: [Player] = []
@@ -24,6 +26,7 @@ final class GameViewModel: ObservableObject {
     @Published var isAIThinking: Bool = false
     @Published var justDrawnCard: Card?
     @Published var pendingDrawStack: Int = 0
+    @Published var pendingWildDraw4Challenge: PendingWildDraw4Challenge?
     @Published private(set) var hasSavedGame: Bool = GameSaveStore.hasSave
     @Published var mode: GameMode = .local
     @Published private(set) var roundFinishOrder: [UUID] = []
@@ -64,6 +67,10 @@ final class GameViewModel: ObservableObject {
     /// Official rules only: a Wild Draw Four may not be played while the player holds a card
     /// matching the active color. House rules (and online, which always enforces official) waive it.
     var enforceWildDrawFourRestriction: Bool { !houseRulesActive }
+    /// What the local human's own hand should visually gate on: online keeps the hard block
+    /// (challenges aren't synced across devices), but local Official Rules let them tap an
+    /// "illegal" Wild Draw Four and leave it to `PendingWildDraw4Challenge` to sort out.
+    var enforceWildDrawFourRestrictionForLocalHuman: Bool { mode == .online && enforceWildDrawFourRestriction }
 
     /// Under House Rules a round continues, skipping finished players, until only one player
     /// still holds cards; Official Rules (and online, which is always Official) end the round
@@ -101,6 +108,7 @@ final class GameViewModel: ObservableObject {
         direction = saved.direction
         pendingDrawStack = saved.pendingDrawStack
         pendingUnoCatch = nil
+        pendingWildDraw4Challenge = nil
         roundWinnerID = nil
         roundFinishOrder = saved.roundFinishOrder
         gameWinnerID = nil
@@ -145,7 +153,11 @@ final class GameViewModel: ObservableObject {
         switch mode {
         case .local:
             saveProgressIfActive()
-            advanceIfAITurn()
+            if pendingWildDraw4Challenge != nil {
+                resolveWildDraw4ChallengeIfAIVictim()
+            } else {
+                advanceIfAITurn()
+            }
         case .online:
             onlineDelegate?.gameViewModelDidUpdateOnlineState(self)
         }
@@ -164,6 +176,7 @@ final class GameViewModel: ObservableObject {
         deck = Deck()
         direction = .clockwise
         pendingUnoCatch = nil
+        pendingWildDraw4Challenge = nil
         pendingDrawStack = 0
         roundWinnerID = nil
         roundFinishOrder = []
@@ -221,7 +234,7 @@ final class GameViewModel: ObservableObject {
     // MARK: - Playing cards
 
     func humanPlay(_ card: Card) {
-        guard isLocalTurn, phase == .playing, currentPlayer != nil else { return }
+        guard isLocalTurn, phase == .playing, currentPlayer != nil, pendingWildDraw4Challenge == nil else { return }
         attemptPlay(card, playerIndex: currentPlayerIndex)
     }
 
@@ -231,15 +244,28 @@ final class GameViewModel: ObservableObject {
         guard let handIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
         closeUnoCatchWindowIfBlocking(playerIndex)
 
+        // AI (and any online seat) stays restricted to legal Wild Draw Fours; the local human
+        // may attempt an "illegal" one and let the victim challenge it instead of being blocked
+        // outright — see `PendingWildDraw4Challenge`.
+        let restrictWildDrawFour = (players[playerIndex].isAI || mode == .online) && enforceWildDrawFourRestriction
+
         // Facing an active house-rule stack, only another +2/+4 may answer — its color
         // doesn't need to match, it just needs to be a Draw Two or Wild Draw Four.
         let isLegal = pendingDrawStack > 0
             ? card.value.drawPenaltyAmount != nil
-            : card.canPlay(on: top, hand: players[playerIndex].hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction)
+            : card.canPlay(on: top, hand: players[playerIndex].hand, enforceWildDrawFourRestriction: restrictWildDrawFour)
         guard isLegal else {
             if !players[playerIndex].isAI { hapticError(); showToast(L.t("game.invalidMove")) }
             return
         }
+
+        // Captured before the card leaves the hand and before its own color choice overwrites
+        // `topCard.effectiveColor` — this is the ground truth a later challenge checks against.
+        // Stashed on the instance (rather than threaded through finalizePlay/applyEffectAndAdvance)
+        // because a human Wild's color choice happens asynchronously via `chooseWildColor`.
+        pendingWildDrawFourHadMatchingColor = (card.value == .wildDrawFour && !houseRulesActive && mode != .online)
+            ? !Card.wildDrawFourWasLegal(hand: players[playerIndex].hand, activeColor: top.effectiveColor)
+            : nil
 
         var playedCard = players[playerIndex].hand.remove(at: handIndex)
         hapticPlay()
@@ -261,6 +287,7 @@ final class GameViewModel: ObservableObject {
     }
 
     private var pendingWildPlayerIndex: Int?
+    private var pendingWildDrawFourHadMatchingColor: Bool?
 
     func chooseWildColor(_ color: CardColor) {
         guard case .choosingColor(var card) = phase, let idx = pendingWildPlayerIndex else { return }
@@ -342,8 +369,18 @@ final class GameViewModel: ObservableObject {
                 showToast(String(format: L.t("game.stackPending"), pendingDrawStack))
             } else {
                 advanceTurn(steps: 1, from: playerIndex)
-                forceDraw(count: amount, onPlayerIndex: currentPlayerIndex)
-                advanceTurn(steps: 1, from: currentPlayerIndex)
+                if card.value == .wildDrawFour, let hadMatchingColor = pendingWildDrawFourHadMatchingColor {
+                    // Open the challenge instead of resolving immediately — the victim (current
+                    // player, just advanced to) decides via `resolveWildDraw4Challenge`, routed
+                    // from `afterTurnMutation` below rather than a normal AI/local turn.
+                    pendingWildDraw4Challenge = PendingWildDraw4Challenge(
+                        playerIndex: playerIndex, victimIndex: currentPlayerIndex, hadMatchingColor: hadMatchingColor
+                    )
+                    pendingWildDrawFourHadMatchingColor = nil
+                } else {
+                    forceDraw(count: amount, onPlayerIndex: currentPlayerIndex)
+                    advanceTurn(steps: 1, from: currentPlayerIndex)
+                }
             }
         default:
             advanceTurn(steps: 1, from: playerIndex)
@@ -353,15 +390,6 @@ final class GameViewModel: ObservableObject {
         // next turn begins").
         if pendingUnoCatch != nil { pendingUnoCatch?.blockingPlayerIndex = currentPlayerIndex }
         afterTurnMutation()
-    }
-
-    /// Closes an open UNO-catch window with no penalty the instant the seat it was waiting on
-    /// takes its turn — called at the top of both `attemptPlay` and `drawForCurrentPlayer` so
-    /// whichever action that seat takes first counts as "the next turn beginning". A `catchUno`
-    /// tap on the offender that beats this to the punch still applies the 2-card penalty as usual.
-    private func closeUnoCatchWindowIfBlocking(_ playerIndex: Int) {
-        guard let pending = pendingUnoCatch, pending.blockingPlayerIndex == playerIndex else { return }
-        pendingUnoCatch = nil
     }
 
     func forceDraw(count: Int, onPlayerIndex: Int) {
@@ -376,7 +404,7 @@ final class GameViewModel: ObservableObject {
         players[onPlayerIndex].hand.sortForDisplay()
     }
 
-    private func advanceTurn(steps: Int, from index: Int) {
+    func advanceTurn(steps: Int, from index: Int) {
         guard !players.isEmpty else { return }
         var newIndex = index
         for _ in 0..<steps {
@@ -403,7 +431,7 @@ final class GameViewModel: ObservableObject {
     // MARK: - Drawing
 
     func humanDraw() {
-        guard isLocalTurn, phase == .playing, currentPlayer != nil else { return }
+        guard isLocalTurn, phase == .playing, currentPlayer != nil, pendingWildDraw4Challenge == nil else { return }
         drawForCurrentPlayer()
     }
 
@@ -459,25 +487,5 @@ final class GameViewModel: ObservableObject {
         showToast(String(format: L.t("game.stackDrawn"), amount))
         advanceTurn(steps: 1, from: currentPlayerIndex)
         afterTurnMutation()
-    }
-
-    // MARK: - UNO call
-
-    func callUno(playerID: UUID) {
-        guard let idx = players.firstIndex(where: { $0.id == playerID }) else { return }
-        guard players[idx].hand.count <= 1 else { return }
-        players[idx].hasCalledUno = true
-        if pendingUnoCatch?.playerID == playerID { pendingUnoCatch = nil }
-        hapticSuccess()
-        syncProgress()
-    }
-
-    func catchFailureToCallUno() {
-        guard let pending = pendingUnoCatch, let idx = players.firstIndex(where: { $0.id == pending.playerID }) else { return }
-        forceDraw(count: 2, onPlayerIndex: idx)
-        pendingUnoCatch = nil
-        hapticError()
-        showToast(L.t("game.unoPenalty"))
-        syncProgress()
     }
 }
