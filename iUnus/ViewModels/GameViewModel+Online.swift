@@ -28,7 +28,11 @@ extension GameViewModel {
         currentPlayerIndex = state.currentPlayerIndex
         direction = state.direction
         pendingDrawStack = state.pendingDrawStack
-        pendingUnoCatch = nil
+        // Turn-based matches have no shared clock between devices, so an open catch window is
+        // reconstructed without a real deadline — `checkUnoTimeout()`'s local 0.3s poll compares
+        // against `.distantFuture` and never auto-penalizes here; only a tap on `catchUno` (or the
+        // offender calling UNO themselves) resolves it, same as it already does for a human catch.
+        pendingUnoCatch = state.pendingUnoCatchPlayerID.map { PendingUnoCatch(playerID: $0, deadline: .distantFuture) }
         roundWinnerID = state.roundWinnerID
         gameWinnerID = state.gameWinnerID
         justDrawnCard = nil
@@ -45,6 +49,7 @@ extension GameViewModel {
             phase: gameWinnerID != nil ? .gameEnd : .playing,
             roundWinnerID: roundWinnerID,
             gameWinnerID: gameWinnerID,
+            pendingUnoCatchPlayerID: pendingUnoCatch?.playerID,
             participantPlayerIDs: onlineParticipantMapping
         )
     }

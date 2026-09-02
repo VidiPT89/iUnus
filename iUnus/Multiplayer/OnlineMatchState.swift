@@ -26,6 +26,10 @@ struct OnlineMatchState: Codable {
     var phase: OnlineMatchPhase
     var roundWinnerID: UUID?
     var gameWinnerID: UUID?
+    /// Mirrors `GameViewModel.pendingUnoCatch.playerID` so an opponent's still-open "forgot to
+    /// call UNO" window survives the handoff to the next device — without this, the window would
+    /// close the instant the turn ends, before anyone else could ever see or act on it.
+    var pendingUnoCatchPlayerID: UUID?
     /// Maps each GameKit participant's stable `gamePlayerID` to the `Player.id` dealt into
     /// this match, agreed once by the hosting device and carried forward in every snapshot so
     /// every participant's device can tell which hand is theirs and whose turn is next.

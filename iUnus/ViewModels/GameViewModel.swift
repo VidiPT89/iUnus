@@ -57,15 +57,19 @@ final class GameViewModel: ObservableObject {
     private weak var settings: SettingsViewModel?
     var aiDifficulty: AIDifficulty { settings?.aiDifficulty ?? .normal }
     var aiSpeed: AISpeed { settings?.aiSpeed ?? .normal }
-    private var houseRulesActive: Bool { settings?.ruleSet == .houseRules }
+    /// Online matches are always Official Rules, regardless of what this device's local Settings
+    /// say — legality is checked independently on each participant's own device from this same
+    /// flag, so leaving it keyed to local `UserDefaults` would let two devices disagree on
+    /// whether a move (stacking, Wild Draw Four, draw-until-playable) is legal.
+    private var houseRulesActive: Bool { mode != .online && settings?.ruleSet == .houseRules }
     /// Official rules only: a Wild Draw Four may not be played while the player holds a card
-    /// matching the active color. House rules (and online, which enforces official elsewhere) waive it.
+    /// matching the active color. House rules (and online, which always enforces official) waive it.
     var enforceWildDrawFourRestriction: Bool { !houseRulesActive }
 
     /// Under House Rules a round continues, skipping finished players, until only one player
     /// still holds cards; Official Rules (and online, which is always Official) end the round
     /// the instant the first player empties their hand — unchanged from before this feature.
-    private var playUntilOnePlayerRemains: Bool { houseRulesActive && mode != .online }
+    private var playUntilOnePlayerRemains: Bool { houseRulesActive }
 
     private func activePlayerIndices() -> [Int] {
         players.indices.filter { !roundFinishOrder.contains(players[$0].id) }
