@@ -35,6 +35,15 @@ struct SettingsView: View {
                     .pickerStyle(.segmented)
                 }
 
+                Section(L.t("settings.aiSpeed")) {
+                    Picker(L.t("settings.aiSpeed"), selection: $settings.aiSpeed) {
+                        ForEach(AISpeed.allCases) { speed in
+                            Text(L.t(speed.titleKey)).tag(speed)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
                 Section(L.t("settings.ruleSet")) {
                     Picker(L.t("settings.ruleSet"), selection: $settings.ruleSet) {
                         ForEach(RuleSet.allCases) { ruleSet in

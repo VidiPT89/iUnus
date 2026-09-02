@@ -4,8 +4,8 @@ enum AIStrategy {
     /// Picks the best card for an AI hand to play against the current top card.
     /// Prefers action cards that attack opponents, then matching-color numbers (to keep
     /// future flexibility), and saves wilds for when no other option exists.
-    static func chooseCard(hand: [Card], topCard: Card, opponentLowestCardCount: Int, difficulty: AIDifficulty = .normal) -> Card? {
-        let playable = hand.filter { $0.canPlay(on: topCard) }
+    static func chooseCard(hand: [Card], topCard: Card, opponentLowestCardCount: Int, difficulty: AIDifficulty = .normal, enforceWildDrawFourRestriction: Bool = false) -> Card? {
+        let playable = hand.filter { $0.canPlay(on: topCard, hand: hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction) }
         guard !playable.isEmpty else { return nil }
 
         switch difficulty {

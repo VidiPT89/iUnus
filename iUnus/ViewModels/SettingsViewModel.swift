@@ -15,9 +15,14 @@ final class SettingsViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(ruleSet.rawValue, forKey: Self.ruleSetKey) }
     }
 
+    @Published var aiSpeed: AISpeed {
+        didSet { UserDefaults.standard.set(aiSpeed.rawValue, forKey: Self.aiSpeedKey) }
+    }
+
     private static let themeKey = "app.theme"
     private static let difficultyKey = "app.aiDifficulty"
     private static let ruleSetKey = "app.ruleSet"
+    private static let aiSpeedKey = "app.aiSpeed"
 
     init() {
         let storedTheme = UserDefaults.standard.string(forKey: Self.themeKey)
@@ -28,5 +33,8 @@ final class SettingsViewModel: ObservableObject {
 
         let storedRuleSet = UserDefaults.standard.string(forKey: Self.ruleSetKey)
         ruleSet = RuleSet(rawValue: storedRuleSet ?? "official") ?? .official
+
+        let storedAISpeed = UserDefaults.standard.string(forKey: Self.aiSpeedKey)
+        aiSpeed = AISpeed(rawValue: storedAISpeed ?? "normal") ?? .normal
     }
 }

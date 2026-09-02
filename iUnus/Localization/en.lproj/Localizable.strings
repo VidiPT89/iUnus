@@ -22,11 +22,15 @@
 "settings.difficulty.easy" = "Easy";
 "settings.difficulty.normal" = "Normal";
 "settings.difficulty.hard" = "Hard";
+"settings.aiSpeed" = "AI Speed";
+"settings.aiSpeed.slow" = "Slow";
+"settings.aiSpeed.normal" = "Normal";
+"settings.aiSpeed.fast" = "Fast";
 "settings.ruleSet" = "Rule Set";
 "settings.ruleSet.official" = "Official";
 "settings.ruleSet.official.subtitle" = "Draw Two and Wild Draw Four can't be stacked — the hit player draws immediately and loses their turn.";
 "settings.ruleSet.houseRules" = "House Rules";
-"settings.ruleSet.houseRules.subtitle" = "Draw Two and Wild Draw Four can be stacked on each other, passing the penalty on. Whoever can't stack draws the whole pile.";
+"settings.ruleSet.houseRules.subtitle" = "Draw Two and Wild Draw Four can be stacked on each other, passing the penalty on. Whoever can't stack draws the whole pile. If you have no playable card, you keep drawing until you get one. The round also keeps going after a hand empties, until only one player is left holding cards.";
 
 "about.title" = "About";
 "about.developedBy" = "Developed by";
@@ -87,6 +91,12 @@
 "roundEnd.pointsEarned" = "+%d points";
 "roundEnd.continue" = "Continue";
 "roundEnd.scores" = "Scores";
+"roundEnd.finishOrder" = "Finish Order";
+"roundEnd.place.1" = "1st";
+"roundEnd.place.2" = "2nd";
+"roundEnd.place.3" = "3rd";
+"roundEnd.place.n" = "%dth";
+"roundEnd.place.last" = "Last";
 
 "gameEnd.title" = "Game Over";
 "gameEnd.winner" = "%@ wins the game!";

@@ -3,30 +3,37 @@ import Combine
 import UIKit
 import AudioToolbox
 
+/// Core game state and the local play/draw flow. Online-match wiring lives in
+/// `GameViewModel+Online.swift`, the AI turn loop in `GameViewModel+AI.swift`, round/game
+/// conclusion in `GameViewModel+RoundEnd.swift`, and haptics/sound/toast feedback in
+/// `GameViewModel+Feedback.swift`. Members those extensions touch are `internal` rather than
+/// `private` — Swift has no cross-file "type-private" level, so this is the usual cost of
+/// splitting one type's implementation across files while keeping it out of other modules.
 @MainActor
 final class GameViewModel: ObservableObject {
-    @Published private(set) var players: [Player] = []
-    @Published private(set) var deck = Deck()
-    @Published private(set) var currentPlayerIndex: Int = 0
-    @Published private(set) var direction: TurnDirection = .clockwise
+    @Published var players: [Player] = []
+    @Published var deck = Deck()
+    @Published var currentPlayerIndex: Int = 0
+    @Published var direction: TurnDirection = .clockwise
     @Published var phase: GamePhase = .menu
-    @Published private(set) var pendingUnoCatch: PendingUnoCatch?
+    @Published var pendingUnoCatch: PendingUnoCatch?
     @Published var toastMessage: String?
-    @Published private(set) var roundWinnerID: UUID?
-    @Published private(set) var gameWinnerID: UUID?
-    @Published private(set) var lastRoundPoints: Int = 0
-    @Published private(set) var isAIThinking: Bool = false
-    @Published private(set) var justDrawnCard: Card?
-    @Published private(set) var pendingDrawStack: Int = 0
+    @Published var roundWinnerID: UUID?
+    @Published var gameWinnerID: UUID?
+    @Published var lastRoundPoints: Int = 0
+    @Published var isAIThinking: Bool = false
+    @Published var justDrawnCard: Card?
+    @Published var pendingDrawStack: Int = 0
     @Published private(set) var hasSavedGame: Bool = GameSaveStore.hasSave
-    @Published private(set) var mode: GameMode = .local
+    @Published var mode: GameMode = .local
+    @Published private(set) var roundFinishOrder: [UUID] = []
 
     static let targetScore = 500
     private let unoCatchWindow: TimeInterval = 3.0
-    private var toastWorkItem: DispatchWorkItem?
+    var toastWorkItem: DispatchWorkItem?
 
-    private(set) var onlineLocalPlayerID: UUID?
-    private var onlineParticipantMapping: [String: UUID] = [:]
+    var onlineLocalPlayerID: UUID?
+    var onlineParticipantMapping: [String: UUID] = [:]
     weak var onlineDelegate: OnlineMatchDelegate?
 
     var topCard: Card? { deck.topCard }
@@ -48,8 +55,21 @@ final class GameViewModel: ObservableObject {
     }
 
     private weak var settings: SettingsViewModel?
-    private var aiDifficulty: AIDifficulty { settings?.aiDifficulty ?? .normal }
+    var aiDifficulty: AIDifficulty { settings?.aiDifficulty ?? .normal }
+    var aiSpeed: AISpeed { settings?.aiSpeed ?? .normal }
     private var houseRulesActive: Bool { settings?.ruleSet == .houseRules }
+    /// Official rules only: a Wild Draw Four may not be played while the player holds a card
+    /// matching the active color. House rules (and online, which enforces official elsewhere) waive it.
+    var enforceWildDrawFourRestriction: Bool { !houseRulesActive }
+
+    /// Under House Rules a round continues, skipping finished players, until only one player
+    /// still holds cards; Official Rules (and online, which is always Official) end the round
+    /// the instant the first player empties their hand — unchanged from before this feature.
+    private var playUntilOnePlayerRemains: Bool { houseRulesActive && mode != .online }
+
+    private func activePlayerIndices() -> [Int] {
+        players.indices.filter { !roundFinishOrder.contains(players[$0].id) }
+    }
 
     func configure(settings: SettingsViewModel) {
         self.settings = settings
@@ -79,6 +99,7 @@ final class GameViewModel: ObservableObject {
         pendingDrawStack = saved.pendingDrawStack
         pendingUnoCatch = nil
         roundWinnerID = nil
+        roundFinishOrder = saved.roundFinishOrder
         gameWinnerID = nil
         justDrawnCard = nil
         phase = .playing
@@ -94,77 +115,30 @@ final class GameViewModel: ObservableObject {
         returnToMenu()
     }
 
-    private func saveProgressIfActive() {
+    func saveProgressIfActive() {
         guard phase == .playing, !players.isEmpty else { return }
         let save = SavedGame(
             players: players,
             deck: deck,
             currentPlayerIndex: currentPlayerIndex,
             direction: direction,
-            pendingDrawStack: pendingDrawStack
+            pendingDrawStack: pendingDrawStack,
+            roundFinishOrder: roundFinishOrder
         )
         GameSaveStore.save(save)
         hasSavedGame = true
     }
 
-    private func clearSavedGame() {
+    func clearSavedGame() {
         GameSaveStore.clear()
         hasSavedGame = false
-    }
-
-    // MARK: - Online matches (GameKit)
-
-    /// Starts a fresh online match dealt from scratch. Called only on the device GameKit
-    /// designated as the first turn — every other participant instead calls `loadOnlineState`
-    /// once the turn (and its dealt state) reaches them.
-    func startOnlineMatch(players: [Player], localPlayerID: UUID, participantMapping: [String: UUID], delegate: OnlineMatchDelegate) {
-        mode = .online
-        onlineLocalPlayerID = localPlayerID
-        onlineParticipantMapping = participantMapping
-        onlineDelegate = delegate
-        self.players = players
-        gameWinnerID = nil
-        startNewRound()
-    }
-
-    /// Loads state decoded from an in-progress `GKTurnBasedMatch`'s data, resuming the online
-    /// game on this device for whichever player's turn it now is.
-    func loadOnlineState(_ state: OnlineMatchState, localPlayerID: UUID, participantMapping: [String: UUID], delegate: OnlineMatchDelegate) {
-        mode = .online
-        onlineLocalPlayerID = localPlayerID
-        onlineParticipantMapping = participantMapping
-        onlineDelegate = delegate
-        players = state.players
-        deck = state.deck
-        currentPlayerIndex = state.currentPlayerIndex
-        direction = state.direction
-        pendingDrawStack = state.pendingDrawStack
-        pendingUnoCatch = nil
-        roundWinnerID = state.roundWinnerID
-        gameWinnerID = state.gameWinnerID
-        justDrawnCard = nil
-        phase = state.phase == .gameEnd ? .gameEnd : .playing
-    }
-
-    func exportOnlineState() -> OnlineMatchState {
-        OnlineMatchState(
-            players: players,
-            deck: deck,
-            currentPlayerIndex: currentPlayerIndex,
-            direction: direction,
-            pendingDrawStack: pendingDrawStack,
-            phase: gameWinnerID != nil ? .gameEnd : .playing,
-            roundWinnerID: roundWinnerID,
-            gameWinnerID: gameWinnerID,
-            participantPlayerIDs: onlineParticipantMapping
-        )
     }
 
     /// Routes post-mutation bookkeeping by mode: local games persist to disk and, if it's now
     /// an AI seat's turn, advance it; online games instead hand the new state to GameKit via
     /// the delegate. Consolidating this in one place keeps local-mode behavior byte-for-byte
     /// identical to before online support was added.
-    private func afterTurnMutation() {
+    func afterTurnMutation() {
         switch mode {
         case .local:
             saveProgressIfActive()
@@ -174,7 +148,7 @@ final class GameViewModel: ObservableObject {
         }
     }
 
-    private func syncProgress() {
+    func syncProgress() {
         switch mode {
         case .local:
             saveProgressIfActive()
@@ -189,6 +163,7 @@ final class GameViewModel: ObservableObject {
         pendingUnoCatch = nil
         pendingDrawStack = 0
         roundWinnerID = nil
+        roundFinishOrder = []
         for i in players.indices {
             players[i].hand = []
             players[i].hasCalledUno = false
@@ -245,14 +220,16 @@ final class GameViewModel: ObservableObject {
         attemptPlay(card, playerIndex: currentPlayerIndex)
     }
 
-    private func attemptPlay(_ card: Card, playerIndex: Int) {
+    func attemptPlay(_ card: Card, playerIndex: Int) {
         guard players.indices.contains(playerIndex) else { return }
         guard let top = topCard else { return }
         guard let handIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
 
         // Facing an active house-rule stack, only another +2/+4 may answer — its color
         // doesn't need to match, it just needs to be a Draw Two or Wild Draw Four.
-        let isLegal = pendingDrawStack > 0 ? card.value.drawPenaltyAmount != nil : card.canPlay(on: top)
+        let isLegal = pendingDrawStack > 0
+            ? card.value.drawPenaltyAmount != nil
+            : card.canPlay(on: top, hand: players[playerIndex].hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction)
         guard isLegal else {
             if !players[playerIndex].isAI { hapticError(); showToast(L.t("game.invalidMove")) }
             return
@@ -303,11 +280,40 @@ final class GameViewModel: ObservableObject {
         }
 
         if players[playerIndex].hand.isEmpty {
-            endRound(winnerIndex: playerIndex)
+            handlePlayerFinished(playerIndex: playerIndex, playedCard: card)
             return
         }
 
         applyEffectAndAdvance(of: card, from: playerIndex)
+    }
+
+    /// Official/online: the round ends the instant a hand empties. House Rules: the finisher
+    /// takes their placement and leaves the rotation, but the round keeps going — still applying
+    /// the card's effect (Skip/Reverse/+2/+4) among the remaining active players — until only
+    /// one player still holds cards.
+    private func handlePlayerFinished(playerIndex: Int, playedCard: Card) {
+        guard players.indices.contains(playerIndex) else { return }
+        guard playUntilOnePlayerRemains else {
+            endRound(winnerIndex: playerIndex)
+            return
+        }
+        let finishedID = players[playerIndex].id
+        if !roundFinishOrder.contains(finishedID) {
+            roundFinishOrder.append(finishedID)
+        }
+        if activePlayerIndices().count <= 1 {
+            finishHouseRulesRound()
+            return
+        }
+        applyEffectAndAdvance(of: playedCard, from: playerIndex)
+    }
+
+    /// Concludes a House Rules round once only one player still holds cards: the round winner
+    /// is whoever finished first, scored the same as always against everyone else's final hands
+    /// (which is equivalent to just the last remaining player's hand, since everyone else is empty).
+    private func finishHouseRulesRound() {
+        guard let winnerID = roundFinishOrder.first, let winnerIndex = players.firstIndex(where: { $0.id == winnerID }) else { return }
+        endRound(winnerIndex: winnerIndex)
     }
 
     private func applyEffectAndAdvance(of card: Card, from playerIndex: Int) {
@@ -337,7 +343,7 @@ final class GameViewModel: ObservableObject {
         afterTurnMutation()
     }
 
-    private func forceDraw(count: Int, onPlayerIndex: Int) {
+    func forceDraw(count: Int, onPlayerIndex: Int) {
         guard players.indices.contains(onPlayerIndex) else { return }
         for _ in 0..<count {
             guard deck.canDraw, let c = deck.draw() else {
@@ -358,10 +364,19 @@ final class GameViewModel: ObservableObject {
         currentPlayerIndex = newIndex
     }
 
+    /// Steps to the next seat in turn order; under the House Rules "last player standing"
+    /// variant this skips seats already recorded in `roundFinishOrder`. The `attempts` guard
+    /// bounds the loop to one lap so a corrupt/edge state can never spin forever.
     private func nextIndex(from index: Int) -> Int {
         let count = players.count
         guard count > 0 else { return 0 }
-        return (index + direction.rawValue + count) % count
+        var newIndex = index
+        var attempts = 0
+        repeat {
+            newIndex = (newIndex + direction.rawValue + count) % count
+            attempts += 1
+        } while playUntilOnePlayerRemains && roundFinishOrder.contains(players[newIndex].id) && attempts <= count
+        return newIndex
     }
 
     // MARK: - Drawing
@@ -371,7 +386,7 @@ final class GameViewModel: ObservableObject {
         drawForCurrentPlayer()
     }
 
-    private func drawForCurrentPlayer() {
+    func drawForCurrentPlayer() {
         guard players.indices.contains(currentPlayerIndex) else { return }
         if pendingDrawStack > 0 {
             drawPendingStack()
@@ -401,7 +416,9 @@ final class GameViewModel: ObservableObject {
             guard let self, self.justDrawnCard?.id == card.id else { return }
             self.justDrawnCard = nil
         }
-        if let top = topCard, card.canPlay(on: top), players[currentPlayerIndex].isAI {
+        if let top = topCard,
+           card.canPlay(on: top, hand: players[currentPlayerIndex].hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction),
+           players[currentPlayerIndex].isAI {
             attemptPlay(card, playerIndex: currentPlayerIndex)
         } else {
             advanceTurn(steps: 1, from: currentPlayerIndex)
@@ -446,132 +463,4 @@ final class GameViewModel: ObservableObject {
         guard let pending = pendingUnoCatch, Date() >= pending.deadline else { return }
         catchFailureToCallUno()
     }
-
-    // MARK: - AI turn loop
-
-    private func advanceIfAITurn() {
-        guard mode == .local, phase == .playing, let player = currentPlayer, player.isAI else { return }
-        isAIThinking = true
-        let delay = Double.random(in: 0.8...1.6)
-        let index = currentPlayerIndex
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-            guard let self, self.currentPlayerIndex == index, self.phase == .playing else { return }
-            self.isAIThinking = false
-            self.performAITurn(index: index)
-        }
-    }
-
-    private func performAITurn(index: Int) {
-        guard let top = topCard, players.indices.contains(index) else { return }
-        let hand = players[index].hand
-
-        if pendingDrawStack > 0 {
-            if let stackCard = AIStrategy.chooseStackCard(hand: hand, difficulty: aiDifficulty) {
-                attemptPlay(stackCard, playerIndex: index)
-            } else {
-                drawForCurrentPlayer()
-            }
-            return
-        }
-
-        let opponentMin = players.enumerated()
-            .filter { $0.offset != index }
-            .map { $0.element.hand.count }
-            .min() ?? 99
-
-        if let chosen = AIStrategy.chooseCard(hand: hand, topCard: top, opponentLowestCardCount: opponentMin, difficulty: aiDifficulty) {
-            attemptPlay(chosen, playerIndex: index)
-        } else {
-            drawForCurrentPlayer()
-        }
-    }
-
-    // MARK: - Round / game end
-
-    private func endRound(winnerIndex: Int) {
-        guard players.indices.contains(winnerIndex) else { return }
-        roundWinnerID = players[winnerIndex].id
-
-        // Online matches use official rules only and are decided by the first round, rather
-        // than local mode's running score race to `targetScore` across multiple rounds.
-        if mode == .online {
-            gameWinnerID = players[winnerIndex].id
-            phase = .gameEnd
-            hapticSuccess()
-            onlineDelegate?.gameViewModelDidEndGame(self, winnerIndex: winnerIndex)
-            return
-        }
-
-        var points = 0
-        for (i, p) in players.enumerated() where i != winnerIndex {
-            points += p.hand.reduce(0) { $0 + $1.value.scoreValue }
-        }
-        lastRoundPoints = points
-        players[winnerIndex].totalScore += points
-        phase = .roundEnd
-        hapticSuccess()
-
-        if players[winnerIndex].totalScore >= Self.targetScore {
-            gameWinnerID = players[winnerIndex].id
-            playWinSound()
-            recordMatchStats(winnerIndex: winnerIndex)
-            clearSavedGame()
-        }
-    }
-
-    private func recordMatchStats(winnerIndex: Int) {
-        guard let human = humanPlayer else { return }
-        let humanWon = players[winnerIndex].id == human.id
-        MatchStatsStore.shared.recordGameEnd(humanWon: humanWon, humanScore: human.totalScore)
-    }
-
-    func continueAfterRound() {
-        if gameWinnerID != nil {
-            phase = .gameEnd
-        } else {
-            startNewRound()
-        }
-    }
-
-    func returnToMenu() {
-        phase = .menu
-        players = []
-        gameWinnerID = nil
-        mode = .local
-        onlineLocalPlayerID = nil
-        onlineParticipantMapping = [:]
-        onlineDelegate = nil
-    }
-
-    // MARK: - Feedback helpers
-
-    private func showToast(_ text: String) {
-        toastWorkItem?.cancel()
-        toastMessage = text
-        let work = DispatchWorkItem { [weak self] in self?.toastMessage = nil }
-        toastWorkItem = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: work)
-    }
-
-    private func hapticPlay() {
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-    }
-
-    private func hapticError() {
-        UINotificationFeedbackGenerator().notificationOccurred(.error)
-    }
-
-    private func hapticSuccess() {
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-    }
-
-    /// Short, non-intrusive feedback using built-in iOS system sound IDs — no bundled
-    /// audio assets required, keeping the project free of binary sound files.
-    private func playSystemSound(_ id: UInt32) {
-        AudioServicesPlaySystemSound(SystemSoundID(id))
-    }
-
-    private func playCardSound() { playSystemSound(1104) }
-    private func playDrawSound() { playSystemSound(1103) }
-    private func playWinSound() { playSystemSound(1025) }
 }

@@ -39,6 +39,7 @@ struct GameView: View {
                         isMyTurn: isHumanTurn && viewModel.phase == .playing,
                         namespace: cardSpace,
                         justDrawnCardID: viewModel.justDrawnCard?.id,
+                        enforceWildDrawFourRestriction: viewModel.enforceWildDrawFourRestriction,
                         onPlay: { viewModel.humanPlay($0) }
                     )
                 }

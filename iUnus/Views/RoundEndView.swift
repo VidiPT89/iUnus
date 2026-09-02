@@ -7,6 +7,28 @@ struct RoundEndView: View {
         viewModel.players.first(where: { $0.id == viewModel.roundWinnerID })?.name ?? ""
     }
 
+    /// Full finishing order for a House Rules "last player standing" round: everyone recorded
+    /// in `roundFinishOrder`, in the order they emptied their hand, followed by whoever was left
+    /// still holding cards. Empty when the round ended the Official way (first empty hand wins).
+    private var finishOrderNames: [String] {
+        guard !viewModel.roundFinishOrder.isEmpty else { return [] }
+        let byID = Dictionary(uniqueKeysWithValues: viewModel.players.map { ($0.id, $0.name) })
+        var names = viewModel.roundFinishOrder.compactMap { byID[$0] }
+        let lastPlayer = viewModel.players.first { !viewModel.roundFinishOrder.contains($0.id) }
+        if let lastPlayer { names.append(lastPlayer.name) }
+        return names
+    }
+
+    private func placeLabel(_ index: Int, total: Int) -> String {
+        if index == total - 1 { return L.t("roundEnd.place.last") }
+        switch index {
+        case 0: return L.t("roundEnd.place.1")
+        case 1: return L.t("roundEnd.place.2")
+        case 2: return L.t("roundEnd.place.3")
+        default: return String(format: L.t("roundEnd.place.n"), index + 1)
+        }
+    }
+
     var body: some View {
         ZStack {
             Color.brandBackground.ignoresSafeArea()
@@ -45,6 +67,28 @@ struct RoundEndView: View {
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 16).fill(Color.brandSurface))
                 .padding(.horizontal, 32)
+
+                if !finishOrderNames.isEmpty {
+                    VStack(spacing: 8) {
+                        Text(L.t("roundEnd.finishOrder"))
+                            .font(.subheadline.weight(.bold))
+                            .foregroundColor(.brandTextSecondary)
+                        ForEach(Array(finishOrderNames.enumerated()), id: \.offset) { index, name in
+                            HStack {
+                                Text(placeLabel(index, total: finishOrderNames.count))
+                                    .fontWeight(.semibold)
+                                Text(name)
+                                Spacer()
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.brandTextPrimary)
+                            .padding(.horizontal, 24)
+                        }
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.brandSurface))
+                    .padding(.horizontal, 32)
+                }
 
                 Spacer()
 

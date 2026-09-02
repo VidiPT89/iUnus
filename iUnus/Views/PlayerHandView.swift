@@ -6,6 +6,7 @@ struct PlayerHandView: View {
     let isMyTurn: Bool
     let namespace: Namespace.ID
     var justDrawnCardID: UUID? = nil
+    var enforceWildDrawFourRestriction: Bool = false
     let onPlay: (Card) -> Void
 
     @State private var pressedCardID: UUID?
@@ -14,7 +15,7 @@ struct PlayerHandView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: -18) {
                 ForEach(cards) { card in
-                    let playable = isMyTurn && topCard.map { card.canPlay(on: $0) } ?? false
+                    let playable = isMyTurn && (topCard.map { card.canPlay(on: $0, hand: cards, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction) } ?? false)
                     let isPressed = pressedCardID == card.id
                     CardView(card: card, width: 78)
                         .matchedGeometryEffect(id: card.id, in: namespace, isSource: card.id != justDrawnCardID)

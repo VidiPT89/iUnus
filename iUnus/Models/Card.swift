@@ -37,7 +37,14 @@ struct Card: Identifiable, Equatable, Codable, Hashable {
         return String(format: L.t("card.label"), L.t(colorKey), L.t(valueKey))
     }
 
-    func canPlay(on topCard: Card) -> Bool {
+    /// `hand` and `enforceWildDrawFourRestriction` implement the official rule that a Wild
+    /// Draw Four may only be played when the player holds no card matching the active color —
+    /// house rules waive this, so callers there can omit both and get the old behavior.
+    func canPlay(on topCard: Card, hand: [Card] = [], enforceWildDrawFourRestriction: Bool = false) -> Bool {
+        if value == .wildDrawFour && enforceWildDrawFourRestriction {
+            let hasMatchingColorCard = hand.contains { !$0.value.isWild && $0.color == topCard.effectiveColor }
+            if hasMatchingColorCard { return false }
+        }
         if value.isWild { return true }
         if effectiveColor == topCard.effectiveColor { return true }
         if value == topCard.value { return true }

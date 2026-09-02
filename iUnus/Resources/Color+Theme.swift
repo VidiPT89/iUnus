@@ -46,6 +46,28 @@ enum AIDifficulty: String, CaseIterable, Identifiable {
     }
 }
 
+enum AISpeed: String, CaseIterable, Identifiable {
+    case slow, normal, fast
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .slow: return "settings.aiSpeed.slow"
+        case .normal: return "settings.aiSpeed.normal"
+        case .fast: return "settings.aiSpeed.fast"
+        }
+    }
+
+    var delayRange: ClosedRange<Double> {
+        switch self {
+        case .slow: return 1.6...2.6
+        case .normal: return 0.8...1.6
+        case .fast: return 0.3...0.7
+        }
+    }
+}
+
 enum RuleSet: String, CaseIterable, Identifiable {
     case official, houseRules
 
