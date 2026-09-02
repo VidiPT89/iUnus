@@ -29,7 +29,6 @@ final class GameViewModel: ObservableObject {
     @Published private(set) var roundFinishOrder: [UUID] = []
 
     static let targetScore = 500
-    private let unoCatchWindow: TimeInterval = 3.0
     var toastWorkItem: DispatchWorkItem?
 
     var onlineLocalPlayerID: UUID?
@@ -81,7 +80,7 @@ final class GameViewModel: ObservableObject {
 
     func startNewGame(opponentCount: Int) {
         clearSavedGame()
-        let clamped = max(1, min(3, opponentCount))
+        let clamped = max(1, min(9, opponentCount))
         var newPlayers = [Player(name: L.t("player.you"), kind: .human)]
         for i in 1...clamped {
             newPlayers.append(Player(name: String(format: L.t("player.opponent"), i), kind: .ai))
@@ -230,6 +229,7 @@ final class GameViewModel: ObservableObject {
         guard players.indices.contains(playerIndex) else { return }
         guard let top = topCard else { return }
         guard let handIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
+        closeUnoCatchWindowIfBlocking(playerIndex)
 
         // Facing an active house-rule stack, only another +2/+4 may answer — its color
         // doesn't need to match, it just needs to be a Draw Two or Wild Draw Four.
@@ -278,10 +278,12 @@ final class GameViewModel: ObservableObject {
             if players[playerIndex].isAI {
                 players[playerIndex].hasCalledUno = AIStrategy.shouldCallUnoImmediately(difficulty: aiDifficulty)
                 if !players[playerIndex].hasCalledUno {
-                    pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, deadline: Date().addingTimeInterval(unoCatchWindow))
+                    // `blockingPlayerIndex` is provisional here — `applyEffectAndAdvance` overwrites
+                    // it with the real next seat once the card's effect has moved the turn.
+                    pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, blockingPlayerIndex: playerIndex)
                 }
             } else {
-                pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, deadline: Date().addingTimeInterval(unoCatchWindow))
+                pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, blockingPlayerIndex: playerIndex)
             }
         }
 
@@ -346,7 +348,20 @@ final class GameViewModel: ObservableObject {
         default:
             advanceTurn(steps: 1, from: playerIndex)
         }
+        // The UNO catch window (if this play just opened one) closes the moment the seat that's
+        // now current takes its own action — never a fixed clock, per official rules ("before the
+        // next turn begins").
+        if pendingUnoCatch != nil { pendingUnoCatch?.blockingPlayerIndex = currentPlayerIndex }
         afterTurnMutation()
+    }
+
+    /// Closes an open UNO-catch window with no penalty the instant the seat it was waiting on
+    /// takes its turn — called at the top of both `attemptPlay` and `drawForCurrentPlayer` so
+    /// whichever action that seat takes first counts as "the next turn beginning". A `catchUno`
+    /// tap on the offender that beats this to the punch still applies the 2-card penalty as usual.
+    private func closeUnoCatchWindowIfBlocking(_ playerIndex: Int) {
+        guard let pending = pendingUnoCatch, pending.blockingPlayerIndex == playerIndex else { return }
+        pendingUnoCatch = nil
     }
 
     func forceDraw(count: Int, onPlayerIndex: Int) {
@@ -394,6 +409,7 @@ final class GameViewModel: ObservableObject {
 
     func drawForCurrentPlayer() {
         guard players.indices.contains(currentPlayerIndex) else { return }
+        closeUnoCatchWindowIfBlocking(currentPlayerIndex)
         if pendingDrawStack > 0 {
             drawPendingStack()
             return
@@ -463,10 +479,5 @@ final class GameViewModel: ObservableObject {
         hapticError()
         showToast(L.t("game.unoPenalty"))
         syncProgress()
-    }
-
-    func checkUnoTimeout() {
-        guard let pending = pendingUnoCatch, Date() >= pending.deadline else { return }
-        catchFailureToCallUno()
     }
 }

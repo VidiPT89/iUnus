@@ -5,7 +5,6 @@ struct GameView: View {
     @Namespace private var cardSpace
     @State private var dealtCardCount = 0
     @State private var wildFlourishScale: CGFloat = 1.0
-    private let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack {
@@ -45,7 +44,6 @@ struct GameView: View {
                 }
             }
         }
-        .onReceive(timer) { _ in viewModel.checkUnoTimeout() }
         .overlay(alignment: .top) {
             if let toast = viewModel.toastMessage {
                 Text(toast)
@@ -121,33 +119,54 @@ struct GameView: View {
         }
     }
 
+    /// Opponent count is capped at 9 (`GameViewModel.startNewGame`), but a single scaled-down row
+    /// stops being legible well before that many avatars — past 5, switch to a horizontally
+    /// scrollable row at a fixed, readable size instead of continuing to shrink everyone to fit.
+    private static let maxScaledOpponents = 5
+
     private var opponentsRow: some View {
         let opponents = viewModel.opponentPlayers
-        return GeometryReader { proxy in
-            let baseCardWidth: CGFloat = 40
-            let minSpacing: CGFloat = 8
-            let availableWidth = proxy.size.width - 32
-            let neededWidth = CGFloat(opponents.count) * baseCardWidth + CGFloat(max(opponents.count - 1, 0)) * minSpacing
-            let scale = neededWidth > availableWidth && neededWidth > 0 ? max(availableWidth / neededWidth, 0.55) : 1.0
+        let baseCardWidth: CGFloat = 40
+        let minSpacing: CGFloat = 8
 
-            HStack(spacing: minSpacing * scale) {
-                ForEach(opponents) { player in
-                    OpponentHandView(
-                        player: player,
-                        namespace: cardSpace,
-                        isCurrentTurn: viewModel.currentPlayer?.id == player.id,
-                        isThinking: viewModel.isAIThinking,
-                        cardWidth: baseCardWidth * scale,
-                        onCatchUno: viewModel.pendingUnoCatch?.playerID == player.id
-                            ? { viewModel.catchFailureToCallUno() }
-                            : nil
-                    )
+        return Group {
+            if opponents.count > Self.maxScaledOpponents {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: minSpacing) {
+                        opponentViews(opponents, cardWidth: baseCardWidth)
+                    }
+                    .padding(.horizontal)
+                }
+            } else {
+                GeometryReader { proxy in
+                    let availableWidth = proxy.size.width - 32
+                    let neededWidth = CGFloat(opponents.count) * baseCardWidth + CGFloat(max(opponents.count - 1, 0)) * minSpacing
+                    let scale = neededWidth > availableWidth && neededWidth > 0 ? max(availableWidth / neededWidth, 0.55) : 1.0
+
+                    HStack(spacing: minSpacing * scale) {
+                        opponentViews(opponents, cardWidth: baseCardWidth * scale)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal)
         }
         .frame(height: 100)
+    }
+
+    private func opponentViews(_ opponents: [Player], cardWidth: CGFloat) -> some View {
+        ForEach(opponents) { player in
+            OpponentHandView(
+                player: player,
+                namespace: cardSpace,
+                isCurrentTurn: viewModel.currentPlayer?.id == player.id,
+                isThinking: viewModel.isAIThinking,
+                cardWidth: cardWidth,
+                onCatchUno: viewModel.pendingUnoCatch?.playerID == player.id
+                    ? { viewModel.catchFailureToCallUno() }
+                    : nil
+            )
+        }
     }
 
     private var pileArea: some View {

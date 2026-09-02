@@ -126,13 +126,30 @@ struct MenuView: View {
                 .font(.headline)
                 .foregroundColor(.brandTextPrimary)
 
-            Picker(L.t("menu.players"), selection: $opponentCount) {
-                ForEach(1...3, id: \.self) { n in
-                    Text("\(n)").tag(n)
+            HStack(spacing: 20) {
+                Button {
+                    opponentCount = max(1, opponentCount - 1)
+                } label: {
+                    Image(systemName: "minus.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(opponentCount > 1 ? .brandPrimary : .brandTextSecondary.opacity(0.4))
                 }
+                .disabled(opponentCount <= 1)
+
+                Text("\(opponentCount)")
+                    .font(.title2.weight(.bold))
+                    .foregroundColor(.brandTextPrimary)
+                    .frame(minWidth: 32)
+
+                Button {
+                    opponentCount = min(9, opponentCount + 1)
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(opponentCount < 9 ? .brandPrimary : .brandTextSecondary.opacity(0.4))
+                }
+                .disabled(opponentCount >= 9)
             }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 220)
 
             Button {
                 viewModel.startNewGame(opponentCount: opponentCount)
