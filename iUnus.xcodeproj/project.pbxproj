@@ -266,6 +266,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					47E9E5B18D5D228B0360484B = {
+						DevelopmentTeam = S769436W24;
+					};
 				};
 			};
 			buildConfigurationList = D1AE67B71DD71A973E846EBC /* Build configuration list for PBXProject "iUnus" */;
@@ -443,6 +446,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_LANGUAGE = en;
+				DEVELOPMENT_TEAM = S769436W24;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -502,6 +506,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_LANGUAGE = en;
+				DEVELOPMENT_TEAM = S769436W24;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
