@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/icon.png" width="160" alt="iUnus app icon"></p>
+
 # 🎴 iUnus
 
 > The classic UNO card game, natively reimagined for iOS with SwiftUI.

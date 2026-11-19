@@ -9,9 +9,13 @@ struct AboutView: View {
             VStack(spacing: 24) {
                 Spacer()
 
-                Image(systemName: "suit.club.fill")
-                    .font(.system(size: 48))
-                    .foregroundColor(.brandPrimary)
+                Image("AppLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 120, height: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 27, style: .continuous))
+                    .shadow(color: .black.opacity(0.2), radius: 10, y: 4)
+                    .accessibilityHidden(true)
 
                 Text(L.t("about.developedBy"))
                     .font(.subheadline)
