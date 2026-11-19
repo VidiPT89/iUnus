@@ -40,6 +40,10 @@ final class MatchStatsStore: ObservableObject {
         stats.bestScore = max(stats.bestScore, humanScore)
     }
 
+    func reset() {
+        stats = MatchStats()
+    }
+
     private func persist() {
         guard let data = try? JSONEncoder().encode(stats) else { return }
         UserDefaults.standard.set(data, forKey: Self.storageKey)

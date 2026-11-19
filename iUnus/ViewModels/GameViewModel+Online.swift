@@ -33,11 +33,6 @@ extension GameViewModel {
         currentPlayerIndex = state.currentPlayerIndex
         direction = state.direction
         pendingDrawStack = state.pendingDrawStack
-        // The window (if open) always blocks on whoever's turn this snapshot was exported for —
-        // that's exactly the seat GameKit just handed the turn to — so it closes the instant this
-        // device's local player (or an AI seat, in a mixed local/online build) takes their turn,
-        // same rule as local play.
-        pendingUnoCatch = state.pendingUnoCatchPlayerID.map { PendingUnoCatch(playerID: $0, blockingPlayerIndex: state.currentPlayerIndex) }
         roundWinnerID = state.roundWinnerID
         gameWinnerID = state.gameWinnerID
         justDrawnCard = nil
@@ -54,7 +49,6 @@ extension GameViewModel {
             phase: gameWinnerID != nil ? .gameEnd : .playing,
             roundWinnerID: roundWinnerID,
             gameWinnerID: gameWinnerID,
-            pendingUnoCatchPlayerID: pendingUnoCatch?.playerID,
             participantPlayerIDs: onlineParticipantMapping,
             drawnCardToPlayID: drawnCardToPlayID
         )

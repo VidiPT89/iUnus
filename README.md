@@ -12,10 +12,11 @@
 - ✅ Responsive table, explicit active color, accessible card buttons and legal-move markers
 - ✅ Smooth, native SwiftUI animations — card dealing, playing, and draw-pile motion
 - ✅ Haptic feedback on key moments (playing a card, invalid moves, UNO calls, wins)
-- ✅ "UNO!" call mechanic: get caught before the next player acts, including by the AI
+- ✅ "UNO!" call mechanic: get caught before the next player acts, including by the AI (more forgiving on Easy)
 - ✅ Saved games preserve draw/color decisions, challenges, rule set and round results
 - ✅ Game Center turn-based matches, with visible save errors and retry
 - ✅ Multi-round scoring up to 500 points, with round and game summary screens
+- ✅ Statistics in Settings (games played/won, best streak, best score) with reset
 - ✅ Runtime language switch — Português (PT-PT) and English, independent of system locale
 - ✅ Dark mode, Light mode, and System mode
 - ✅ Custom color identity inspired by [ividi.dev](https://ividi.dev/) — burnt orange, amber and black
@@ -53,7 +54,7 @@ PT-PT/English and Light/Dark/System mode at any time.
 
 ## 🧪 Testing
 
-Run the shared `iUnus` scheme in Xcode (`⌘R`) or run tests (`⌘U`, iOS 17+ simulator). The app deployment target remains iOS 16. Tests cover draw/color decisions, challenges, scoring, save validation and compatibility, UNO, turn cancellation, localization, and full rounds with 2/4/10 players. Layout tests attach compact/tablet captures to the test result.
+Run the shared `iUnus` scheme in Xcode (`⌘R`) or run tests (`⌘U`, iOS 17+ simulator). The app deployment target remains iOS 16. Tests (26) cover draw/color decisions, challenges, scoring, save validation and compatibility, UNO, turn cancellation, localization, and full rounds with 2/4/10 players. Layout tests attach compact/tablet captures to the test result.
 
 To verify compilation:
 

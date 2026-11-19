@@ -3,6 +3,7 @@ import SwiftUI
 struct GameEndView: View {
     @ObservedObject private var localization = LocalizationManager.shared
     @ObservedObject var viewModel: GameViewModel
+    @EnvironmentObject private var onlineMatchCoordinator: OnlineMatchCoordinator
     @State private var showConfetti = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -47,7 +48,14 @@ struct GameEndView: View {
 
                 VStack(spacing: 14) {
                     Button {
-                        viewModel.startNewGame(opponentCount: max(1, viewModel.players.filter { $0.isAI }.count))
+                        // An online match has no AI seats to re-deal: offer another online match
+                        // instead of silently starting a local game against a single bot.
+                        if viewModel.mode == .online {
+                            viewModel.quitToMenu()
+                            onlineMatchCoordinator.isPresentingMatchmaker = true
+                        } else {
+                            viewModel.startNewGame(opponentCount: max(1, viewModel.players.filter { $0.isAI }.count))
+                        }
                     } label: {
                         Text(L.t("gameEnd.newGame"))
                             .font(.headline.weight(.bold))

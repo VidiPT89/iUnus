@@ -23,6 +23,13 @@
 "settings.difficulty.normal" = "Normal";
 "settings.difficulty.hard" = "Hard";
 "settings.sound" = "Sound";
+"settings.stats" = "Statistics";
+"settings.stats.played" = "Games played";
+"settings.stats.won" = "Games won";
+"settings.stats.bestStreak" = "Best streak";
+"settings.stats.bestScore" = "Best score";
+"settings.stats.reset" = "Reset statistics";
+"settings.stats.resetConfirm" = "Reset all statistics? This cannot be undone.";
 "settings.aiSpeed" = "AI Speed";
 "settings.aiSpeed.slow" = "Slow";
 "settings.aiSpeed.normal" = "Normal";

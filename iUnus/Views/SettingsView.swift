@@ -4,6 +4,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var settings: SettingsViewModel
     @ObservedObject private var localization = LocalizationManager.shared
+    @ObservedObject private var statsStore = MatchStatsStore.shared
+    @State private var confirmStatsReset = false
 
     var body: some View {
         NavigationStack {
@@ -60,6 +62,18 @@ struct SettingsView: View {
                         .font(.footnote)
                         .foregroundColor(.brandTextSecondary)
                 }
+
+                Section(L.t("settings.stats")) {
+                    statRow("settings.stats.played", statsStore.stats.gamesPlayed)
+                    statRow("settings.stats.won", statsStore.stats.gamesWon)
+                    statRow("settings.stats.bestStreak", statsStore.stats.bestStreak)
+                    statRow("settings.stats.bestScore", statsStore.stats.bestScore)
+                    Button(L.t("settings.stats.reset"), role: .destructive) { confirmStatsReset = true }
+                        .disabled(statsStore.stats == MatchStats())
+                }
+            }
+            .confirmationDialog(L.t("settings.stats.resetConfirm"), isPresented: $confirmStatsReset, titleVisibility: .visible) {
+                Button(L.t("settings.stats.reset"), role: .destructive) { statsStore.reset() }
             }
             .navigationTitle(L.t("settings.title"))
             .toolbar {
@@ -67,6 +81,12 @@ struct SettingsView: View {
                     Button(L.t("settings.done")) { dismiss() }
                 }
             }
+        }
+    }
+
+    private func statRow(_ key: String, _ value: Int) -> some View {
+        LabeledContent(L.t(key)) {
+            Text("\(value)").monospacedDigit()
         }
     }
 }

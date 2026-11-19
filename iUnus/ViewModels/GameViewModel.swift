@@ -128,7 +128,7 @@ final class GameViewModel: ObservableObject {
         returnToMenu()
         activeRuleSet = saved.ruleSet ?? settings?.ruleSet ?? .official
         drawnCardToPlayID = saved.drawnCardToPlayID
-        players = saved.players
+        players = Self.relocalizedNames(saved.players)
         deck = saved.deck
         currentPlayerIndex = saved.currentPlayerIndex
         direction = saved.direction
@@ -144,6 +144,22 @@ final class GameViewModel: ObservableObject {
         phase = saved.phase == .dealing ? .playing : (saved.phase ?? .playing)
         if case .choosingColor = phase { pendingWildPlayerIndex = currentPlayerIndex }
         resumeTurnWork()
+    }
+
+    /// Local seat names are generated in the language active when the game began; Settings can
+    /// only change the language from the menu, so renaming on resume keeps every label current.
+    private static func relocalizedNames(_ players: [Player]) -> [Player] {
+        var aiNumber = 0
+        return players.map { player in
+            var renamed = player
+            if player.isAI {
+                aiNumber += 1
+                renamed.name = String(format: L.t("player.opponent"), aiNumber)
+            } else {
+                renamed.name = L.t("player.you")
+            }
+            return renamed
+        }
     }
 
     func quitToMenu() {

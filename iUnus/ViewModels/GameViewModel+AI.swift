@@ -13,7 +13,8 @@ extension GameViewModel {
         let work = DispatchWorkItem { [weak self] in
             guard let self, self.currentPlayerIndex == index, self.currentPlayer?.id == playerID, self.phase == .playing else { return }
             self.isAIThinking = false
-            if let pending = self.pendingUnoCatch, pending.playerID != playerID {
+            if let pending = self.pendingUnoCatch, pending.playerID != playerID,
+               AIStrategy.shouldCatchMissedUno(difficulty: self.aiDifficulty) {
                 self.catchFailureToCallUno()
             }
             self.performAITurn(index: index)

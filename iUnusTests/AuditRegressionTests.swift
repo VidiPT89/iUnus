@@ -226,4 +226,37 @@ final class AuditRegressionTests: XCTestCase {
             }
         }
     }
+
+    func testResumedSeatNamesFollowCurrentLanguage() throws {
+        let localization = LocalizationManager.shared
+        let previous = localization.language
+        defer { localization.language = previous }
+        localization.language = .english
+        let game = try game(hand: [.init(color: .blue, value: .number(3))], other: [.init(color: .green, value: .number(8))], top: .init(color: .red, value: .number(1)))
+        game.players[1].kind = .ai
+        game.saveProgressIfActive()
+        localization.language = .portuguese
+        let restored = GameViewModel()
+        restored.resumeSavedGame()
+        XCTAssertEqual(restored.players.map(\.name), ["Tu", "Adversário 1"])
+        restored.returnToMenu()
+        restored.clearSavedGame()
+    }
+
+    func testHardAIAlwaysCatchesMissedUno() {
+        for _ in 0..<50 { XCTAssertTrue(AIStrategy.shouldCatchMissedUno(difficulty: .hard)) }
+        let easyCatches = (0..<500).filter { _ in AIStrategy.shouldCatchMissedUno(difficulty: .easy) }.count
+        XCTAssertTrue((50...350).contains(easyCatches), "easy catches: \(easyCatches)")
+    }
+
+    func testStatsResetClearsEverything() {
+        let store = MatchStatsStore.shared
+        let previous = store.stats
+        store.recordGameEnd(humanWon: true, humanScore: 520)
+        XCTAssertGreaterThan(store.stats.gamesPlayed, 0)
+        store.reset()
+        XCTAssertEqual(store.stats, MatchStats())
+        // Put back whatever stats this simulator had before the test.
+        UserDefaults.standard.set(try? JSONEncoder().encode(previous), forKey: "app.matchStats")
+    }
 }

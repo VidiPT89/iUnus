@@ -105,6 +105,17 @@ enum AIStrategy {
         }
     }
 
+    /// Whether an AI seat notices (and calls out) an opponent who forgot to say UNO before its
+    /// own turn closes the window. Easy bots let it slide more often so beginners aren't punished
+    /// for every slip; a missed catch simply closes the window without penalty.
+    static func shouldCatchMissedUno(difficulty: AIDifficulty = .normal) -> Bool {
+        switch difficulty {
+        case .easy: return Double.random(in: 0...1) < 0.4
+        case .normal: return Double.random(in: 0...1) < 0.8
+        case .hard: return true
+        }
+    }
+
     static func shouldCallUnoImmediately(difficulty: AIDifficulty = .normal) -> Bool {
         switch difficulty {
         case .easy: return Double.random(in: 0...1) < 0.5

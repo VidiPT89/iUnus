@@ -7,7 +7,7 @@ struct MenuView: View {
     @ObservedObject private var statsStore = MatchStatsStore.shared
     @EnvironmentObject private var gameCenterManager: GameCenterManager
     @EnvironmentObject private var onlineMatchCoordinator: OnlineMatchCoordinator
-    @State private var opponentCount = 2
+    @AppStorage("app.opponentCount") private var opponentCount = 2
     @State private var showSettings = false
     @State private var showAbout = false
     @State private var showRules = false
@@ -182,6 +182,7 @@ struct MenuView: View {
             }
 
             Button {
+                opponentCount = max(1, min(9, opponentCount))
                 viewModel.startNewGame(opponentCount: opponentCount)
             } label: {
                 Text(L.t("menu.startGame"))
