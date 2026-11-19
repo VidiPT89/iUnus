@@ -44,6 +44,8 @@ struct RootView: View {
         .onChange(of: scenePhase) { phase in
             viewModel.setSuspended(phase != .active)
         }
+        .onChange(of: accessPointShouldShow) { gameCenterManager.setAccessPointVisible($0) }
+        .onChange(of: gameCenterManager.isAuthenticated) { _ in gameCenterManager.setAccessPointVisible(accessPointShouldShow) }
         .overlay(alignment: .bottom) {
             if viewModel.isOnlineUpdatePending {
                 HStack {
@@ -79,6 +81,11 @@ struct RootView: View {
             })
             .ignoresSafeArea()
         }
+    }
+
+    private var accessPointShouldShow: Bool {
+        viewModel.phase == .menu && !showSplash && !gameCenterManager.menuSheetIsPresented
+            && !onlineMatchCoordinator.isPresentingMatchmaker
     }
 
     private var phaseIdentifier: Int {

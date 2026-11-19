@@ -15,6 +15,7 @@
 - ✅ "UNO!" call mechanic: get caught before the next player acts, including by the AI (more forgiving on Easy)
 - ✅ Saved games preserve draw/color decisions, challenges, rule set and round results
 - ✅ Game Center turn-based matches, with visible save errors and retry
+- ✅ Game Center welcome banner on launch and access point on the main menu (opens the Games overlay)
 - ✅ Multi-round scoring up to 500 points, with round and game summary screens
 - ✅ Statistics in Settings (games played/won, best streak, best score) with reset
 - ✅ Runtime language switch — Português (PT-PT) and English, independent of system locale

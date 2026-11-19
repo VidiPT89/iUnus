@@ -54,11 +54,17 @@ struct MenuView: View {
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showAbout) { AboutView() }
         .sheet(isPresented: $showRules) { RulesView() }
+        .onChange(of: anySheetPresented) { gameCenterManager.menuSheetIsPresented = $0 }
+        .onDisappear { gameCenterManager.menuSheetIsPresented = false }
         .alert(L.t("menu.multiplayer.signInTitle"), isPresented: $showSignInAlert) {
             Button(L.t("settings.done"), role: .cancel) {}
         } message: {
             Text(gameCenterManager.authError ?? L.t("menu.multiplayer.signInMessage"))
         }
+    }
+
+    private var anySheetPresented: Bool {
+        showSettings || showAbout || showRules || showSignInAlert
     }
 
     private func openMultiplayer() {
