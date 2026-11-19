@@ -45,18 +45,20 @@
 "about.author" = "David Arsénio Martins";
 "about.website" = "Website";
 "about.github" = "GitHub";
+"about.privacy" = "Política de Privacidade";
+"about.trademark" = "A iUnus é um jogo independente, sem ligação nem aprovação da Mattel.";
 
 "rules.title" = "Regras";
 "rules.turnOrder.title" = "Ordem de Jogo";
 "rules.turnOrder.body" = "A vez passa à volta da mesa. Na tua vez, junta a carta do topo da pilha de descarte por cor, número ou símbolo, ou compra uma carta se não puderes jogar.";
 "rules.specialCards.title" = "Cartas Especiais";
 "rules.specialCards.body" = "Saltar passa a vez. Inverter muda o sentido do jogo. Compra Duas obriga o jogador seguinte a comprar duas cartas. Curinga permite escolher a cor. Curinga Compra Quatro também obriga o jogador seguinte a comprar quatro cartas.";
-"rules.unoCall.title" = "Dizer UNO";
-"rules.unoCall.body" = "Quando ficares com uma carta, toca em UNO antes de o jogador seguinte agir. Se alguém te apanhar primeiro, compras duas cartas de penalização. A IA também te pode apanhar.";
+"rules.unoCall.title" = "Dizer UNUS";
+"rules.unoCall.body" = "Quando ficares com uma carta, toca em UNUS antes de o jogador seguinte agir. Se alguém te apanhar primeiro, compras duas cartas de penalização. A IA também te pode apanhar.";
 "rules.scoring.title" = "Pontuação";
 "rules.scoring.body" = "O primeiro jogador a jogar todas as suas cartas ganha a ronda e soma pontos com base nas cartas que restam aos adversários. O primeiro a atingir 500 pontos vence o jogo.";
 
-"game.uno" = "UNO!";
+"game.uno" = "UNUS!";
 "game.draw" = "Baralho";
 "game.yourTurn" = "A tua vez";
 "game.aiTurn" = "Vez de %@";
@@ -76,7 +78,7 @@
 "wildDraw4.accept" = "Aceitar, comprar 4";
 "game.quit" = "Sair do jogo";
 "game.quitHint" = "Volta ao menu principal";
-"game.unoHint" = "Diz UNO quando tiveres apenas uma carta";
+"game.unoHint" = "Diz UNUS quando tiveres apenas uma carta";
 "game.drawPile" = "Baralho para comprar";
 "game.drawPileHint" = "Compra uma carta do baralho";
 "game.cardPlayableHint" = "Toca duas vezes para jogar esta carta";
@@ -102,6 +104,7 @@
 
 "roundEnd.title" = "Fim da Ronda";
 "roundEnd.winner" = "%@ venceu a ronda!";
+"roundEnd.youWin" = "Venceste a ronda!";
 "roundEnd.pointsEarned" = "+%d pontos";
 "roundEnd.continue" = "Continuar";
 "roundEnd.scores" = "Pontuações";
@@ -114,6 +117,7 @@
 
 "gameEnd.title" = "Fim do Jogo";
 "gameEnd.winner" = "%@ venceu o jogo!";
+"gameEnd.youWin" = "Venceste o jogo!";
 "gameEnd.newGame" = "Novo Jogo";
 "gameEnd.backToMenu" = "Voltar ao Menu";
 
@@ -142,6 +146,6 @@
 "common.retry" = "Tentar novamente";
 "game.mustDraw" = "Não tens cartas compatíveis. Toca no baralho para comprar.";
 "rules.online.title" = "Partidas online";
-"rules.online.body" = "As partidas online usam as regras atuais e terminam após uma ronda. O UNO é anunciado automaticamente quando ficas com uma carta. Sair da mesa mantém a partida no Game Center.";
+"rules.online.body" = "As partidas online usam as regras atuais e terminam após uma ronda. O UNUS é anunciado automaticamente quando ficas com uma carta. Sair da mesa mantém a partida no Game Center.";
 "rules.house.title" = "Regras da casa";
 "rules.house.body" = "Nas regras Clássicas, as penalizações +2 e +4 acumulam, compras até sair uma carta jogável e a ronda continua até restar um jogador. Escolhe as regras nas Definições antes de iniciar uma partida nova.";

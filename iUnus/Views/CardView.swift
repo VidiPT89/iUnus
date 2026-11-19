@@ -34,16 +34,16 @@ struct CardView: View {
                     )
                     .overlay(Text("iU").font(.system(size: width * 0.22, weight: .heavy, design: .rounded)).foregroundColor(.white))
             } else {
-                Ellipse()
+                // Upright face: a tilted numeral made 7 read as 1 at hand size.
+                Circle()
                     .fill(Color.white.opacity(0.94))
-                    .frame(width: width * 0.64, height: height * 0.44)
-                    .rotationEffect(.degrees(-22))
+                    .frame(width: width * 0.64, height: width * 0.64)
                     .shadow(color: .black.opacity(0.12), radius: 2, x: 0, y: 1)
 
                 Text(card.value.symbol)
                     .font(.system(size: width * 0.34, weight: .heavy, design: .rounded))
+                    .underline(card.value.needsOrientationMark)
                     .foregroundColor(card.effectiveColor == .yellow ? Color(red: 0.46, green: 0.32, blue: 0.01) : card.effectiveColor.displayColor)
-                    .rotationEffect(.degrees(-22))
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
 
@@ -64,6 +64,7 @@ struct CardView: View {
     private func cornerLabel(alignment: Alignment) -> some View {
         Text(card.value.symbol)
             .font(.system(size: width * 0.16, weight: .bold))
+            .underline(card.value.needsOrientationMark)
             .minimumScaleFactor(0.5)
             .lineLimit(1)
             .foregroundColor(cornerTextColor)

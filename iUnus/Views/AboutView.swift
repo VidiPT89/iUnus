@@ -35,6 +35,16 @@ struct AboutView: View {
                             linkRow(icon: "chevron.left.slash.chevron.right", title: L.t("about.github"), value: "VidiPT89")
                         }
                     }
+                    if let privacyURL = URL(string: "https://github.com/VidiPT89/iUnus/blob/main/PRIVACY.md") {
+                        Link(destination: privacyURL) {
+                            linkRow(icon: "hand.raised.fill", title: L.t("about.privacy"), value: "")
+                        }
+                    }
+                    Text(L.t("about.trademark"))
+                        .font(.caption2)
+                        .foregroundColor(.brandTextSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 4)
                 }
                 .padding(.top, 8)
 

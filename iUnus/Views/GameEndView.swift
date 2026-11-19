@@ -7,6 +7,10 @@ struct GameEndView: View {
     @State private var showConfetti = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    private var localWon: Bool {
+        viewModel.gameWinnerID != nil && viewModel.gameWinnerID == viewModel.localViewPlayer?.id
+    }
+
     private var winnerName: String {
         viewModel.players.first(where: { $0.id == viewModel.gameWinnerID })?.name ?? ""
     }
@@ -34,7 +38,7 @@ struct GameEndView: View {
                     .font(.system(size: 40, weight: .black, design: .rounded))
                     .foregroundColor(.brandPrimary)
 
-                Text(String(format: L.t("gameEnd.winner"), winnerName))
+                Text(localWon ? L.t("gameEnd.youWin") : String(format: L.t("gameEnd.winner"), winnerName))
                     .font(.title3.weight(.semibold))
                     .foregroundColor(.brandTextPrimary)
 

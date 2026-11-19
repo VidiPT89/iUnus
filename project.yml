@@ -22,8 +22,9 @@ targets:
       path: iUnus/Info.plist
       properties:
         CFBundleDisplayName: iUnus
-        CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UIRequiresFullScreen: true
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, pt-PT]
         ITSAppUsesNonExemptEncryption: false

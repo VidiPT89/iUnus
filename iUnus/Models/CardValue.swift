@@ -32,6 +32,9 @@ enum CardValue: Equatable, Codable, Hashable {
         }
     }
 
+    /// 6 and 9 are underlined so they can't be confused with each other upside down.
+    var needsOrientationMark: Bool { self == .number(6) || self == .number(9) }
+
     var symbol: String {
         switch self {
         case .number(let n): return "\(n)"

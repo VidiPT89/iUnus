@@ -4,6 +4,10 @@ struct RoundEndView: View {
     @ObservedObject private var localization = LocalizationManager.shared
     @ObservedObject var viewModel: GameViewModel
 
+    private var localWon: Bool {
+        viewModel.roundWinnerID != nil && viewModel.roundWinnerID == viewModel.localViewPlayer?.id
+    }
+
     private var winnerName: String {
         viewModel.players.first(where: { $0.id == viewModel.roundWinnerID })?.name ?? ""
     }
@@ -64,7 +68,7 @@ struct RoundEndView: View {
                     .font(.largeTitle.weight(.black))
                     .foregroundColor(.brandPrimary)
 
-                Text(String(format: L.t("roundEnd.winner"), winnerName))
+                Text(localWon ? L.t("roundEnd.youWin") : String(format: L.t("roundEnd.winner"), winnerName))
                     .font(.title3.weight(.semibold))
                     .foregroundColor(.brandTextPrimary)
 

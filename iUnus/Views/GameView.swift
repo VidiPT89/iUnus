@@ -11,6 +11,8 @@ struct GameView: View {
     var body: some View {
         GeometryReader { geometry in
             let compact = geometry.size.height < 700
+            // iPad-sized tables get bigger cards instead of a phone layout floating in empty space.
+            let large = geometry.size.width >= 700 && geometry.size.height >= 900
             ZStack {
                 Color.brandBackground.ignoresSafeArea()
                 RadialGradient(colors: [Color.brandPrimary.opacity(0.14), .clear], center: .center, startRadius: 20, endRadius: 380)
@@ -34,11 +36,11 @@ struct GameView: View {
                     .padding(.top, 8)
                     .animation(.spring(response: 0.35, dampingFraction: 0.7), value: viewModel.pendingDrawStack)
 
-                    opponentsRow(compact: compact)
+                    opponentsRow(compact: compact, large: large)
 
                     Spacer(minLength: 0)
 
-                    pileArea(compact: compact)
+                    pileArea(compact: compact, large: large)
 
                     Spacer(minLength: 0)
 
@@ -46,7 +48,7 @@ struct GameView: View {
                         handGuidance
                         PlayerHandView(
                             cards: human.hand,
-                            cardWidth: compact ? 64 : 78,
+                            cardWidth: compact ? 64 : (large ? 112 : 78),
                             namespace: cardSpace,
                             justDrawnCardID: viewModel.justDrawnCard?.id,
                             canPlay: viewModel.canLocalPlayerPlay,
@@ -147,9 +149,9 @@ struct GameView: View {
         }
     }
 
-    private func opponentsRow(compact: Bool) -> some View {
+    private func opponentsRow(compact: Bool, large: Bool) -> some View {
         let opponents = viewModel.opponentPlayers
-        let baseCardWidth: CGFloat = compact ? 26 : 40
+        let baseCardWidth: CGFloat = compact ? 26 : (large ? 58 : 40)
         let minSpacing: CGFloat = 8
 
         return ScrollView(.horizontal, showsIndicators: false) {
@@ -159,7 +161,7 @@ struct GameView: View {
             .padding(.horizontal)
             .padding(.vertical, 4)
         }
-        .frame(height: (compact ? 100 : 142) + (viewModel.pendingUnoCatch != nil ? 44 : 0))
+        .frame(height: (compact ? 100 : (large ? 196 : 142)) + (viewModel.pendingUnoCatch != nil ? 44 : 0))
     }
 
     private func opponentViews(_ opponents: [Player], cardWidth: CGFloat) -> some View {
@@ -177,13 +179,13 @@ struct GameView: View {
         }
     }
 
-    private func pileArea(compact: Bool) -> some View {
+    private func pileArea(compact: Bool, large: Bool) -> some View {
         HStack(alignment: .top, spacing: 40) {
             VStack(spacing: 8) {
                 Button {
                     viewModel.humanDraw()
                 } label: {
-                    CardBackView(width: compact ? 62 : 78)
+                    CardBackView(width: compact ? 62 : (large ? 112 : 78))
                 }
                 .disabled(!(isHumanTurn && viewModel.phase == .playing) || viewModel.drawnCardToPlayID != nil || viewModel.isOnlineUpdatePending)
                 .opacity(isHumanTurn && viewModel.phase == .playing ? 1 : 0.6)
@@ -191,7 +193,7 @@ struct GameView: View {
                 .accessibilityHint(L.t("game.drawPileHint"))
                 .overlay {
                     if let drawn = viewModel.justDrawnCard, viewModel.localViewPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
-                        CardView(card: drawn, width: compact ? 62 : 78)
+                        CardView(card: drawn, width: compact ? 62 : (large ? 112 : 78))
                             .matchedGeometryEffect(id: drawn.id, in: cardSpace, isSource: true)
                             .allowsHitTesting(false)
                             .animation(.spring(response: 0.45, dampingFraction: 0.75), value: viewModel.justDrawnCard?.id)
@@ -209,7 +211,7 @@ struct GameView: View {
 
             if let top = viewModel.topCard {
                 VStack(spacing: 8) {
-                    CardView(card: top, width: compact ? 68 : 84)
+                    CardView(card: top, width: compact ? 68 : (large ? 120 : 84))
                         .id(top.id)
                         .matchedGeometryEffect(id: top.id, in: cardSpace)
                         .rotationEffect(.degrees(Double(top.id.uuid.0 % 9) - 4))
@@ -234,7 +236,13 @@ struct GameView: View {
     private var handGuidance: some View {
         VStack(spacing: 10) {
             if let top = viewModel.topCard {
-                Label(L.t("color." + top.effectiveColor.rawValue), systemImage: "circle.fill")
+                Label {
+                    Text(L.t("color." + top.effectiveColor.rawValue))
+                } icon: {
+                    Circle().fill(top.effectiveColor.displayColor)
+                        .overlay(Circle().stroke(Color.white.opacity(0.7), lineWidth: 1.5))
+                        .frame(width: 14, height: 14)
+                }
                     .font(.subheadline.weight(.bold))
                     .foregroundColor(.brandTextPrimary)
                     .padding(.horizontal, 14).padding(.vertical, 8)

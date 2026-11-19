@@ -45,18 +45,20 @@
 "about.author" = "David Arsénio Martins";
 "about.website" = "Website";
 "about.github" = "GitHub";
+"about.privacy" = "Privacy Policy";
+"about.trademark" = "iUnus is an independent game and is not affiliated with or endorsed by Mattel.";
 
 "rules.title" = "Rules";
 "rules.turnOrder.title" = "Turn Order";
 "rules.turnOrder.body" = "Play passes around the table. On your turn, match the top card of the discard pile by color, number or symbol, or draw a card if you can't play.";
 "rules.specialCards.title" = "Special Cards";
 "rules.specialCards.body" = "Skip passes the turn. Reverse changes the direction of play. Draw Two forces the next player to draw two cards. Wild lets you choose the color. Wild Draw Four also forces the next player to draw four cards.";
-"rules.unoCall.title" = "Calling UNO";
-"rules.unoCall.body" = "When you are down to one card, tap UNO before the next player acts. If another player catches you first, you draw two penalty cards. The AI can catch you too.";
+"rules.unoCall.title" = "Calling UNUS";
+"rules.unoCall.body" = "When you are down to one card, tap UNUS before the next player acts. If another player catches you first, you draw two penalty cards. The AI can catch you too.";
 "rules.scoring.title" = "Scoring";
 "rules.scoring.body" = "The first player to play all their cards wins the round and scores points based on the cards left in opponents' hands. The first player to reach 500 points wins the game.";
 
-"game.uno" = "UNO!";
+"game.uno" = "UNUS!";
 "game.draw" = "Deck";
 "game.yourTurn" = "Your turn";
 "game.aiTurn" = "%@'s turn";
@@ -76,7 +78,7 @@
 "wildDraw4.accept" = "Accept, draw 4";
 "game.quit" = "Quit game";
 "game.quitHint" = "Returns to the main menu";
-"game.unoHint" = "Call UNO when you have one card left";
+"game.unoHint" = "Call UNUS when you have one card left";
 "game.drawPile" = "Draw pile";
 "game.drawPileHint" = "Draw a card from the pile";
 "game.cardPlayableHint" = "Double tap to play this card";
@@ -102,6 +104,7 @@
 
 "roundEnd.title" = "Round Over";
 "roundEnd.winner" = "%@ wins the round!";
+"roundEnd.youWin" = "You win the round!";
 "roundEnd.pointsEarned" = "+%d points";
 "roundEnd.continue" = "Continue";
 "roundEnd.scores" = "Scores";
@@ -114,6 +117,7 @@
 
 "gameEnd.title" = "Game Over";
 "gameEnd.winner" = "%@ wins the game!";
+"gameEnd.youWin" = "You win the game!";
 "gameEnd.newGame" = "New Game";
 "gameEnd.backToMenu" = "Back to Menu";
 
@@ -142,6 +146,6 @@
 "common.retry" = "Retry";
 "game.mustDraw" = "No matching cards. Tap the deck to draw.";
 "rules.online.title" = "Online matches";
-"rules.online.body" = "Online matches use the current rules and finish after one round. UNO is called automatically when you have one card left. Closing the table keeps the match in Game Center.";
+"rules.online.body" = "Online matches use the current rules and finish after one round. UNUS is called automatically when you have one card left. Closing the table keeps the match in Game Center.";
 "rules.house.title" = "House rules";
 "rules.house.body" = "With Classic rules, +2 and +4 penalties stack, drawing continues until a playable card appears, and the round continues until one player remains. Choose your rules in Settings before starting a new game.";
