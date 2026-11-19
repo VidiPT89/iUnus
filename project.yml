@@ -45,3 +45,23 @@ targets:
         CODE_SIGN_ENTITLEMENTS: iUnus/iUnus.entitlements
     dependencies:
       - sdk: GameKit.framework
+  iUnusTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: iUnusTests
+    dependencies:
+      - target: iUnus
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  iUnus:
+    build:
+      targets:
+        iUnus: all
+    test:
+      targets:
+        - iUnusTests

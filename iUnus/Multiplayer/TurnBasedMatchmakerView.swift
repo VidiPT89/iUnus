@@ -9,9 +9,10 @@ struct TurnBasedMatchmakerView: UIViewControllerRepresentable {
     let minPlayers: Int
     let maxPlayers: Int
     let onDismiss: () -> Void
+    let onError: (Error) -> Void
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(onDismiss: onDismiss)
+        Coordinator(onDismiss: onDismiss, onError: onError)
     }
 
     func makeUIViewController(context: Context) -> GKTurnBasedMatchmakerViewController {
@@ -27,9 +28,11 @@ struct TurnBasedMatchmakerView: UIViewControllerRepresentable {
 
     final class Coordinator: NSObject, GKTurnBasedMatchmakerViewControllerDelegate {
         private let onDismiss: () -> Void
+        private let onError: (Error) -> Void
 
-        init(onDismiss: @escaping () -> Void) {
+        init(onDismiss: @escaping () -> Void, onError: @escaping (Error) -> Void) {
             self.onDismiss = onDismiss
+            self.onError = onError
         }
 
         func turnBasedMatchmakerViewControllerWasCancelled(_ viewController: GKTurnBasedMatchmakerViewController) {
@@ -37,7 +40,7 @@ struct TurnBasedMatchmakerView: UIViewControllerRepresentable {
         }
 
         func turnBasedMatchmakerViewController(_ viewController: GKTurnBasedMatchmakerViewController, didFailWithError error: Error) {
-            onDismiss()
+            onError(error)
         }
     }
 }

@@ -17,58 +17,47 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 }
 
-@MainActor
+/// UI changes the published preference on the main thread; model lookups can safely read
+/// the resolved bundle from any thread without actor assumptions or mutable global caches.
 final class LocalizationManager: ObservableObject {
-    nonisolated(unsafe) static let shared = MainActor.assumeIsolated { LocalizationManager() }
+    static let shared = LocalizationManager()
 
     @Published var language: AppLanguage {
         didSet {
             UserDefaults.standard.set(language.rawValue, forKey: Self.storageKey)
-            currentLanguage = language
             updateBundle()
         }
     }
 
     private static let storageKey = "app.language.override"
-    // Mirrors `language` outside main-actor isolation so `string(_:)` can stay nonisolated,
-    // letting plain model types (e.g. `Card.accessibilityLabel`) look up localized strings
-    // synchronously without hopping to the main actor; this app is effectively single-threaded.
-    private nonisolated(unsafe) var currentLanguage: AppLanguage = .system
-    private nonisolated(unsafe) var bundle: Bundle = .main
-    private nonisolated(unsafe) var cachedLanguage: AppLanguage?
+    private let lock = NSLock()
+    private var bundle: Bundle = .main
 
     private init() {
         let stored = UserDefaults.standard.string(forKey: Self.storageKey)
-        let initial = AppLanguage(rawValue: stored ?? "system") ?? .system
-        language = initial
-        currentLanguage = initial
+        language = AppLanguage(rawValue: stored ?? "system") ?? .system
         updateBundle()
     }
 
-    private nonisolated func updateBundle() {
-        guard cachedLanguage != currentLanguage else { return }
-        cachedLanguage = currentLanguage
-        let code: String
-        switch currentLanguage {
-        case .system:
-            bundle = .main
-            return
-        case .english:
-            code = "en"
-        case .portuguese:
-            code = "pt-PT"
-        }
-        if let path = Bundle.main.path(forResource: code, ofType: "lproj"),
-           let langBundle = Bundle(path: path) {
-            bundle = langBundle
+    private func updateBundle() {
+        let resolved: Bundle
+        if language != .system,
+           let path = Bundle.main.path(forResource: language.rawValue, ofType: "lproj"),
+           let selected = Bundle(path: path) {
+            resolved = selected
         } else {
-            bundle = .main
+            resolved = .main
         }
+        lock.lock()
+        bundle = resolved
+        lock.unlock()
     }
 
-    nonisolated func string(_ key: String) -> String {
-        updateBundle()
-        return NSLocalizedString(key, bundle: bundle, comment: "")
+    func string(_ key: String) -> String {
+        lock.lock()
+        let selected = bundle
+        lock.unlock()
+        return NSLocalizedString(key, bundle: selected, comment: "")
     }
 }
 

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct RoundEndView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     @ObservedObject var viewModel: GameViewModel
 
     private var winnerName: String {
@@ -47,7 +48,7 @@ struct RoundEndView: View {
                 } label: {
                     Text(L.t("roundEnd.continue"))
                         .font(.headline.weight(.bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .frame(maxWidth: 260)
                         .padding(.vertical, 16)
                         .background(Capsule().fill(Color.brandPrimary))
@@ -122,17 +123,23 @@ struct CountUpText: View {
     let value: Int
     var duration: TimeInterval = 1.0
 
-    @State private var startDate = Date()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var displayed = 0
 
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let elapsed = timeline.date.timeIntervalSince(startDate)
-            let progress = min(max(elapsed / duration, 0), 1)
-            let eased = 1 - pow(1 - progress, 3)
-            let displayed = Int((Double(value) * eased).rounded())
-            Text(format.map { String(format: $0, displayed) } ?? "\(displayed)")
-                .monospacedDigit()
-        }
-        .onAppear { startDate = Date() }
+        Text(format.map { String(format: $0, displayed) } ?? "\(displayed)")
+            .monospacedDigit()
+            .task(id: value) {
+                guard !reduceMotion, duration > 0 else { displayed = value; return }
+                for step in 0...30 {
+                    guard !Task.isCancelled else { return }
+                    let progress = Double(step) / 30
+                    displayed = Int((Double(value) * (1 - pow(1 - progress, 3))).rounded())
+                    if step < 30 {
+                        do { try await Task.sleep(nanoseconds: UInt64(duration / 30 * 1_000_000_000)) }
+                        catch { return }
+                    }
+                }
+            }
     }
 }

@@ -13,8 +13,9 @@ extension GameViewModel {
     }
 
     func callUno(playerID: UUID) {
+        guard phase == .playing, !isSuspended, !isOnlineUpdatePending, mode == .local || isLocalTurn else { return }
         guard let idx = players.firstIndex(where: { $0.id == playerID }) else { return }
-        guard players[idx].hand.count <= 1 else { return }
+        guard players[idx].hand.count == 1, !players[idx].hasCalledUno else { return }
         players[idx].hasCalledUno = true
         if pendingUnoCatch?.playerID == playerID { pendingUnoCatch = nil }
         hapticSuccess()
@@ -22,7 +23,9 @@ extension GameViewModel {
     }
 
     func catchFailureToCallUno() {
+        guard phase == .playing, !isSuspended, !isOnlineUpdatePending, mode == .local || isLocalTurn else { return }
         guard let pending = pendingUnoCatch, let idx = players.firstIndex(where: { $0.id == pending.playerID }) else { return }
+        guard players[idx].hand.count == 1, !players[idx].hasCalledUno else { pendingUnoCatch = nil; return }
         forceDraw(count: 2, onPlayerIndex: idx)
         pendingUnoCatch = nil
         hapticError()

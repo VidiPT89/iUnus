@@ -68,7 +68,7 @@ enum AISpeed: String, CaseIterable, Identifiable {
     }
 }
 
-enum RuleSet: String, CaseIterable, Identifiable {
+enum RuleSet: String, CaseIterable, Identifiable, Codable {
     case official, houseRules
 
     var id: String { rawValue }

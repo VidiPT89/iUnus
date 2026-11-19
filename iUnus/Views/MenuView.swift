@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct MenuView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     @ObservedObject var viewModel: GameViewModel
+    @EnvironmentObject private var settings: SettingsViewModel
     @ObservedObject private var statsStore = MatchStatsStore.shared
     @EnvironmentObject private var gameCenterManager: GameCenterManager
     @EnvironmentObject private var onlineMatchCoordinator: OnlineMatchCoordinator
@@ -19,31 +21,35 @@ struct MenuView: View {
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 24) {
-                Spacer()
+            ScrollView {
+                VStack(spacing: 24) {
+                    Spacer()
 
-                titleBlock
+                    titleBlock
 
-                Spacer()
+                    Spacer()
 
-                VStack(spacing: 16) {
-                    if viewModel.hasSavedGame {
-                        continueButton
+                    VStack(spacing: 16) {
+                        if viewModel.hasSavedGame {
+                            continueButton
+                        }
+                        startCard
                     }
-                    startCard
-                }
 
-                VStack(spacing: 12) {
-                    menuButton(L.t("menu.multiplayer"), icon: "network") { openMultiplayer() }
-                    menuButton(L.t("menu.rules"), icon: "book.closed.fill") { showRules = true }
-                    menuButton(L.t("menu.settings"), icon: "gearshape.fill") { showSettings = true }
-                    menuButton(L.t("menu.about"), icon: "info.circle.fill") { showAbout = true }
-                }
-                .padding(.top, 4)
+                    VStack(spacing: 12) {
+                        menuButton(L.t("menu.multiplayer"), icon: "network") { openMultiplayer() }
+                        menuButton(L.t("menu.rules"), icon: "book.closed.fill") { showRules = true }
+                        menuButton(L.t("menu.settings"), icon: "gearshape.fill") { showSettings = true }
+                        menuButton(L.t("menu.about"), icon: "info.circle.fill") { showAbout = true }
+                    }
+                    .padding(.top, 4)
 
-                Spacer()
+                    Spacer()
+                }
+                .padding()
+                .frame(maxWidth: 540)
+                .frame(maxWidth: .infinity)
             }
-            .padding()
         }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showAbout) { AboutView() }
@@ -51,7 +57,7 @@ struct MenuView: View {
         .alert(L.t("menu.multiplayer.signInTitle"), isPresented: $showSignInAlert) {
             Button(L.t("settings.done"), role: .cancel) {}
         } message: {
-            Text(L.t("menu.multiplayer.signInMessage"))
+            Text(gameCenterManager.authError ?? L.t("menu.multiplayer.signInMessage"))
         }
     }
 
@@ -66,6 +72,15 @@ struct MenuView: View {
 
     private var titleBlock: some View {
         VStack(spacing: 6) {
+            ZStack {
+                CardView(card: Card(color: .blue, value: .reverse), width: 64)
+                    .rotationEffect(.degrees(-22)).offset(x: -48, y: 10)
+                CardView(card: Card(color: .yellow, value: .drawTwo), width: 64)
+                    .rotationEffect(.degrees(20)).offset(x: 48, y: 10)
+                CardView(card: Card(color: .red, value: .number(7)), width: 68)
+            }
+            .frame(height: 126)
+            .accessibilityHidden(true)
             Text(L.t("menu.title"))
                 .font(.system(size: 54, weight: .black, design: .rounded))
                 .tracking(1)
@@ -126,6 +141,11 @@ struct MenuView: View {
                 .font(.headline)
                 .foregroundColor(.brandTextPrimary)
 
+            Text("\(L.t(settings.ruleSet.titleKey)) · \(L.t(settings.aiDifficulty.titleKey))")
+                .font(.caption)
+                .foregroundColor(.brandTextSecondary)
+                .multilineTextAlignment(.center)
+
             HStack(spacing: 20) {
                 Button {
                     opponentCount = max(1, opponentCount - 1)
@@ -166,7 +186,7 @@ struct MenuView: View {
             } label: {
                 Text(L.t("menu.startGame"))
                     .font(.headline.weight(.bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .frame(maxWidth: 260)
                     .padding(.vertical, 16)
                     .background(

@@ -24,12 +24,14 @@
 		5B71DE45EDDE14894B73BC1D /* RoundEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC21D147D18B72314B1679FE /* RoundEndView.swift */; };
 		663A3EBC06FC606F59A2A553 /* iUnusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */; };
 		80DDBDD54413590A40DB19ED /* AIStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8E709F2690E809319DD3265 /* AIStrategy.swift */; };
+		880CD96C53E11B90B862912D /* AuditRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE33EB1B4F7C414133B6D67 /* AuditRegressionTests.swift */; };
 		8BE324C1F13AB6DCAD9A75CF /* GameViewModel+Feedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889A4F94369B7AAF395052C7 /* GameViewModel+Feedback.swift */; };
 		95B882A04A29C2467DBF0AD4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FF8594FBE8F599BD297C1A /* RootView.swift */; };
 		972F57DFD778E17D689C1996 /* GameEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87E56535D5820C0981E3371 /* GameEndView.swift */; };
 		9B842F8FB73FB414AC89A4D9 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01FA6B380C2CBD18A87BACB /* MenuView.swift */; };
 		A85E7FF77AD1A620F3550E19 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60304FE57396CC1941F3F3B /* Deck.swift */; };
 		AB564C9D6B11A981B52555B8 /* ColorPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124BF4F5FDD839BD2C91FF22 /* ColorPickerSheet.swift */; };
+		ABBFD0334E5751C20B360CF5 /* GameplayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386737767727DE04337FA04E /* GameplayTests.swift */; };
 		ACAD61E0A5141D6B048C1634 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A332488DF01AFDE54BAAEA2B /* GameView.swift */; };
 		AD1D7EBB6A0C63D846FCB8A5 /* CardColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89396BE918B9470E9F89E0E /* CardColor.swift */; };
 		B005B696E92EA36F79C22AFE /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489482094E88AB51F5991FF /* SettingsViewModel.swift */; };
@@ -47,18 +49,31 @@
 		E8A8C3969AD2300A254781EB /* CardValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5516383F4560711BD6964BEC /* CardValue.swift */; };
 		EBFFC26BAF27135A58BD06F9 /* GameKitViewControllerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD39733426C455341925D611 /* GameKitViewControllerPresenter.swift */; };
 		ECC28BD8D0EE265CCC6B3D44 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65E8F4199A9101DAAF2E9CA /* Player.swift */; };
+		FC44DB4F1D1C6F3AA82D11F2 /* LayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BB032C7EA10B13989DAFE89 /* LayoutTests.swift */; };
 		FD3DFE6A4C03777663C110E1 /* PlayerHandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00487C333D0CE926F9AB5310 /* PlayerHandView.swift */; };
 		FDCE7C90027A44A5D5269034 /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204B69BD03E08B89F13B114 /* GameCenterManager.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		537CA9F035974E4941E9790C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7AFD1E790902CF087C101222 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47E9E5B18D5D228B0360484B;
+			remoteInfo = iUnus;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		00487C333D0CE926F9AB5310 /* PlayerHandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHandView.swift; sourceTree = "<group>"; };
 		0204B69BD03E08B89F13B114 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
 		124BF4F5FDD839BD2C91FF22 /* ColorPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerSheet.swift; sourceTree = "<group>"; };
+		1BB032C7EA10B13989DAFE89 /* LayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutTests.swift; sourceTree = "<group>"; };
 		1EA540E914C42FA24702B9C5 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		20547FF1F8884B260588EA13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		252905FC5F51FCE851211A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		38105F5BC68273082CB4B344 /* GameViewModel+AI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewModel+AI.swift"; sourceTree = "<group>"; };
+		386737767727DE04337FA04E /* GameplayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayTests.swift; sourceTree = "<group>"; };
 		39285A30F17E8EAE7D153171 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		422D15401FEAB52457FB1FEF /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		4BEC26F6986B4B45AA0D1639 /* iUnus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = iUnus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +97,7 @@
 		B07E99A1CABF336849743796 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B89396BE918B9470E9F89E0E /* CardColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardColor.swift; sourceTree = "<group>"; };
 		B8E709F2690E809319DD3265 /* AIStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIStrategy.swift; sourceTree = "<group>"; };
+		BAE33EB1B4F7C414133B6D67 /* AuditRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditRegressionTests.swift; sourceTree = "<group>"; };
 		BE7286B43D19A2DF03665894 /* GameViewModel+Online.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewModel+Online.swift"; sourceTree = "<group>"; };
 		C86280F871DEF0462D125A72 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CD39733426C455341925D611 /* GameKitViewControllerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameKitViewControllerPresenter.swift; sourceTree = "<group>"; };
@@ -92,6 +108,7 @@
 		D96B5A40E47B8A75BCD7A237 /* iUnusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iUnusApp.swift; sourceTree = "<group>"; };
 		DD875D0C6D4A993B33FBD5C2 /* WildDraw4ChallengeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WildDraw4ChallengeSheet.swift; sourceTree = "<group>"; };
 		E01FA6B380C2CBD18A87BACB /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		E04C4E6BBE676EF41ED9456F /* iUnusTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = iUnusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E11CBF3E58FAED94C91DD655 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		E1ECF0ED18DF9AD3A06EE07B /* MatchStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchStats.swift; sourceTree = "<group>"; };
 		E3356F80EACE0B86D3530367 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -177,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				4BEC26F6986B4B45AA0D1639 /* iUnus.app */,
+				E04C4E6BBE676EF41ED9456F /* iUnusTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,6 +212,16 @@
 				D65E8F4199A9101DAAF2E9CA /* Player.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		B4D73974109560E29B9B3B3B /* iUnusTests */ = {
+			isa = PBXGroup;
+			children = (
+				BAE33EB1B4F7C414133B6D67 /* AuditRegressionTests.swift */,
+				386737767727DE04337FA04E /* GameplayTests.swift */,
+				1BB032C7EA10B13989DAFE89 /* LayoutTests.swift */,
+			);
+			path = iUnusTests;
 			sourceTree = "<group>";
 		};
 		D5CA5BF141DAC3BAA67062A1 /* Views */ = {
@@ -230,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				3BEBDCD59108AC6591EEE499 /* iUnus */,
+				B4D73974109560E29B9B3B3B /* iUnusTests */,
 				747554DD32ED9EBECF7A7F2D /* Frameworks */,
 				A679FDEA01C1B6BC115ED04A /* Products */,
 			);
@@ -238,6 +267,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2091C651F16CF50811F3FFA2 /* iUnusTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1EBB742B7E89AC1E92F679D4 /* Build configuration list for PBXNativeTarget "iUnusTests" */;
+			buildPhases = (
+				721336C5A74DBF02EDAB0FD3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C6A46F53AA9A44E5EE7F59E7 /* PBXTargetDependency */,
+			);
+			name = iUnusTests;
+			packageProductDependencies = (
+			);
+			productName = iUnusTests;
+			productReference = E04C4E6BBE676EF41ED9456F /* iUnusTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		47E9E5B18D5D228B0360484B /* iUnus */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 34EDFEA720FD20A20662A3EC /* Build configuration list for PBXNativeTarget "iUnus" */;
@@ -266,6 +313,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					2091C651F16CF50811F3FFA2 = {
+						DevelopmentTeam = S769436W24;
+					};
 					47E9E5B18D5D228B0360484B = {
 						DevelopmentTeam = S769436W24;
 					};
@@ -287,6 +337,7 @@
 			projectRoot = "";
 			targets = (
 				47E9E5B18D5D228B0360484B /* iUnus */,
+				2091C651F16CF50811F3FFA2 /* iUnusTests */,
 			);
 		};
 /* End PBXProject section */
@@ -304,6 +355,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		721336C5A74DBF02EDAB0FD3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				880CD96C53E11B90B862912D /* AuditRegressionTests.swift in Sources */,
+				ABBFD0334E5751C20B360CF5 /* GameplayTests.swift in Sources */,
+				FC44DB4F1D1C6F3AA82D11F2 /* LayoutTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		81024ACB72AE0987233D5865 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -352,6 +413,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C6A46F53AA9A44E5EE7F59E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47E9E5B18D5D228B0360484B /* iUnus */;
+			targetProxy = 537CA9F035974E4941E9790C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		CD456F2C8CA0CE555BB4077B /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
@@ -384,6 +453,42 @@
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		77C0AEC29374C5B8CD707408 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iUnusTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iUnus.app/iUnus";
+			};
+			name = Debug;
+		};
+		7AC0DC92AB074E0097A90092 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iUnusTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iUnus.app/iUnus";
 			};
 			name = Release;
 		};
@@ -539,6 +644,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1EBB742B7E89AC1E92F679D4 /* Build configuration list for PBXNativeTarget "iUnusTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				77C0AEC29374C5B8CD707408 /* Debug */,
+				7AC0DC92AB074E0097A90092 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		34EDFEA720FD20A20662A3EC /* Build configuration list for PBXNativeTarget "iUnus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

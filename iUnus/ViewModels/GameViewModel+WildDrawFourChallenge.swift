@@ -16,15 +16,18 @@ extension GameViewModel {
     /// matching the normal AI turn pacing. No-ops when the victim is the local human — that case
     /// waits for `resolveWildDraw4Challenge` to be called from the challenge sheet instead.
     func resolveWildDraw4ChallengeIfAIVictim() {
-        guard let pending = pendingWildDraw4Challenge,
+        guard !isSuspended, phase == .playing, let pending = pendingWildDraw4Challenge,
               players.indices.contains(pending.victimIndex), players[pending.victimIndex].isAI else { return }
+        turnWorkItem?.cancel()
         isAIThinking = true
         let delay = Double.random(in: aiSpeed.delayRange)
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-            guard let self, self.pendingWildDraw4Challenge == pending else { return }
+        let work = DispatchWorkItem { [weak self] in
+            guard let self, self.phase == .playing, !self.isSuspended, self.pendingWildDraw4Challenge == pending else { return }
             self.isAIThinking = false
             self.resolveWildDraw4Challenge(challenge: AIStrategy.shouldChallengeWildDraw4(difficulty: self.aiDifficulty))
         }
+        turnWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
     }
 
     /// Settles an open Wild Draw Four challenge. `challenge: false` is the victim simply
@@ -33,7 +36,7 @@ extension GameViewModel {
     /// 4 instead (the victim's own turn then proceeds normally, unaffected); incorrect challenge
     /// makes the challenger draw 6 (4 + 2 penalty) and lose their turn.
     func resolveWildDraw4Challenge(challenge: Bool) {
-        guard let pending = pendingWildDraw4Challenge else { return }
+        guard phase == .playing, !isSuspended, let pending = pendingWildDraw4Challenge else { return }
         pendingWildDraw4Challenge = nil
 
         if !challenge {

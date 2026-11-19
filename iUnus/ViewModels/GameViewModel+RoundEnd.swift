@@ -4,7 +4,11 @@ import Foundation
 
 extension GameViewModel {
     func endRound(winnerIndex: Int) {
-        guard players.indices.contains(winnerIndex) else { return }
+        guard phase == .playing, players.indices.contains(winnerIndex) else { return }
+        turnWorkItem?.cancel()
+        isAIThinking = false
+        pendingUnoCatch = nil
+        pendingWildDraw4Challenge = nil
         roundWinnerID = players[winnerIndex].id
 
         // Online matches use official rules only and are decided by the first round, rather
@@ -30,8 +34,8 @@ extension GameViewModel {
             gameWinnerID = players[winnerIndex].id
             playWinSound()
             recordMatchStats(winnerIndex: winnerIndex)
-            clearSavedGame()
         }
+        saveProgressIfActive()
     }
 
     private func recordMatchStats(winnerIndex: Int) {
@@ -41,6 +45,7 @@ extension GameViewModel {
     }
 
     func continueAfterRound() {
+        guard phase == .roundEnd else { return }
         if gameWinnerID != nil {
             phase = .gameEnd
         } else {
@@ -49,6 +54,18 @@ extension GameViewModel {
     }
 
     func returnToMenu() {
+        turnWorkItem?.cancel()
+        isAIThinking = false
+        drawnCardToPlayID = nil
+        justDrawnCard = nil
+        pendingUnoCatch = nil
+        pendingWildDraw4Challenge = nil
+        toastWorkItem?.cancel()
+        toastMessage = nil
+        isOnlineUpdatePending = false
+        isSuspended = false
+        activeRuleSet = nil
+        roundFinishOrder = []
         phase = .menu
         players = []
         gameWinnerID = nil

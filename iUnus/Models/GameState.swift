@@ -1,6 +1,6 @@
 import Foundation
 
-enum GamePhase: Equatable {
+enum GamePhase: Equatable, Codable {
     case menu
     case dealing
     case playing
@@ -32,7 +32,7 @@ struct PendingUnoCatch: Equatable, Codable {
 /// `GameViewModel.attemptPlay`): rather than blocking an illegal play outright, the victim gets
 /// to decide whether to accept the draw or challenge it. `hadMatchingColor` is the ground truth,
 /// captured at play time, of whether the play was actually illegal.
-struct PendingWildDraw4Challenge: Equatable {
+struct PendingWildDraw4Challenge: Equatable, Codable {
     let playerIndex: Int
     let victimIndex: Int
     let hadMatchingColor: Bool

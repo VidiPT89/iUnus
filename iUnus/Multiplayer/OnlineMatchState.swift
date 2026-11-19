@@ -34,6 +34,7 @@ struct OnlineMatchState: Codable {
     /// this match, agreed once by the hosting device and carried forward in every snapshot so
     /// every participant's device can tell which hand is theirs and whose turn is next.
     var participantPlayerIDs: [String: UUID]
+    var drawnCardToPlayID: UUID? = nil
 }
 
 /// Notified by `GameViewModel` whenever an online match's state changes, so the coordinator
@@ -43,4 +44,21 @@ protocol OnlineMatchDelegate: AnyObject {
     func gameViewModelDidUpdateOnlineState(_ viewModel: GameViewModel)
     func gameViewModelDidEndGame(_ viewModel: GameViewModel, winnerIndex: Int)
     func gameViewModelDidRequestQuit(_ viewModel: GameViewModel)
+}
+
+// Treat received match data as untrusted state, never as a reason to redeal a match.
+extension OnlineMatchState {
+    var isValid: Bool {
+        let ids = Set(players.map(\.id))
+        guard (2...4).contains(players.count), ids.count == players.count,
+              players.allSatisfy({ !$0.isAI }), players.indices.contains(currentPlayerIndex),
+              participantPlayerIDs.count == players.count,
+              Set(participantPlayerIDs.values) == ids, pendingDrawStack == 0 else { return false }
+        let snapshot = SavedGame(players: players, deck: deck, currentPlayerIndex: currentPlayerIndex,
+                                 direction: direction, pendingDrawStack: pendingDrawStack,
+                                 drawnCardToPlayID: drawnCardToPlayID,
+                                 phase: phase == .gameEnd ? .gameEnd : .playing,
+                                 ruleSet: .official, roundWinnerID: roundWinnerID, gameWinnerID: gameWinnerID)
+        return snapshot.isValid
+    }
 }

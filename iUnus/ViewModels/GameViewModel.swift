@@ -1,7 +1,5 @@
 import Foundation
 import Combine
-import UIKit
-import AudioToolbox
 
 /// Core game state and the local play/draw flow. Online-match wiring lives in
 /// `GameViewModel+Online.swift`, the AI turn loop in `GameViewModel+AI.swift`, round/game
@@ -29,7 +27,13 @@ final class GameViewModel: ObservableObject {
     @Published var pendingWildDraw4Challenge: PendingWildDraw4Challenge?
     @Published private(set) var hasSavedGame: Bool = GameSaveStore.hasSave
     @Published var mode: GameMode = .local
-    @Published private(set) var roundFinishOrder: [UUID] = []
+    @Published var roundFinishOrder: [UUID] = []
+
+    @Published var drawnCardToPlayID: UUID?
+    var turnWorkItem: DispatchWorkItem?
+    @Published var isOnlineUpdatePending = false
+    var activeRuleSet: RuleSet?
+    var isSuspended = false
 
     static let targetScore = 500
     var toastWorkItem: DispatchWorkItem?
@@ -63,9 +67,9 @@ final class GameViewModel: ObservableObject {
     /// say — legality is checked independently on each participant's own device from this same
     /// flag, so leaving it keyed to local `UserDefaults` would let two devices disagree on
     /// whether a move (stacking, Wild Draw Four, draw-until-playable) is legal.
-    private var houseRulesActive: Bool { mode != .online && settings?.ruleSet == .houseRules }
+    private var houseRulesActive: Bool { mode != .online && (activeRuleSet ?? settings?.ruleSet) == .houseRules }
     /// Official rules only: a Wild Draw Four may not be played while the player holds a card
-    /// matching the active color. House rules (and online, which always enforces official) waive it.
+    /// matching the active color. Only House Rules waive it.
     var enforceWildDrawFourRestriction: Bool { !houseRulesActive }
     /// What the local human's own hand should visually gate on: online keeps the hard block
     /// (challenges aren't synced across devices), but local Official Rules let them tap an
@@ -81,11 +85,30 @@ final class GameViewModel: ObservableObject {
         players.indices.filter { !roundFinishOrder.contains(players[$0].id) }
     }
 
+    func canLocalPlayerPlay(_ card: Card) -> Bool {
+        guard isLocalTurn, phase == .playing, !isOnlineUpdatePending, !isSuspended, pendingWildDraw4Challenge == nil,
+              let hand = localViewPlayer?.hand, hand.contains(where: { $0.id == card.id }),
+              let top = topCard else { return false }
+        if let drawnCardToPlayID, card.id != drawnCardToPlayID { return false }
+        if pendingDrawStack > 0 { return card.value.drawPenaltyAmount != nil }
+        return card.canPlay(on: top, hand: hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestrictionForLocalHuman)
+    }
+
+    func humanPassAfterDraw() {
+        guard isLocalTurn, phase == .playing, !isOnlineUpdatePending, !isSuspended, drawnCardToPlayID != nil else { return }
+        drawnCardToPlayID = nil
+        advanceTurn(steps: 1, from: currentPlayerIndex)
+        afterTurnMutation()
+    }
+
     func configure(settings: SettingsViewModel) {
         self.settings = settings
     }
 
     func startNewGame(opponentCount: Int) {
+        if mode == .online { onlineDelegate?.gameViewModelDidRequestQuit(self) }
+        returnToMenu()
+        activeRuleSet = settings?.ruleSet ?? .official
         clearSavedGame()
         let clamped = max(1, min(9, opponentCount))
         var newPlayers = [Player(name: L.t("player.you"), kind: .human)]
@@ -102,22 +125,29 @@ final class GameViewModel: ObservableObject {
             hasSavedGame = false
             return
         }
+        returnToMenu()
+        activeRuleSet = saved.ruleSet ?? settings?.ruleSet ?? .official
+        drawnCardToPlayID = saved.drawnCardToPlayID
         players = saved.players
         deck = saved.deck
         currentPlayerIndex = saved.currentPlayerIndex
         direction = saved.direction
         pendingDrawStack = saved.pendingDrawStack
-        pendingUnoCatch = nil
-        pendingWildDraw4Challenge = nil
-        roundWinnerID = nil
+        pendingUnoCatch = saved.pendingUnoCatch
+        pendingWildDraw4Challenge = saved.pendingWildDraw4Challenge
+        pendingWildDrawFourHadMatchingColor = saved.pendingWildHadMatchingColor
+        roundWinnerID = saved.roundWinnerID
         roundFinishOrder = saved.roundFinishOrder
-        gameWinnerID = nil
+        gameWinnerID = saved.gameWinnerID
+        lastRoundPoints = saved.lastRoundPoints ?? 0
         justDrawnCard = nil
-        phase = .playing
-        advanceIfAITurn()
+        phase = saved.phase == .dealing ? .playing : (saved.phase ?? .playing)
+        if case .choosingColor = phase { pendingWildPlayerIndex = currentPlayerIndex }
+        resumeTurnWork()
     }
 
     func quitToMenu() {
+        guard !isOnlineUpdatePending else { return }
         if mode == .online {
             onlineDelegate?.gameViewModelDidRequestQuit(self)
         } else {
@@ -127,14 +157,23 @@ final class GameViewModel: ObservableObject {
     }
 
     func saveProgressIfActive() {
-        guard phase == .playing, !players.isEmpty else { return }
+        guard mode == .local, phase != .menu, !players.isEmpty else { return }
         let save = SavedGame(
             players: players,
             deck: deck,
             currentPlayerIndex: currentPlayerIndex,
             direction: direction,
             pendingDrawStack: pendingDrawStack,
-            roundFinishOrder: roundFinishOrder
+            roundFinishOrder: roundFinishOrder,
+            drawnCardToPlayID: drawnCardToPlayID,
+            phase: phase,
+            ruleSet: activeRuleSet ?? settings?.ruleSet ?? .official,
+            pendingUnoCatch: pendingUnoCatch,
+            pendingWildDraw4Challenge: pendingWildDraw4Challenge,
+            pendingWildHadMatchingColor: pendingWildDrawFourHadMatchingColor,
+            roundWinnerID: roundWinnerID,
+            gameWinnerID: gameWinnerID,
+            lastRoundPoints: lastRoundPoints
         )
         GameSaveStore.save(save)
         hasSavedGame = true
@@ -172,7 +211,36 @@ final class GameViewModel: ObservableObject {
         }
     }
 
+    func setSuspended(_ suspended: Bool) {
+        guard isSuspended != suspended else { return }
+        isSuspended = suspended
+        if suspended {
+            turnWorkItem?.cancel()
+            isAIThinking = false
+            saveProgressIfActive()
+        } else {
+            if phase == .dealing {
+                phase = .playing
+                afterTurnMutation()
+            } else {
+                resumeTurnWork()
+            }
+        }
+    }
+
+    private func resumeTurnWork() {
+        guard !isSuspended, phase == .playing else { return }
+        if pendingWildDraw4Challenge != nil { resolveWildDraw4ChallengeIfAIVictim() }
+        else { advanceIfAITurn() }
+    }
+
     func startNewRound() {
+        turnWorkItem?.cancel()
+        drawnCardToPlayID = nil
+        justDrawnCard = nil
+        isAIThinking = false
+        pendingWildPlayerIndex = nil
+        pendingWildDrawFourHadMatchingColor = nil
         deck = Deck()
         direction = .clockwise
         pendingUnoCatch = nil
@@ -224,25 +292,31 @@ final class GameViewModel: ObservableObject {
             }
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { [weak self] in
-            guard let self else { return }
+        let work = DispatchWorkItem { [weak self] in
+            guard let self, self.phase == .dealing else { return }
             self.phase = .playing
             self.afterTurnMutation()
         }
+        turnWorkItem = work
+        saveProgressIfActive()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3, execute: work)
     }
 
     // MARK: - Playing cards
 
     func humanPlay(_ card: Card) {
-        guard isLocalTurn, phase == .playing, currentPlayer != nil, pendingWildDraw4Challenge == nil else { return }
+        guard isLocalTurn, phase == .playing, !isOnlineUpdatePending, !isSuspended, currentPlayer != nil, pendingWildDraw4Challenge == nil else { return }
+        guard canLocalPlayerPlay(card) else { return }
         attemptPlay(card, playerIndex: currentPlayerIndex)
     }
 
     func attemptPlay(_ card: Card, playerIndex: Int) {
-        guard players.indices.contains(playerIndex) else { return }
+        guard phase == .playing, !isSuspended, !isOnlineUpdatePending,
+              pendingWildDraw4Challenge == nil, playerIndex == currentPlayerIndex,
+              players.indices.contains(playerIndex) else { return }
+        if let drawnCardToPlayID, drawnCardToPlayID != card.id { return }
         guard let top = topCard else { return }
         guard let handIndex = players[playerIndex].hand.firstIndex(where: { $0.id == card.id }) else { return }
-        closeUnoCatchWindowIfBlocking(playerIndex)
 
         // AI (and any online seat) stays restricted to legal Wild Draw Fours; the local human
         // may attempt an "illegal" one and let the victim challenge it instead of being blocked
@@ -259,6 +333,8 @@ final class GameViewModel: ObservableObject {
             return
         }
 
+        closeUnoCatchWindowIfBlocking(playerIndex)
+
         // Captured before the card leaves the hand and before its own color choice overwrites
         // `topCard.effectiveColor` — this is the ground truth a later challenge checks against.
         // Stashed on the instance (rather than threaded through finalizePlay/applyEffectAndAdvance)
@@ -267,6 +343,7 @@ final class GameViewModel: ObservableObject {
             ? !Card.wildDrawFourWasLegal(hand: players[playerIndex].hand, activeColor: top.effectiveColor)
             : nil
 
+        drawnCardToPlayID = nil
         var playedCard = players[playerIndex].hand.remove(at: handIndex)
         hapticPlay()
         playCardSound()
@@ -279,6 +356,7 @@ final class GameViewModel: ObservableObject {
             } else {
                 phase = .choosingColor(pendingCard: playedCard)
                 pendingWildPlayerIndex = playerIndex
+                saveProgressIfActive()
                 return
             }
         } else {
@@ -290,7 +368,7 @@ final class GameViewModel: ObservableObject {
     private var pendingWildDrawFourHadMatchingColor: Bool?
 
     func chooseWildColor(_ color: CardColor) {
-        guard case .choosingColor(var card) = phase, let idx = pendingWildPlayerIndex else { return }
+        guard color != .wild, case .choosingColor(var card) = phase, let idx = pendingWildPlayerIndex else { return }
         card.chosenColor = color
         pendingWildPlayerIndex = nil
         phase = .playing
@@ -309,6 +387,9 @@ final class GameViewModel: ObservableObject {
                     // it with the real next seat once the card's effect has moved the turn.
                     pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, blockingPlayerIndex: playerIndex)
                 }
+            } else if mode == .online {
+                // A turn-based handoff cannot accept an out-of-turn UNO button update.
+                players[playerIndex].hasCalledUno = true
             } else {
                 pendingUnoCatch = PendingUnoCatch(playerID: players[playerIndex].id, blockingPlayerIndex: playerIndex)
             }
@@ -329,6 +410,10 @@ final class GameViewModel: ObservableObject {
     private func handlePlayerFinished(playerIndex: Int, playedCard: Card) {
         guard players.indices.contains(playerIndex) else { return }
         guard playUntilOnePlayerRemains else {
+            // The final penalty is drawn before scoring the opponents' hands.
+            if let amount = playedCard.value.drawPenaltyAmount {
+                forceDraw(count: amount, onPlayerIndex: nextIndex(from: playerIndex))
+            }
             endRound(winnerIndex: playerIndex)
             return
         }
@@ -337,6 +422,9 @@ final class GameViewModel: ObservableObject {
             roundFinishOrder.append(finishedID)
         }
         if activePlayerIndices().count <= 1 {
+            let amount = pendingDrawStack + (playedCard.value.drawPenaltyAmount ?? 0)
+            if amount > 0, let last = activePlayerIndices().first { forceDraw(count: amount, onPlayerIndex: last) }
+            pendingDrawStack = 0
             finishHouseRulesRound()
             return
         }
@@ -358,7 +446,7 @@ final class GameViewModel: ObservableObject {
             advanceTurn(steps: 2, from: playerIndex)
         case .reverse:
             direction.toggle()
-            advanceTurn(steps: players.count == 2 ? 2 : 1, from: playerIndex)
+            advanceTurn(steps: activePlayerIndices().count == 2 ? 2 : 1, from: playerIndex)
         case .drawTwo, .wildDrawFour:
             let amount = card.value.drawPenaltyAmount ?? 0
             if houseRulesActive {
@@ -402,6 +490,7 @@ final class GameViewModel: ObservableObject {
             players[onPlayerIndex].hand.append(c)
         }
         players[onPlayerIndex].hand.sortForDisplay()
+        if players[onPlayerIndex].hand.count > 1 { players[onPlayerIndex].hasCalledUno = false }
     }
 
     func advanceTurn(steps: Int, from index: Int) {
@@ -431,12 +520,15 @@ final class GameViewModel: ObservableObject {
     // MARK: - Drawing
 
     func humanDraw() {
-        guard isLocalTurn, phase == .playing, currentPlayer != nil, pendingWildDraw4Challenge == nil else { return }
+        guard isLocalTurn, phase == .playing, !isOnlineUpdatePending, !isSuspended, currentPlayer != nil, pendingWildDraw4Challenge == nil else { return }
+        guard drawnCardToPlayID == nil else { return }
         drawForCurrentPlayer()
     }
 
     func drawForCurrentPlayer() {
-        guard players.indices.contains(currentPlayerIndex) else { return }
+        guard phase == .playing, !isSuspended, !isOnlineUpdatePending,
+              pendingWildDraw4Challenge == nil, drawnCardToPlayID == nil,
+              players.indices.contains(currentPlayerIndex) else { return }
         closeUnoCatchWindowIfBlocking(currentPlayerIndex)
         if pendingDrawStack > 0 {
             drawPendingStack()
@@ -459,6 +551,7 @@ final class GameViewModel: ObservableObject {
             return
         }
         players[currentPlayerIndex].hand.sortForDisplay()
+        players[currentPlayerIndex].hasCalledUno = false
         hapticPlay()
         playDrawSound()
         justDrawnCard = card
@@ -467,9 +560,13 @@ final class GameViewModel: ObservableObject {
             self.justDrawnCard = nil
         }
         if let top = topCard,
-           card.canPlay(on: top, hand: players[currentPlayerIndex].hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction),
-           players[currentPlayerIndex].isAI {
-            attemptPlay(card, playerIndex: currentPlayerIndex)
+           card.canPlay(on: top, hand: players[currentPlayerIndex].hand, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction) {
+            if players[currentPlayerIndex].isAI {
+                attemptPlay(card, playerIndex: currentPlayerIndex)
+            } else {
+                drawnCardToPlayID = card.id
+                syncProgress()
+            }
         } else {
             advanceTurn(steps: 1, from: currentPlayerIndex)
             afterTurnMutation()

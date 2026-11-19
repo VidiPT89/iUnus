@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct WildDraw4ChallengeSheet: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     let offenderName: String
     let onChallenge: () -> Void
     let onAccept: () -> Void
@@ -21,7 +22,7 @@ struct WildDraw4ChallengeSheet: View {
                 Button(action: onChallenge) {
                     Text(L.t("wildDraw4.challenge"))
                         .font(.headline.weight(.bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(Capsule().fill(Color.brandPrimary))

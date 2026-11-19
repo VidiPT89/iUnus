@@ -57,8 +57,6 @@ struct Card: Identifiable, Equatable, Codable, Hashable {
         !hand.contains { !$0.value.isWild && $0.color == activeColor }
     }
 
-    static func == (lhs: Card, rhs: Card) -> Bool { lhs.id == rhs.id }
-
     /// Stable sort key: color group first (wilds last), then value within color.
     private var sortKey: (Int, Int) {
         let colorOrder: [CardColor: Int] = [.red: 0, .yellow: 1, .green: 2, .blue: 3, .wild: 4]
@@ -85,5 +83,15 @@ struct Card: Identifiable, Equatable, Codable, Hashable {
 extension Array where Element == Card {
     mutating func sortForDisplay() {
         sort(by: Card.displayOrder)
+    }
+}
+
+// Validate decoded cards before they enter the game engine.
+extension Card {
+    var isValid: Bool {
+        if case .number(let number) = value, !(0...9).contains(number) { return false }
+        guard value.isWild == (color == .wild) else { return false }
+        if let chosenColor { return value.isWild && chosenColor != .wild }
+        return true
     }
 }

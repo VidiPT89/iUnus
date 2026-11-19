@@ -1,88 +1,104 @@
 import SwiftUI
 
 struct GameView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     @ObservedObject var viewModel: GameViewModel
     @Namespace private var cardSpace
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var dealtCardCount = 0
     @State private var wildFlourishScale: CGFloat = 1.0
 
     var body: some View {
-        ZStack {
-            Color.brandBackground.ignoresSafeArea()
+        GeometryReader { geometry in
+            let compact = geometry.size.height < 700
+            ZStack {
+                Color.brandBackground.ignoresSafeArea()
+                RadialGradient(colors: [Color.brandPrimary.opacity(0.14), .clear], center: .center, startRadius: 20, endRadius: 380)
+                    .ignoresSafeArea()
+                Ellipse().stroke(Color.brandPrimary.opacity(0.09), lineWidth: 2)
+                    .frame(height: 300).padding(.horizontal, 20)
+                    .allowsHitTesting(false)
 
-            VStack(spacing: 16) {
-                TopBarView(
-                    turnText: turnText,
-                    isHumanTurn: isHumanTurn,
-                    canCallUno: canCallUno,
-                    direction: viewModel.direction,
-                    pendingDrawStack: viewModel.pendingDrawStack,
-                    onUnoTapped: { if let id = viewModel.localViewPlayer?.id { viewModel.callUno(playerID: id) } },
-                    onQuit: { viewModel.quitToMenu() }
-                )
-                .padding(.top, 8)
-                .animation(.spring(response: 0.35, dampingFraction: 0.7), value: viewModel.pendingDrawStack)
-
-                opponentsRow
-
-                Spacer(minLength: 12)
-
-                pileArea
-
-                Spacer(minLength: 12)
-
-                if let human = viewModel.localViewPlayer {
-                    PlayerHandView(
-                        cards: human.hand,
-                        topCard: viewModel.topCard,
-                        isMyTurn: isHumanTurn && viewModel.phase == .playing,
-                        namespace: cardSpace,
-                        justDrawnCardID: viewModel.justDrawnCard?.id,
-                        enforceWildDrawFourRestriction: viewModel.enforceWildDrawFourRestrictionForLocalHuman,
-                        onPlay: { viewModel.humanPlay($0) }
+                ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 8) {
+                    TopBarView(
+                        turnText: turnText,
+                        isHumanTurn: isHumanTurn,
+                        canCallUno: canCallUno,
+                        direction: viewModel.direction,
+                        pendingDrawStack: viewModel.pendingDrawStack,
+                        onUnoTapped: { if let id = viewModel.localViewPlayer?.id { viewModel.callUno(playerID: id) } },
+                        onQuit: { viewModel.quitToMenu() }
                     )
+                    .disabled(viewModel.isOnlineUpdatePending)
+                    .padding(.top, 8)
+                    .animation(.spring(response: 0.35, dampingFraction: 0.7), value: viewModel.pendingDrawStack)
+
+                    opponentsRow(compact: compact)
+
+                    Spacer(minLength: 0)
+
+                    pileArea(compact: compact)
+
+                    Spacer(minLength: 0)
+
+                    if let human = viewModel.localViewPlayer {
+                        handGuidance
+                        PlayerHandView(
+                            cards: human.hand,
+                            cardWidth: compact ? 64 : 78,
+                            namespace: cardSpace,
+                            justDrawnCardID: viewModel.justDrawnCard?.id,
+                            canPlay: viewModel.canLocalPlayerPlay,
+                            onPlay: { viewModel.humanPlay($0) }
+                        )
+                    }
+                }
+                .frame(maxWidth: 760)
+                .frame(minHeight: geometry.size.height)
+                .frame(maxWidth: .infinity)
                 }
             }
-        }
-        .overlay(alignment: .top) {
-            if let toast = viewModel.toastMessage {
-                Text(toast)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 16).padding(.vertical, 10)
-                    .background(Capsule().fill(Color.black.opacity(0.85)))
-                    .padding(.top, 60)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+            .overlay(alignment: .top) {
+                if let toast = viewModel.toastMessage {
+                    Text(toast)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16).padding(.vertical, 10)
+                        .background(Capsule().fill(Color.black.opacity(0.85)))
+                        .padding(.top, 60)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
             }
-        }
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.toastMessage)
-        .sheet(isPresented: colorSheetBinding) {
-            ColorPickerSheet { color in viewModel.chooseWildColor(color) }
-                .presentationDetents([.height(280)])
-                .interactiveDismissDisabled(true)
-        }
-        .sheet(isPresented: wildDraw4ChallengeSheetBinding) {
-            if let pending = viewModel.wildDraw4ChallengeForLocalHuman {
-                WildDraw4ChallengeSheet(
-                    offenderName: viewModel.players.indices.contains(pending.playerIndex) ? viewModel.players[pending.playerIndex].name : "",
-                    onChallenge: { viewModel.resolveWildDraw4Challenge(challenge: true) },
-                    onAccept: { viewModel.resolveWildDraw4Challenge(challenge: false) }
-                )
-                .presentationDetents([.height(320)])
-                .interactiveDismissDisabled(true)
+            .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.toastMessage)
+            .sheet(isPresented: colorSheetBinding) {
+                ColorPickerSheet { color in viewModel.chooseWildColor(color) }
+                    .presentationDetents([.medium, .large])
+                    .interactiveDismissDisabled(true)
             }
-        }
-        .overlay {
-            if viewModel.phase == .dealing {
-                dealingOverlay
+            .sheet(isPresented: wildDraw4ChallengeSheetBinding) {
+                if let pending = viewModel.wildDraw4ChallengeForLocalHuman {
+                    WildDraw4ChallengeSheet(
+                        offenderName: viewModel.players.indices.contains(pending.playerIndex) ? viewModel.players[pending.playerIndex].name : "",
+                        onChallenge: { viewModel.resolveWildDraw4Challenge(challenge: true) },
+                        onAccept: { viewModel.resolveWildDraw4Challenge(challenge: false) }
+                    )
+                    .presentationDetents([.medium, .large])
+                    .interactiveDismissDisabled(true)
+                }
             }
-        }
-        .onChange(of: viewModel.phase) { phase in
-            guard phase == .dealing else { return }
-            runDealingAnimation()
-        }
-        .onAppear {
-            if viewModel.phase == .dealing { runDealingAnimation() }
+            .overlay {
+                if viewModel.phase == .dealing && !reduceMotion {
+                    dealingOverlay
+                }
+            }
+            .onChange(of: viewModel.phase) { phase in
+                guard phase == .dealing else { return }
+                runDealingAnimation()
+            }
+            .onAppear {
+                if viewModel.phase == .dealing && !reduceMotion { runDealingAnimation() }
+            }
         }
     }
 
@@ -120,6 +136,7 @@ struct GameView: View {
     }
 
     private func runDealingAnimation() {
+        guard !reduceMotion else { return }
         dealtCardCount = 0
         let totalCards = max(viewModel.players.count, 1) * 7
         let stepDelay = totalCards > 0 ? min(1.2 / Double(totalCards), 0.09) : 0.05
@@ -130,39 +147,19 @@ struct GameView: View {
         }
     }
 
-    /// Opponent count is capped at 9 (`GameViewModel.startNewGame`), but a single scaled-down row
-    /// stops being legible well before that many avatars — past 5, switch to a horizontally
-    /// scrollable row at a fixed, readable size instead of continuing to shrink everyone to fit.
-    private static let maxScaledOpponents = 5
-
-    private var opponentsRow: some View {
+    private func opponentsRow(compact: Bool) -> some View {
         let opponents = viewModel.opponentPlayers
-        let baseCardWidth: CGFloat = 40
+        let baseCardWidth: CGFloat = compact ? 26 : 40
         let minSpacing: CGFloat = 8
 
-        return Group {
-            if opponents.count > Self.maxScaledOpponents {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: minSpacing) {
-                        opponentViews(opponents, cardWidth: baseCardWidth)
-                    }
-                    .padding(.horizontal)
-                }
-            } else {
-                GeometryReader { proxy in
-                    let availableWidth = proxy.size.width - 32
-                    let neededWidth = CGFloat(opponents.count) * baseCardWidth + CGFloat(max(opponents.count - 1, 0)) * minSpacing
-                    let scale = neededWidth > availableWidth && neededWidth > 0 ? max(availableWidth / neededWidth, 0.55) : 1.0
-
-                    HStack(spacing: minSpacing * scale) {
-                        opponentViews(opponents, cardWidth: baseCardWidth * scale)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal)
-                }
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: minSpacing) {
+                opponentViews(opponents, cardWidth: baseCardWidth)
             }
+            .padding(.horizontal)
+            .padding(.vertical, 4)
         }
-        .frame(height: 100)
+        .frame(height: (compact ? 100 : 142) + (viewModel.pendingUnoCatch != nil ? 44 : 0))
     }
 
     private func opponentViews(_ opponents: [Player], cardWidth: CGFloat) -> some View {
@@ -173,28 +170,28 @@ struct GameView: View {
                 isCurrentTurn: viewModel.currentPlayer?.id == player.id,
                 isThinking: viewModel.isAIThinking,
                 cardWidth: cardWidth,
-                onCatchUno: viewModel.pendingUnoCatch?.playerID == player.id
+                onCatchUno: !viewModel.isOnlineUpdatePending && (viewModel.mode == .local || isHumanTurn) && viewModel.pendingUnoCatch?.playerID == player.id
                     ? { viewModel.catchFailureToCallUno() }
                     : nil
             )
         }
     }
 
-    private var pileArea: some View {
+    private func pileArea(compact: Bool) -> some View {
         HStack(alignment: .top, spacing: 40) {
             VStack(spacing: 8) {
                 Button {
                     viewModel.humanDraw()
                 } label: {
-                    CardBackView(width: 78)
+                    CardBackView(width: compact ? 62 : 78)
                 }
-                .disabled(!(isHumanTurn && viewModel.phase == .playing))
+                .disabled(!(isHumanTurn && viewModel.phase == .playing) || viewModel.drawnCardToPlayID != nil || viewModel.isOnlineUpdatePending)
                 .opacity(isHumanTurn && viewModel.phase == .playing ? 1 : 0.6)
                 .accessibilityLabel(L.t("game.drawPile"))
                 .accessibilityHint(L.t("game.drawPileHint"))
                 .overlay {
                     if let drawn = viewModel.justDrawnCard, viewModel.localViewPlayer?.hand.contains(where: { $0.id == drawn.id }) == true {
-                        CardView(card: drawn, width: 78)
+                        CardView(card: drawn, width: compact ? 62 : 78)
                             .matchedGeometryEffect(id: drawn.id, in: cardSpace, isSource: true)
                             .allowsHitTesting(false)
                             .animation(.spring(response: 0.45, dampingFraction: 0.75), value: viewModel.justDrawnCard?.id)
@@ -212,10 +209,10 @@ struct GameView: View {
 
             if let top = viewModel.topCard {
                 VStack(spacing: 8) {
-                    CardView(card: top, width: 84)
+                    CardView(card: top, width: compact ? 68 : 84)
                         .id(top.id)
                         .matchedGeometryEffect(id: top.id, in: cardSpace)
-                        .rotationEffect(.degrees(Double.random(in: -6...6)))
+                        .rotationEffect(.degrees(Double(top.id.uuid.0 % 9) - 4))
                         .scaleEffect(wildFlourishScale)
                         .shadow(color: top.effectiveColor.displayColor.opacity(wildFlourishScale > 1.0 ? 0.7 : 0), radius: 12)
                         .transition(.asymmetric(
@@ -232,6 +229,31 @@ struct GameView: View {
                 }
             }
         }
+    }
+
+    private var handGuidance: some View {
+        VStack(spacing: 10) {
+            if let top = viewModel.topCard {
+                Label(L.t("color." + top.effectiveColor.rawValue), systemImage: "circle.fill")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundColor(.brandTextPrimary)
+                    .padding(.horizontal, 14).padding(.vertical, 8)
+                    .background(Capsule().fill(top.effectiveColor.displayColor.opacity(0.18)))
+                    .accessibilityLabel(L.t("game.activeColor") + ": " + L.t("color." + top.effectiveColor.rawValue))
+            }
+            if viewModel.drawnCardToPlayID != nil && isHumanTurn {
+                Text(L.t("game.drawnChoice")).font(.caption)
+                Button(L.t("game.pass")) { viewModel.humanPassAfterDraw() }
+                    .buttonStyle(.borderedProminent).tint(.brandPrimary)
+                    .foregroundColor(.black)
+            } else {
+                Text(isHumanTurn ? L.t(viewModel.pendingDrawStack > 0 ? "game.stackGuidance" : ((viewModel.localViewPlayer?.hand.contains(where: viewModel.canLocalPlayerPlay) ?? false) ? "game.handGuidance" : "game.mustDraw")) : turnText)
+                    .font(.subheadline)
+            }
+        }
+        .foregroundColor(.brandTextSecondary)
+        .multilineTextAlignment(.center)
+        .padding(.horizontal)
     }
 
     private var colorSheetBinding: Binding<Bool> {
@@ -251,7 +273,7 @@ struct GameView: View {
     private var isHumanTurn: Bool { viewModel.isLocalTurn }
 
     private var canCallUno: Bool {
-        guard let human = viewModel.localViewPlayer else { return false }
+        guard !viewModel.isOnlineUpdatePending, viewModel.mode == .local || isHumanTurn, let human = viewModel.localViewPlayer else { return false }
         return human.hand.count == 1 && !human.hasCalledUno
     }
 

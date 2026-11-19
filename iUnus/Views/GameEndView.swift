@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct GameEndView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     @ObservedObject var viewModel: GameViewModel
     @State private var showConfetti = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var winnerName: String {
         viewModel.players.first(where: { $0.id == viewModel.gameWinnerID })?.name ?? ""
@@ -13,12 +15,13 @@ struct GameEndView: View {
             LinearGradient(colors: [.brandBackground, .brandPrimary.opacity(0.25)], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
 
-            if showConfetti {
+            if showConfetti && !reduceMotion {
                 ConfettiView()
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
 
+            ScrollView {
             VStack(spacing: 28) {
                 Spacer()
 
@@ -34,7 +37,7 @@ struct GameEndView: View {
                     .font(.title3.weight(.semibold))
                     .foregroundColor(.brandTextPrimary)
 
-                if let winnerScore = viewModel.players.first(where: { $0.id == viewModel.gameWinnerID })?.totalScore {
+                if viewModel.mode == .local, let winnerScore = viewModel.players.first(where: { $0.id == viewModel.gameWinnerID })?.totalScore {
                     CountUpText(value: winnerScore, duration: 1.4)
                         .font(.title.weight(.heavy))
                         .foregroundColor(.brandSecondary)
@@ -48,14 +51,14 @@ struct GameEndView: View {
                     } label: {
                         Text(L.t("gameEnd.newGame"))
                             .font(.headline.weight(.bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .frame(maxWidth: 260)
                             .padding(.vertical, 16)
                             .background(Capsule().fill(Color.brandPrimary))
                     }
 
                     Button {
-                        viewModel.returnToMenu()
+                        viewModel.quitToMenu()
                     } label: {
                         Text(L.t("gameEnd.backToMenu"))
                             .font(.subheadline.weight(.medium))
@@ -64,8 +67,16 @@ struct GameEndView: View {
                 }
                 .padding(.bottom, 40)
             }
+            .padding(.top, 28)
+            }
         }
-        .onAppear { showConfetti = true }
+        .task {
+            guard !reduceMotion else { return }
+            showConfetti = true
+            try? await Task.sleep(nanoseconds: 4_000_000_000)
+            showConfetti = false
+        }
+        .disabled(viewModel.isOnlineUpdatePending)
     }
 }
 

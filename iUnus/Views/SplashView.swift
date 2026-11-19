@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SplashView: View {
     let onFinished: () -> Void
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var markScale: CGFloat = 0.6
     @State private var markOpacity: Double = 0
@@ -92,7 +93,13 @@ struct SplashView: View {
                 .padding(.bottom, 36)
             }
         }
-        .onAppear { runEntrance() }
+        .task {
+            guard !reduceMotion else { onFinished(); return }
+            runEntrance()
+            do { try await Task.sleep(nanoseconds: UInt64(dismissDelay * 1_000_000_000)) }
+            catch { return }
+            onFinished()
+        }
     }
 
     private var shimmerOverlay: some View {
@@ -131,9 +138,6 @@ struct SplashView: View {
         }
         withAnimation(.easeIn(duration: 0.5).delay(0.4)) {
             creditsOpacity = 1.0
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + dismissDelay) {
-            onFinished()
         }
     }
 }

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TopBarView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     let turnText: String
     let isHumanTurn: Bool
     let canCallUno: Bool
@@ -14,6 +15,7 @@ struct TopBarView: View {
             Button(action: onQuit) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.title2)
+                    .frame(width: 44, height: 44)
                     .foregroundColor(.brandTextSecondary)
             }
             .accessibilityLabel(L.t("game.quit"))
@@ -55,9 +57,10 @@ struct TopBarView: View {
             Button(action: onUnoTapped) {
                 Text(L.t("game.uno"))
                     .font(.headline.weight(.heavy))
-                    .foregroundColor(.white)
+                    .foregroundColor(canCallUno ? .black : .white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
+                    .frame(minHeight: 44)
                     .background(Capsule().fill(canCallUno ? Color.brandSecondary : Color.brandTextSecondary.opacity(0.35)))
             }
             .disabled(!canCallUno)

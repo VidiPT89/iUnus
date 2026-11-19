@@ -45,7 +45,7 @@
 "rules.specialCards.title" = "Cartas Especiais";
 "rules.specialCards.body" = "Saltar passa a vez. Inverter muda o sentido do jogo. Compra Duas obriga o jogador seguinte a comprar duas cartas. Curinga permite escolher a cor. Curinga Compra Quatro também obriga o jogador seguinte a comprar quatro cartas.";
 "rules.unoCall.title" = "Dizer UNO";
-"rules.unoCall.body" = "Quando ficares com apenas uma carta, toca no botão UNO antes de terminares a tua jogada. Se outro jogador te apanhar primeiro, tens de comprar duas cartas de penalização.";
+"rules.unoCall.body" = "Quando ficares com uma carta, toca em UNO antes de o jogador seguinte agir. Se alguém te apanhar primeiro, compras duas cartas de penalização. A IA também te pode apanhar.";
 "rules.scoring.title" = "Pontuação";
 "rules.scoring.body" = "O primeiro jogador a jogar todas as suas cartas ganha a ronda e soma pontos com base nas cartas que restam aos adversários. O primeiro a atingir 500 pontos vence o jogo.";
 
@@ -56,9 +56,9 @@
 "game.thinking" = "A pensar…";
 "game.invalidMove" = "Não podes jogar essa carta";
 "game.unoPenalty" = "Apanhado! +2 cartas";
-"game.deckExhausted" = "Sem cartas para comprar — vez passada";
+"game.deckExhausted" = "Não há cartas para comprar";
 "game.stackPending" = "%d cartas pendentes — acumula outra +2/+4 ou compra";
-"game.stackDrawn" = "Sem carta para acumular — comprou %d cartas";
+"game.stackDrawn" = "Penalização: compraste %d cartas";
 "game.stackBadge" = "+%d pendentes";
 "game.catchUno" = "Apanhar!";
 "game.challengeCorrect" = "Desafio correto! Compra 4 em vez de ti";
@@ -118,3 +118,23 @@
 "splash.developedBy" = "Desenvolvido por";
 "splash.website" = "ividi.dev";
 "splash.github" = "@VidiPT89";
+
+// Table guidance and draw decision
+"game.cardCount" = "%d cartas";
+"game.activeColor" = "Cor em jogo";
+"game.drawnChoice" = "Podes jogar a carta que compraste ou passar.";
+"game.pass" = "Passar a vez";
+"game.handGuidance" = "Toca numa carta assinalada ou compra no baralho.";
+"game.stackGuidance" = "Responde com +2 ou +4, ou compra a penalização.";
+
+// Recovery and complete rule explanations
+"online.invalidState" = "Esta partida contém dados inválidos ou incompatíveis. Não foi substituída.";
+"online.waitingPlayers" = "À espera de todos os jogadores. Volta a abrir Multijogador quando tiverem entrado.";
+"online.saving" = "A guardar a jogada online…";
+"online.error" = "Multijogador";
+"common.retry" = "Tentar novamente";
+"game.mustDraw" = "Não tens cartas compatíveis. Toca no baralho para comprar.";
+"rules.online.title" = "Partidas online";
+"rules.online.body" = "As partidas online usam as regras atuais e terminam após uma ronda. O UNO é anunciado automaticamente quando ficas com uma carta. Sair da mesa mantém a partida no Game Center.";
+"rules.house.title" = "Regras da casa";
+"rules.house.body" = "Nas regras Clássicas, as penalizações +2 e +4 acumulam, compras até sair uma carta jogável e a ronda continua até restar um jogador. Escolhe as regras nas Definições antes de iniciar uma partida nova.";

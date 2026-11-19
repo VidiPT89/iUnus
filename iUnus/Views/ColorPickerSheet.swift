@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ColorPickerSheet: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     let onChoose: (CardColor) -> Void
 
     private let options: [(CardColor, String)] = [
@@ -21,7 +22,7 @@ struct ColorPickerSheet: View {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(color.displayColor)
                             .frame(height: 84)
-                            .overlay(Text(L.t(key)).font(.headline).foregroundColor(.white))
+                            .overlay(Text(L.t(key)).font(.headline).foregroundColor(color == .yellow ? .black : .white))
                     }
                 }
             }

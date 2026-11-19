@@ -4,15 +4,22 @@ import Foundation
 
 extension GameViewModel {
     func advanceIfAITurn() {
-        guard mode == .local, phase == .playing, let player = currentPlayer, player.isAI else { return }
+        guard mode == .local, !isSuspended, pendingWildDraw4Challenge == nil, phase == .playing, let player = currentPlayer, player.isAI else { return }
+        turnWorkItem?.cancel()
         isAIThinking = true
         let delay = Double.random(in: aiSpeed.delayRange)
         let index = currentPlayerIndex
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-            guard let self, self.currentPlayerIndex == index, self.phase == .playing else { return }
+        let playerID = player.id
+        let work = DispatchWorkItem { [weak self] in
+            guard let self, self.currentPlayerIndex == index, self.currentPlayer?.id == playerID, self.phase == .playing else { return }
             self.isAIThinking = false
+            if let pending = self.pendingUnoCatch, pending.playerID != playerID {
+                self.catchFailureToCallUno()
+            }
             self.performAITurn(index: index)
         }
+        turnWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
     }
 
     private func performAITurn(index: Int) {
@@ -29,7 +36,7 @@ extension GameViewModel {
         }
 
         let opponentMin = players.enumerated()
-            .filter { $0.offset != index }
+            .filter { $0.offset != index && !$0.element.hand.isEmpty }
             .map { $0.element.hand.count }
             .min() ?? 99
 

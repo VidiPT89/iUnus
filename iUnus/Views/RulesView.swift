@@ -8,17 +8,20 @@ private struct RuleSection: Identifiable {
 }
 
 struct RulesView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     @Environment(\.dismiss) private var dismiss
 
     private let sections: [RuleSection] = [
         RuleSection(id: "turnOrder", icon: "arrow.triangle.turn.up.right.circle.fill", titleKey: "rules.turnOrder.title", bodyKey: "rules.turnOrder.body"),
         RuleSection(id: "specialCards", icon: "sparkles.rectangle.stack.fill", titleKey: "rules.specialCards.title", bodyKey: "rules.specialCards.body"),
         RuleSection(id: "unoCall", icon: "exclamationmark.bubble.fill", titleKey: "rules.unoCall.title", bodyKey: "rules.unoCall.body"),
-        RuleSection(id: "scoring", icon: "trophy.fill", titleKey: "rules.scoring.title", bodyKey: "rules.scoring.body")
+        RuleSection(id: "scoring", icon: "trophy.fill", titleKey: "rules.scoring.title", bodyKey: "rules.scoring.body"),
+        RuleSection(id: "house", icon: "house.fill", titleKey: "rules.house.title", bodyKey: "rules.house.body"),
+        RuleSection(id: "online", icon: "network", titleKey: "rules.online.title", bodyKey: "rules.online.body")
     ]
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
                     ForEach(sections) { section in

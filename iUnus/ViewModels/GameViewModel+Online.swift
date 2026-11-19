@@ -7,6 +7,7 @@ extension GameViewModel {
     /// designated as the first turn — every other participant instead calls `loadOnlineState`
     /// once the turn (and its dealt state) reaches them.
     func startOnlineMatch(players: [Player], localPlayerID: UUID, participantMapping: [String: UUID], delegate: OnlineMatchDelegate) {
+        returnToMenu()
         mode = .online
         onlineLocalPlayerID = localPlayerID
         onlineParticipantMapping = participantMapping
@@ -19,10 +20,14 @@ extension GameViewModel {
     /// Loads state decoded from an in-progress `GKTurnBasedMatch`'s data, resuming the online
     /// game on this device for whichever player's turn it now is.
     func loadOnlineState(_ state: OnlineMatchState, localPlayerID: UUID, participantMapping: [String: UUID], delegate: OnlineMatchDelegate) {
+        guard state.isValid, state.players.contains(where: { $0.id == localPlayerID }),
+              participantMapping == state.participantPlayerIDs else { return }
+        returnToMenu()
         mode = .online
         onlineLocalPlayerID = localPlayerID
         onlineParticipantMapping = participantMapping
         onlineDelegate = delegate
+        drawnCardToPlayID = state.drawnCardToPlayID
         players = state.players
         deck = state.deck
         currentPlayerIndex = state.currentPlayerIndex
@@ -50,7 +55,8 @@ extension GameViewModel {
             roundWinnerID: roundWinnerID,
             gameWinnerID: gameWinnerID,
             pendingUnoCatchPlayerID: pendingUnoCatch?.playerID,
-            participantPlayerIDs: onlineParticipantMapping
+            participantPlayerIDs: onlineParticipantMapping,
+            drawnCardToPlayID: drawnCardToPlayID
         )
     }
 }

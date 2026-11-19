@@ -10,10 +10,7 @@ final class GameCenterManager: ObservableObject {
     @Published var authViewController: UIViewController?
     @Published var authError: String?
 
-    private(set) var didAttemptAuthentication = false
-
     func authenticate() {
-        didAttemptAuthentication = true
         GKLocalPlayer.local.authenticateHandler = { [weak self] viewController, error in
             guard let self else { return }
             Task { @MainActor in

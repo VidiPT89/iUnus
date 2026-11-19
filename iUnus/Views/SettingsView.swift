@@ -6,7 +6,7 @@ struct SettingsView: View {
     @ObservedObject private var localization = LocalizationManager.shared
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section(L.t("settings.language")) {
                     Picker(L.t("settings.language"), selection: $localization.language) {

@@ -1,47 +1,53 @@
 import SwiftUI
 
 struct PlayerHandView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     let cards: [Card]
-    let topCard: Card?
-    let isMyTurn: Bool
+    var cardWidth: CGFloat = 78
     let namespace: Namespace.ID
     var justDrawnCardID: UUID? = nil
-    var enforceWildDrawFourRestriction: Bool = false
+    let canPlay: (Card) -> Bool
     let onPlay: (Card) -> Void
 
-    @State private var pressedCardID: UUID?
-
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: -18) {
-                ForEach(cards) { card in
-                    let playable = isMyTurn && (topCard.map { card.canPlay(on: $0, hand: cards, enforceWildDrawFourRestriction: enforceWildDrawFourRestriction) } ?? false)
-                    let isPressed = pressedCardID == card.id
-                    CardView(card: card, width: 78)
-                        .matchedGeometryEffect(id: card.id, in: namespace, isSource: card.id != justDrawnCardID)
-                        .offset(y: playable ? -14 : 0)
-                        .scaleEffect(isPressed ? 0.92 : 1.0)
-                        .opacity(isMyTurn ? (playable ? 1 : 0.55) : 0.85)
-                        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: playable)
-                        .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
-                        .onLongPressGesture(minimumDuration: 0, maximumDistance: 20, pressing: { pressing in
-                            guard isMyTurn else { return }
-                            pressedCardID = pressing ? card.id : nil
-                        }, perform: {
-                            guard isMyTurn else { return }
-                            onPlay(card)
-                        })
-                        .accessibilityAddTraits(.isButton)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(cards) { card in
+                        let playable = canPlay(card)
+                        Button { onPlay(card) } label: {
+                            CardView(card: card, width: cardWidth)
+                                .matchedGeometryEffect(id: card.id, in: namespace, isSource: card.id != justDrawnCardID)
+                                .overlay(alignment: .topTrailing) {
+                                    if playable {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .foregroundStyle(.white, Color.brandPrimary)
+                                            .font(.title3)
+                                            .offset(x: 4, y: -6)
+                                    }
+                                }
+                                .opacity(playable ? 1 : 0.65)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(!playable)
+                        .id(card.id)
+                        .accessibilityLabel(card.accessibilityLabel)
                         .accessibilityHint(playable ? L.t("game.cardPlayableHint") : L.t("game.cardUnplayableHint"))
+                    }
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 20)
+            .frame(height: cardWidth * 1.5 + 32)
+            .onChange(of: justDrawnCardID) { id in
+                if let id { proxy.scrollTo(id, anchor: .center) }
+            }
         }
     }
 }
 
 struct OpponentHandView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     let player: Player
     let namespace: Namespace.ID
     let isCurrentTurn: Bool
@@ -73,14 +79,14 @@ struct OpponentHandView: View {
                 }
             }
             HStack(spacing: -cardWidth * 0.85) {
-                ForEach(player.hand) { card in
+                ForEach(Array(player.hand.prefix(7))) { card in
                     CardBackView(width: cardWidth)
                         .matchedGeometryEffect(id: card.id, in: namespace)
                 }
             }
             .frame(height: cardWidth * 1.5)
-            Text("\(player.hand.count)")
-                .font(.caption2)
+            Text(String(format: L.t("game.cardCount"), player.hand.count))
+                .font(.caption.weight(.bold))
                 .foregroundColor(.brandTextSecondary)
 
             if showsUnoCatch {
@@ -89,14 +95,17 @@ struct OpponentHandView: View {
                         .font(.caption2.weight(.bold))
                         .foregroundColor(.white)
                         .padding(.horizontal, 8).padding(.vertical, 4)
+                        .frame(minHeight: 44)
                         .background(Capsule().fill(Color.red))
                 }
             }
         }
+        .frame(minWidth: 76)
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(isCurrentTurn ? Color.brandPrimary.opacity(0.18) : Color.clear)
+                .fill(isCurrentTurn ? Color.brandPrimary.opacity(0.18) : Color.brandSurface.opacity(0.8))
         )
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(isCurrentTurn ? Color.brandPrimary : Color.clear, lineWidth: 2))
     }
 }

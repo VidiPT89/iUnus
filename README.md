@@ -6,11 +6,15 @@
 
 ## ✨ Features
 
-- ✅ Full original UNO rules — 108-card deck, 1 to 4 players, Skip/Reverse/Draw Two/Wild/Wild Draw Four
+- ✅ UNO-style rules and a configurable house-rules variant — 108-card deck, 1 human with up to 9 AI opponents, Skip/Reverse/Draw Two/Wild/Wild Draw Four
 - ✅ Smart AI opponents with strategic card and color selection
+- ✅ Play or keep a newly drawn playable card, with the choice preserved when resuming
+- ✅ Responsive table, explicit active color, accessible card buttons and legal-move markers
 - ✅ Smooth, native SwiftUI animations — card dealing, playing, and draw-pile motion
 - ✅ Haptic feedback on key moments (playing a card, invalid moves, UNO calls, wins)
-- ✅ "UNO!" call mechanic with a timed penalty if you get caught
+- ✅ "UNO!" call mechanic: get caught before the next player acts, including by the AI
+- ✅ Saved games preserve draw/color decisions, challenges, rule set and round results
+- ✅ Game Center turn-based matches, with visible save errors and retry
 - ✅ Multi-round scoring up to 500 points, with round and game summary screens
 - ✅ Runtime language switch — Português (PT-PT) and English, independent of system locale
 - ✅ Dark mode, Light mode, and System mode
@@ -49,11 +53,17 @@ PT-PT/English and Light/Dark/System mode at any time.
 
 ## 🧪 Testing
 
-Build and run the `iUnus` scheme in Xcode (`⌘R`), or verify the project compiles via:
+Run the shared `iUnus` scheme in Xcode (`⌘R`) or run tests (`⌘U`, iOS 17+ simulator). The app deployment target remains iOS 16. Tests cover draw/color decisions, challenges, scoring, save validation and compatibility, UNO, turn cancellation, localization, and full rounds with 2/4/10 players. Layout tests attach compact/tablet captures to the test result.
+
+To verify compilation:
 
 ```bash
 xcodebuild -project iUnus.xcodeproj -scheme iUnus -destination 'generic/platform=iOS Simulator' build
 ```
+
+## Review and validation limits
+
+See [the general review](docs/2026-11-19-review.md). Game Center still requires an end-to-end check between two real accounts/devices. Online games finish after one round, call UNO automatically, and remain available in Game Center when you close the table.
 
 ## 📄 License
 

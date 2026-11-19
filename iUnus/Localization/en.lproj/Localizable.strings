@@ -45,7 +45,7 @@
 "rules.specialCards.title" = "Special Cards";
 "rules.specialCards.body" = "Skip passes the turn. Reverse changes the direction of play. Draw Two forces the next player to draw two cards. Wild lets you choose the color. Wild Draw Four also forces the next player to draw four cards.";
 "rules.unoCall.title" = "Calling UNO";
-"rules.unoCall.body" = "When you are down to one card, tap the UNO button before your turn ends. If another player catches you first, you must draw two penalty cards.";
+"rules.unoCall.body" = "When you are down to one card, tap UNO before the next player acts. If another player catches you first, you draw two penalty cards. The AI can catch you too.";
 "rules.scoring.title" = "Scoring";
 "rules.scoring.body" = "The first player to play all their cards wins the round and scores points based on the cards left in opponents' hands. The first player to reach 500 points wins the game.";
 
@@ -56,9 +56,9 @@
 "game.thinking" = "Thinking…";
 "game.invalidMove" = "You can't play that card";
 "game.unoPenalty" = "Caught! +2 cards";
-"game.deckExhausted" = "No cards left to draw — turn passed";
+"game.deckExhausted" = "No cards left to draw";
 "game.stackPending" = "Draw %d pending — stack another +2/+4 or draw";
-"game.stackDrawn" = "No stack to play — drew %d cards";
+"game.stackDrawn" = "Penalty: drew %d cards";
 "game.stackBadge" = "+%d pending";
 "game.catchUno" = "Catch!";
 "game.challengeCorrect" = "Challenge correct! They draw 4 instead";
@@ -118,3 +118,23 @@
 "splash.developedBy" = "Developed by";
 "splash.website" = "ividi.dev";
 "splash.github" = "@VidiPT89";
+
+// Table guidance and draw decision
+"game.cardCount" = "%d cards";
+"game.activeColor" = "Active color";
+"game.drawnChoice" = "Play the card you drew or pass.";
+"game.pass" = "Pass turn";
+"game.handGuidance" = "Tap a marked card or draw from the deck.";
+"game.stackGuidance" = "Play +2 or +4, or draw the penalty.";
+
+// Recovery and complete rule explanations
+"online.invalidState" = "This match contains invalid or incompatible data. It has not been replaced.";
+"online.waitingPlayers" = "Waiting for all players to join. Open Multiplayer again once they have joined.";
+"online.saving" = "Saving online turn…";
+"online.error" = "Multiplayer";
+"common.retry" = "Retry";
+"game.mustDraw" = "No matching cards. Tap the deck to draw.";
+"rules.online.title" = "Online matches";
+"rules.online.body" = "Online matches use the current rules and finish after one round. UNO is called automatically when you have one card left. Closing the table keeps the match in Game Center.";
+"rules.house.title" = "House rules";
+"rules.house.body" = "With Classic rules, +2 and +4 penalties stack, drawing continues until a playable card appears, and the round continues until one player remains. Choose your rules in Settings before starting a new game.";

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CardView: View {
+    @ObservedObject private var localization = LocalizationManager.shared
     let card: Card
     var faceDown: Bool = false
     var width: CGFloat = 70
@@ -24,9 +25,10 @@ struct CardView: View {
                 .shadow(color: .black.opacity(0.18), radius: 1, x: 0, y: 1)
 
             if faceDown {
-                Circle()
-                    .fill(Color.brandPrimary)
-                    .frame(width: width * 0.5)
+                RoundedRectangle(cornerRadius: width * 0.2)
+                    .fill(LinearGradient(colors: [.brandPrimary, .brandSecondary], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: width * 0.65, height: width * 0.85)
+                    .rotationEffect(.degrees(-20))
                     .overlay(
                         Circle().stroke(Color.white.opacity(0.4), lineWidth: 1.5)
                     )
@@ -40,7 +42,7 @@ struct CardView: View {
 
                 Text(card.value.symbol)
                     .font(.system(size: width * 0.34, weight: .heavy, design: .rounded))
-                    .foregroundColor(card.effectiveColor.displayColor)
+                    .foregroundColor(card.effectiveColor == .yellow ? Color(red: 0.46, green: 0.32, blue: 0.01) : card.effectiveColor.displayColor)
                     .rotationEffect(.degrees(-22))
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
